@@ -739,57 +739,193 @@
       openWA('Hola BELOURA, quiero formar parte del programa de afiliados y recibir mi código para recomendar clientes.');
     }
 
-    async function trackDemo() {
+    <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwg0gs8be8WO-EVT6xRlvaCX5MM-qjhS9XJ7jQsSV1mauxvmeOF94VIE57FCQKkxRuVWw/exec";
+
+async function trackDemo() {
   const code = document.getElementById('trackingCode').value.trim().toUpperCase();
   const box = document.getElementById('trackingResult');
 
   if (!code) {
     box.style.display = 'block';
-    box.innerHTML = 'Ingresa un código de envío, tracking interno o código de guía.';
+    box.innerHTML = 'Ingresa tu código de envío, código de guía o código de cliente.';
     return;
   }
 
   box.style.display = 'block';
   box.innerHTML = 'Buscando información del paquete...';
 
-  const API_URL = "https://script.google.com/macros/s/AKfycbwg0gs8be8WO-EVT6xRlvaCX5MM-qjhS9XJ7jQsSV1mauxvmeOF94VIE57FCQKkxRuVWw/exec";
-
   try {
-    const res = await fetch(`${API_URL}?codigo=${encodeURIComponent(code)}`);
-    const json = await res.json();
+    let payload;
 
-    if (!json.encontrado) {
+    if (code.startsWith('CNY')) {
+      payload = {
+        action: "trackByCodigoCliente",
+        codigoCliente: code
+      };
+    } else {
+      payload = {
+        action: "trackByCodigoEnvio",
+        codigoEnvio: code
+      };
+    }
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    renderTrackingResponse(data, code.startsWith('CNY'), code);
+
+  } catch (error) {
+    console.error(error);
+    box.innerHTML = 'Hubo un error consultando el tracking. Intenta nuevamente o comunícate por WhatsApp.';
+  }
+}
+
+function formatDateTime(value) {
+  if (!value) return '';
+  const d = new Date(value);
+  if (isNaN(d)) return value;
+
+  return d.toLocaleString('es-EC', {
+    dateStyle: 'short',
+    timeStyle: 'short'
+  });
+}
+
+function getEstadoIcon(estado) {
+  const map = {
+    'Recibido en Arlington': '📦',
+    'Recibido en bodega NY': '📦',
+    'Carga Consolidada': '🚚',
+    'Enviado a Ecuador': '✈️',
+    'Ingresando en Aduana': '📍',
+    'Proceso de Aduana Ecuador': '🏛️',
+    'En ruta a centro Logistico Beloura': '✈️',
+    'En proceso de zonificacion': '🚚',
+    'Listo para retiro': '📍',
+    'Entregado': '✅'
+  };
+
+  return map[estado] || '📍';
+}
+
+function renderTrackingResponse(data, byCliente, code) {
+  const box = document.getElementById('trackingResult');
+
+  if (!data.found) {
+    box.style.display = 'block';
+    box.innerHTML = `
+      <strong>No se encontraron resultados para ${code}</strong><br><br>
+      Verifica que el código esté bien escrito o comunícate con BELOURA por WhatsApp.
+    `;
+    return;
+  }
+
+  // CONSULTA POR CÓDIGO DE CLIENTE
+  if (byCliente) {
+    const envios = data.envios || [];
+
+    if (!envios.length) {
       box.innerHTML = `
-        <strong>No encontramos información para: ${code}</strong><br><br>
-        Verifica que el código esté bien escrito o comunícate con BELOURA por WhatsApp.
+        No se encontraron envíos asociados al código de cliente <strong>${code}</strong>.
       `;
       return;
     }
 
-    const item = json.data[0];
-
-    box.innerHTML = `
-      <strong>Resultado para ${code}</strong><br><br>
-
-      <b>Código BELOURA:</b> ${item.codigoEnvio || '-'}<br>
-      <b>Código guía:</b> ${item.codigoGuia || '-'}<br>
-      <b>Tracking interno:</b> ${item.trackingInterno || '-'}<br><br>
-
-      <b>Estado:</b> ${item.estado || '-'}<br>
-      <b>Fecha ingreso NY:</b> ${item.fechaIngresoNY || '-'}<br>
-      <b>Descripción:</b> ${item.descripcion || '-'}<br><br>
-
-      <b>Destinatario:</b> ${item.destinatario || '-'}<br>
-      <b>Ciudad destino:</b> ${item.ciudadDestino || '-'}<br>
-      <b>Dirección:</b> ${item.direccion || '-'}<br>
+    let html = `
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-code">Código cliente: ${code}</div>
+          <div class="result-meta">Envíos encontrados: ${envios.length}</div>
+        </div>
+        <div class="result-body">
     `;
 
-  } catch (error) {
-    box.innerHTML = `
-      Hubo un error consultando el tracking. Intenta nuevamente o comunícate por WhatsApp.
+    envios.forEach(e => {
+      html += `
+        <div class="historial-item">
+          <div class="flex-between">
+            <span><strong>${e.CodigoEnvio || ''}</strong></span>
+            <span class="tag">${e.EstadoActual || 'Sin estado'}</span>
+          </div>
+          <div class="muted">
+            Destino: ${e.CiudadDestino || '-'} · Peso: ${e.PesoLb || '-'} lb<br>
+            Última actualización: ${e.UltimaActualizacion ? formatDateTime(e.UltimaActualizacion) : '-'}
+          </div>
+        </div>
+      `;
+    });
+
+    html += `
+        </div>
+      </div>
+    `;
+
+    box.innerHTML = html;
+    return;
+  }
+
+  // CONSULTA POR CÓDIGO DE ENVÍO
+  const envio = data.envio || {};
+  const historial = (data.historial || [])
+    .slice()
+    .sort((a, b) => new Date(a.FechaHora) - new Date(b.FechaHora));
+
+  const lastItem = historial.length ? historial[historial.length - 1] : null;
+
+  const ultimaUbicacion =
+    envio.EstadoActual || (lastItem && lastItem.Estado) || 'Sin estado disponible';
+
+  const ultimaFecha =
+    envio.UltimaActualizacion || (lastItem && lastItem.FechaHora) || '';
+
+  let timelineHtml = '';
+
+  if (historial.length) {
+    timelineHtml = `
+      <div class="timeline">
+        ${historial.map(item => `
+          <div class="timeline-item">
+            <div class="timeline-icon">${getEstadoIcon(item.Estado)}</div>
+            <div class="timeline-content">
+              <div class="timeline-title">${item.Estado || ''}</div>
+              <div class="timeline-meta">${formatDateTime(item.FechaHora)}</div>
+              ${item.Comentario ? `<div class="timeline-comment">${item.Comentario}</div>` : ''}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    timelineHtml = `
+      <div style="margin-top:8px;font-size:.9rem;color:#64748b;">
+        Aún no hay movimientos registrados para este envío.
+      </div>
     `;
   }
+
+  box.innerHTML = `
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-code">Código: ${envio.CodigoEnvio || code}</div>
+        <div class="result-status">${ultimaUbicacion}</div>
+        <div class="result-meta">${ultimaFecha ? formatDateTime(ultimaFecha) : ''}</div>
+      </div>
+
+      <div class="result-body">
+        <div class="result-row"><strong>Destino:</strong> ${envio.CiudadDestino || '-'}</div>
+        <div class="result-row"><strong>Peso:</strong> ${envio.PesoLb || '-'} lb</div>
+      </div>
+
+      <div class="result-timeline-title">Historial del paquete</div>
+      ${timelineHtml}
+    </div>
+  `;
 }
+</script>
   </script>
 </body>
 </html>

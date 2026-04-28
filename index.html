@@ -523,9 +523,7 @@
         <div class="search-row">
             <select id="searchType">
               <option>Buscar por guía</option>
-              <option>Buscar por cédula / ID</option>
-              <option>Buscar por teléfono</option>
-            </select>
+             </select>
             <input id="trackingCode" placeholder="Ingresa el dato... Ej: BLR-2026-000001" />
             <button class="btn black search-btn" onclick="trackDemo()">⌕</button>
           </div>
@@ -629,10 +627,10 @@
           <div class="affiliate-card">
             <h3>Modelo inicial</h3>
             <div class="affiliate-list">
-              <div>✅ Afiliado recibe código único: BLR-NOMBRE123</div>
+              <div>✅ Afiliado recibe código único: BLR-XXXXXXX123</div>
               <div>✅ Refiere cliente que compra mínimo $50 o envía paquetes</div>
               <div>✅ Gana $5 en crédito de envío, no efectivo</div>
-              <div>✅ El sistema puede controlarse con Google Sheets</div>
+              <div>✅ Creamos un sistema de fidelidad</div>
             </div>
           </div>
         </div>
@@ -655,7 +653,7 @@
           </div>
           <div class="office-card">
             <h3>Ecuador</h3>
-            <p><strong>BELOURA Ecuador</strong><br>Babahoyo / Febres Cordero<br>Distribución, retiro, coordinación y soporte.</p>
+            <p><strong>BELOURA Ecuador</strong><br>Babahoyo<br>Distribución, retiro, coordinación y soporte.</p>
             <button class="btn red" onclick="quoteWhatsApp('Quiero información de entrega en Ecuador')">Consultar entrega</button>
           </div>
         </div>
@@ -891,7 +889,7 @@ function renderTrackingResponse(data, byCliente, code) {
             <div class="timeline-icon">${getEstadoIcon(item.Estado)}</div>
             <div class="timeline-content">
               <div class="timeline-title">${item.Estado || ''}</div>
-              <div class="timeline-meta">${formatDateTime(item.FechaHora)}</div>
+              
               ${item.Comentario ? `<div class="timeline-comment">${item.Comentario}</div>` : ''}
             </div>
           </div>

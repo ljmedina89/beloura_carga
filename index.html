@@ -888,6 +888,7 @@ function renderTrackingResponse(data, byCliente, code) {
           <div class="timeline-item">
             <div class="timeline-icon">${getEstadoIcon(item.Estado)}</div>
             <div class="timeline-content">
+             
               <div class="timeline-title">${item.Estado || ''}</div>
               
               ${item.Comentario ? `<div class="timeline-comment">${item.Comentario}</div>` : ''}
@@ -908,16 +909,15 @@ function renderTrackingResponse(data, byCliente, code) {
     <div class="result-card">
       <div class="result-header">
         <div class="result-code">Código: ${envio.CodigoEnvio || code}</div>
-        <div class="result-status">${ultimaUbicacion}</div>
-        <div class="result-meta">${ultimaFecha ? formatDateTime(ultimaFecha) : ''}</div>
+        
       </div>
 
       <div class="result-body">
         <div class="result-row"><strong>Destino:</strong> ${envio.CiudadDestino || '-'}</div>
         <div class="result-row"><strong>Peso:</strong> ${envio.PesoLb || '-'} lb</div>
       </div>
-
-      <div class="result-timeline-title">Historial del paquete</div>
+       <div class="result-timeline-title"></div>
+      <div class="result-timeline-title">ULTIMA ACTAULIZACION:</div>
       ${timelineHtml}
     </div>
   `;

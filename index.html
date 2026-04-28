@@ -739,12 +739,57 @@
       openWA('Hola BELOURA, quiero formar parte del programa de afiliados y recibir mi código para recomendar clientes.');
     }
 
-    function trackDemo() {
-      const code = document.getElementById('trackingCode').value.trim();
-      const box = document.getElementById('trackingResult');
-      box.style.display = 'block';
-      box.innerHTML = `<strong>Resultado para ${code || 'BLR-DEMO'}:</strong><br><br>✅ Recibido en NY<br>✅ Validado y pesado<br>🚚 En tránsito a Ecuador<br><br><small>Este resultado es demo. Luego se conecta a Google Sheets.</small>`;
+    async function trackDemo() {
+  const code = document.getElementById('trackingCode').value.trim().toUpperCase();
+  const box = document.getElementById('trackingResult');
+
+  if (!code) {
+    box.style.display = 'block';
+    box.innerHTML = 'Ingresa un código de envío, tracking interno o código de guía.';
+    return;
+  }
+
+  box.style.display = 'block';
+  box.innerHTML = 'Buscando información del paquete...';
+
+  const API_URL = "https://script.google.com/macros/s/AKfycbwg0gs8be8WO-EVT6xRlvaCX5MM-qjhS9XJ7jQsSV1mauxvmeOF94VIE57FCQKkxRuVWw/exec";
+
+  try {
+    const res = await fetch(`${API_URL}?codigo=${encodeURIComponent(code)}`);
+    const json = await res.json();
+
+    if (!json.encontrado) {
+      box.innerHTML = `
+        <strong>No encontramos información para: ${code}</strong><br><br>
+        Verifica que el código esté bien escrito o comunícate con BELOURA por WhatsApp.
+      `;
+      return;
     }
+
+    const item = json.data[0];
+
+    box.innerHTML = `
+      <strong>Resultado para ${code}</strong><br><br>
+
+      <b>Código BELOURA:</b> ${item.codigoEnvio || '-'}<br>
+      <b>Código guía:</b> ${item.codigoGuia || '-'}<br>
+      <b>Tracking interno:</b> ${item.trackingInterno || '-'}<br><br>
+
+      <b>Estado:</b> ${item.estado || '-'}<br>
+      <b>Fecha ingreso NY:</b> ${item.fechaIngresoNY || '-'}<br>
+      <b>Descripción:</b> ${item.descripcion || '-'}<br><br>
+
+      <b>Destinatario:</b> ${item.destinatario || '-'}<br>
+      <b>Ciudad destino:</b> ${item.ciudadDestino || '-'}<br>
+      <b>Dirección:</b> ${item.direccion || '-'}<br>
+    `;
+
+  } catch (error) {
+    box.innerHTML = `
+      Hubo un error consultando el tracking. Intenta nuevamente o comunícate por WhatsApp.
+    `;
+  }
+}
   </script>
 </body>
 </html>

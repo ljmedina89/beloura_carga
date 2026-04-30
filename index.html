@@ -441,6 +441,174 @@
       .hero h1 { font-size: 48px; }
       section { padding: 56px 0; }
     }
+    .tracking-card-pro {
+  margin-top: 24px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 22px;
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.10);
+}
+
+.tracking-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 18px;
+  margin-bottom: 18px;
+}
+
+.tracking-code {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.tracking-status {
+  display: inline-block;
+  margin-top: 8px;
+  background: #dcfce7;
+  color: #166534;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.tracking-date {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 8px;
+}
+
+.tracking-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.summary-box {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.summary-value {
+  font-size: 16px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.timeline-pro {
+  margin-top: 18px;
+  position: relative;
+}
+
+.timeline-pro-title {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 16px;
+}
+
+.timeline-step {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 14px;
+  position: relative;
+  padding-bottom: 22px;
+}
+
+.timeline-step::before {
+  content: "";
+  position: absolute;
+  left: 20px;
+  top: 42px;
+  bottom: 0;
+  width: 2px;
+  background: #e5e7eb;
+}
+
+.timeline-step:last-child::before {
+  display: none;
+}
+
+.timeline-icon-pro {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #0f172a;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  z-index: 2;
+}
+
+.timeline-content-pro {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 14px;
+}
+
+.timeline-state {
+  font-size: 16px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.timeline-time {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.timeline-comment-pro {
+  font-size: 14px;
+  color: #374151;
+  margin-top: 7px;
+}
+
+.tracking-message {
+  margin-top: 18px;
+  background: #eff6ff;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+@media(max-width: 640px) {
+  .tracking-top {
+    flex-direction: column;
+  }
+
+  .tracking-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .tracking-card-pro {
+    padding: 18px;
+  }
+}
   </style>
 </head>
 <body>
@@ -906,21 +1074,61 @@ function renderTrackingResponse(data, byCliente, code) {
   }
 
   box.innerHTML = `
-    <div class="result-card">
-      <div class="result-header">
-        <div class="result-code">Código: ${envio.CodigoEnvio || code}</div>
-        
+  <div class="tracking-card-pro">
+
+    <div class="tracking-top">
+      <div>
+        <div class="tracking-code">Código: ${envio.CodigoEnvio || code}</div>
+        <div class="tracking-status">${ultimaUbicacion}</div>
+        <div class="tracking-date">
+          ${ultimaFecha ? 'Última actualización: ' + formatDateTime(ultimaFecha) : 'Sin fecha registrada'}
+        </div>
       </div>
 
-      <div class="result-body">
-        <div class="result-row"><strong>Destino:</strong> ${envio.CiudadDestino || '-'}</div>
-        <div class="result-row"><strong>Peso:</strong> ${envio.PesoLb || '-'} lb</div>
-      </div>
-       <div class="result-timeline-title"></div>
-      <div class="result-timeline-title">ULTIMA ACTUALIZACION:</div>
-      ${timelineHtml}
+      <div style="font-size:38px;">📦</div>
     </div>
-  `;
+
+    <div class="tracking-summary">
+      <div class="summary-box">
+        <div class="summary-label">Destino</div>
+        <div class="summary-value">${envio.CiudadDestino || '-'}</div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-label">Peso</div>
+        <div class="summary-value">${envio.PesoLb || '-'} lb</div>
+      </div>
+    </div>
+
+    <div class="timeline-pro">
+      <div class="timeline-pro-title">Historial del paquete</div>
+
+      ${
+        historial.length
+          ? historial.map(item => `
+            <div class="timeline-step">
+              <div class="timeline-icon-pro">${getEstadoIcon(item.Estado)}</div>
+              <div class="timeline-content-pro">
+                <div class="timeline-state">${item.Estado || ''}</div>
+                <div class="timeline-time">${formatDateTime(item.FechaHora)}</div>
+                ${item.Comentario ? `<div class="timeline-comment-pro">${item.Comentario}</div>` : ''}
+              </div>
+            </div>
+          `).join('')
+          : `
+            <div class="timeline-content-pro">
+              Aún no hay movimientos registrados para este envío.
+            </div>
+          `
+      }
+    </div>
+
+    <div class="tracking-message">
+      Tu paquete está avanzando correctamente. BELOURA actualizará el estado en cada etapa del proceso.
+    </div>
+
+  </div>
+`;
 }
   </script>
 </body>

@@ -191,11 +191,11 @@
               <th>Código</th>
               <th>Cliente</th>
               <th>Libras</th>
-              <th>Estado envío</th>
+              
               <th>Estado pago</th>
               <th>Operación</th>
               <th>Total cliente</th>
-              <th>Pago BELOURA</th>
+              <th>Pago Beloura</th>
               <th>Pagado</th>
               <th>Saldo</th>
               <th>Ganancia</th>
@@ -283,8 +283,8 @@
         <td>${envio.codigo || ""}</td>
         <td>${envio.cliente || ""}</td>
         <td>${envio.libras || 0}</td>
-        <td class="status">${envio.estado || ""}</td>
-        <td>${envio.estadoPago || "Pendiente"}</td>
+      <td class="status">${envio.estado || ""}</td>        
+       <td>${envio.estadoPago || "Pendiente"}</td>
         <td>${envio.estadoOperacion || "Activo"}</td>
         <td>${formatoDinero(envio.totalCliente || 0)}</td>
         <td>${formatoDinero(envio.pagoBeloura || 0)}</td>

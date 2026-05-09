@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BELOURA Partners</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -14,65 +18,250 @@
     }
 
     header {
-      background: #000;
+      background: radial-gradient(circle at top left, #222, #000);
       color: white;
-      padding: 40px 20px;
+      padding: 70px 20px;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      right: -80px;
+      top: -80px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #fff;
+      color: #000;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 18px;
     }
 
     header h1 {
       margin: 0;
-      font-size: 32px;
+      font-size: 42px;
+      line-height: 1.1;
     }
 
     header p {
-      margin-top: 10px;
-      color: #ccc;
+      max-width: 650px;
+      margin: 18px auto 0;
+      color: #ddd;
+      font-size: 18px;
+    }
+
+    .hero-actions {
+      margin-top: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      background: white;
+      color: black;
+      padding: 15px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 5px;
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: white;
+      border: 1px solid rgba(255,255,255,0.4);
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1150px;
       margin: auto;
-      padding: 40px 20px;
+      padding: 50px 20px;
     }
 
     .section {
-      margin-bottom: 50px;
+      margin-bottom: 65px;
     }
 
-    .section h2 {
-      margin-bottom: 20px;
+    .section-title {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .section-title h2 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: #666;
+      max-width: 650px;
+      margin: auto;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 22px;
     }
 
     .card {
       background: white;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      transition: 0.25s ease;
+      border: 1px solid #eee;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 14px 35px rgba(0,0,0,0.13);
+    }
+
+    .icon {
+      font-size: 36px;
+      margin-bottom: 14px;
     }
 
     .card h3 {
+      margin: 0 0 10px;
+    }
+
+    .card p {
+      color: #555;
+      line-height: 1.5;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .step {
+      background: #111;
+      color: white;
+      border-radius: 18px;
+      padding: 22px;
+      text-align: center;
+      position: relative;
+    }
+
+    .step span {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: white;
+      color: black;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .income-box {
+      background: linear-gradient(135deg, #000, #303030);
+      color: white;
+      border-radius: 24px;
+      padding: 35px;
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 25px;
+      align-items: center;
+    }
+
+    .income-box h2 {
+      font-size: 32px;
       margin-top: 0;
     }
 
-    .cta {
-      text-align: center;
-      margin-top: 40px;
+    .income-visual {
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 22px;
     }
 
-    .cta a {
-      background: black;
+    .bar {
+      margin: 18px 0;
+    }
+
+    .bar label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      color: #ddd;
+    }
+
+    .bar-line {
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: white;
+    }
+
+    .tracking-demo {
+      background: white;
+      border-radius: 22px;
+      padding: 28px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .timeline {
+      margin-top: 20px;
+      border-left: 3px solid #111;
+      padding-left: 20px;
+    }
+
+    .timeline-item {
+      margin-bottom: 22px;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -30px;
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      background: #111;
+      border-radius: 50%;
+    }
+
+    .timeline-item strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .cta-final {
+      text-align: center;
+      background: #111;
       color: white;
-      padding: 15px 25px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-size: 16px;
+      padding: 45px 25px;
+      border-radius: 26px;
+    }
+
+    .cta-final h2 {
+      font-size: 32px;
+      margin-top: 0;
     }
 
     footer {
@@ -82,90 +271,235 @@
       color: #aaa;
       margin-top: 40px;
     }
+
+    @media (max-width: 750px) {
+      header h1 {
+        font-size: 34px;
+      }
+
+      .income-box {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
 <body>
 
 <header>
-  <h1>Gana dinero con BELOURA</h1>
-  <p>Conecta Estados Unidos con Ecuador y genera ingresos sin inversión</p>
+  <div class="badge">BELOURA Partner System</div>
+  <h1>Gana dinero conectando USA con Ecuador</h1>
+  <p>
+    Únete como afiliado, consigue clientes, ofrece compras y envíos internacionales,
+    mientras BELOURA se encarga de la operación, tracking y logística.
+  </p>
+
+  <div class="hero-actions">
+    <a href="../afiliados.html" class="btn">Registrarme ahora</a>
+    <a href="#como-funciona" class="btn secondary">Ver cómo funciona</a>
+  </div>
 </header>
 
 <div class="container">
 
-  <div class="section">
-    <h2>¿Qué harás como afiliado?</h2>
+  <section class="section">
+    <div class="section-title">
+      <h2>¿Qué puedes ofrecer?</h2>
+      <p>Un modelo simple para generar ingresos ayudando a clientes que quieren comprar en Estados Unidos y recibir en Ecuador.</p>
+    </div>
+
     <div class="grid">
       <div class="card">
+        <div class="icon">🛒</div>
         <h3>Compras en USA</h3>
-        <p>Ayuda a tus clientes a comprar en Amazon, Burlington, Ross y más.</p>
+        <p>Ayuda a tus clientes a comprar en tiendas como Amazon, Burlington, Ross, Walmart, Costco y más.</p>
       </div>
+
       <div class="card">
+        <div class="icon">✈️</div>
         <h3>Envíos a Ecuador</h3>
-        <p>Gestiona envíos desde New York hasta Ecuador de forma segura.</p>
+        <p>Promociona envíos desde Estados Unidos hacia Ecuador con respaldo operativo de BELOURA.</p>
       </div>
+
       <div class="card">
+        <div class="icon">📲</div>
         <h3>Atención directa</h3>
-        <p>Conecta con clientes y construye tu propia cartera.</p>
+        <p>Maneja tus propios clientes por WhatsApp y crea tu cartera de compradores recurrentes.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon">📦</div>
+        <h3>Tracking profesional</h3>
+        <p>Tus clientes podrán consultar el avance de sus paquetes mediante el sistema de seguimiento BELOURA.</p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="section">
-    <h2>¿Qué te ofrece BELOURA?</h2>
+  <section class="section" id="como-funciona">
+    <div class="section-title">
+      <h2>Cómo funciona</h2>
+      <p>El afiliado vende. BELOURA opera. El cliente recibe.</p>
+    </div>
+
+    <div class="flow">
+      <div class="step">
+        <span>1</span>
+        <h3>Te registras</h3>
+        <p>Recibes tu código y PIN de acceso.</p>
+      </div>
+
+      <div class="step">
+        <span>2</span>
+        <h3>Consigues clientes</h3>
+        <p>Promocionas compras y envíos.</p>
+      </div>
+
+      <div class="step">
+        <span>3</span>
+        <h3>BELOURA procesa</h3>
+        <p>Gestionamos recepción y logística.</p>
+      </div>
+
+      <div class="step">
+        <span>4</span>
+        <h3>Controlas tu panel</h3>
+        <p>Ves envíos, libras y ganancias.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="income-box">
+      <div>
+        <h2>Genera ingresos por cada envío</h2>
+        <p>
+          El modelo está diseñado para que puedas crear tu propio margen comercial
+          según tu estrategia, tipo de cliente y volumen de trabajo.
+        </p>
+        <p>
+          No mostramos tarifas fijas porque cada afiliado puede manejar condiciones
+          diferentes según su nivel, volumen y acuerdo comercial.
+        </p>
+      </div>
+
+      <div class="income-visual">
+        <div class="bar">
+          <label>Captación de clientes</label>
+          <div class="bar-line"><div class="bar-fill" style="width: 90%;"></div></div>
+        </div>
+
+        <div class="bar">
+          <label>Control desde dashboard</label>
+          <div class="bar-line"><div class="bar-fill" style="width: 80%;"></div></div>
+        </div>
+
+        <div class="bar">
+          <label>Logística BELOURA</label>
+          <div class="bar-line"><div class="bar-fill" style="width: 95%;"></div></div>
+        </div>
+
+        <div class="bar">
+          <label>Potencial de crecimiento</label>
+          <div class="bar-line"><div class="bar-fill" style="width: 85%;"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">
+      <h2>Tu panel de afiliado</h2>
+      <p>Accede con tu código y PIN para consultar tu operación.</p>
+    </div>
+
     <div class="grid">
       <div class="card">
-        <h3>Logística completa</h3>
-        <p>No necesitas bodega ni manejar envíos.</p>
+        <div class="icon">📊</div>
+        <h3>Resumen financiero</h3>
+        <p>Consulta libras vendidas, total generado, pago a BELOURA y ganancia estimada.</p>
       </div>
+
       <div class="card">
-        <h3>Tracking en tiempo real</h3>
-        <p>Seguimiento profesional para tus clientes.</p>
+        <div class="icon">🚚</div>
+        <h3>Envíos activos</h3>
+        <p>Visualiza qué paquetes siguen en proceso y cuáles ya fueron entregados.</p>
       </div>
+
       <div class="card">
-        <h3>Sistema automatizado</h3>
-        <p>Controla tus envíos, libras y ganancias desde tu panel.</p>
+        <div class="icon">✅</div>
+        <h3>Liquidaciones</h3>
+        <p>Controla pagos pendientes, parciales, pagados y operaciones liquidadas.</p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="section">
-    <h2>Modelo de ingresos</h2>
-    <div class="card">
-      <p>
-        Genera ingresos por cada envío realizado.  
-        Tú defines tu margen según tu estrategia y tipo de cliente.
-      </p>
+  <section class="section">
+    <div class="tracking-demo">
+      <div class="section-title">
+        <h2>Experiencia de seguimiento</h2>
+        <p>BELOURA ayuda a transmitir confianza al cliente final.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <strong>📍 Recibido en New York</strong>
+          <p>El paquete ingresa al sistema BELOURA.</p>
+        </div>
+
+        <div class="timeline-item">
+          <strong>📦 Procesado y validado</strong>
+          <p>Se confirma peso, datos y preparación de envío.</p>
+        </div>
+
+        <div class="timeline-item">
+          <strong>✈️ En tránsito a Ecuador</strong>
+          <p>El paquete avanza hacia destino.</p>
+        </div>
+
+        <div class="timeline-item">
+          <strong>✅ Entregado</strong>
+          <p>Cliente recibe su compra o paquete.</p>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="section">
-    <h2>¿Por qué BELOURA?</h2>
+  <section class="section">
+    <div class="section-title">
+      <h2>Por qué trabajar con BELOURA</h2>
+    </div>
+
     <div class="grid">
       <div class="card">
-        <h3>Operación real</h3>
-        <p>Base en New York con envíos activos.</p>
-      </div>
-      <div class="card">
+        <div class="icon">🏢</div>
         <h3>Marca en crecimiento</h3>
-        <p>Construye junto a un sistema escalable.</p>
+        <p>Formas parte de un ecosistema comercial con visión de expansión.</p>
       </div>
+
       <div class="card">
-        <h3>Sin inversión</h3>
-        <p>Empieza sin capital inicial.</p>
+        <div class="icon">🔐</div>
+        <h3>Sistema controlado</h3>
+        <p>Cada afiliado tiene acceso privado a su información mediante código y PIN.</p>
+      </div>
+
+      <div class="card">
+        <div class="icon">🌎</div>
+        <h3>Conexión internacional</h3>
+        <p>Ayudas a conectar compradores en Ecuador con oportunidades en Estados Unidos.</p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="cta">
-    <a href="afiliados.html">Quiero ser afiliado</a>
-  </div>
+  <section class="cta-final">
+    <h2>Empieza como afiliado BELOURA</h2>
+    <p>Regístrate, recibe tu código y comienza a construir tu cartera de clientes.</p>
+    <a href="../afiliados.html" class="btn">Quiero registrarme</a>
+  </section>
 
 </div>
 
 <footer>
-  BELOURA © Sistema de afiliados
+  BELOURA © Partner System · Powered by BELOURA
 </footer>
 
 </body>

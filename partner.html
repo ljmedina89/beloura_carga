@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Beloura Partner Dashboard</title>
+  <title>BELOURA Partner Dashboard</title>
 
   <style>
     body {
@@ -108,26 +108,38 @@
     .status {
       font-weight: bold;
     }
+
+    .logout {
+      max-width: 180px;
+      background: #444;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 
 <body>
 
 <header>
-  <h1>Beloura Partner Dashboard</h1>
-  <p>Panel para afiliados</p>
+  <h1>BELOURA Partner Dashboard</h1>
+  <p>Acceso privado para afiliados</p>
 </header>
 
 <div class="container">
 
   <div class="login-box" id="loginBox">
     <h2>Ingreso de afiliado</h2>
-    <p>Ingresa tu código de afiliado.</p>
+    <p>Ingresa tu código de afiliado y PIN de acceso.</p>
 
     <input 
       type="text" 
       id="afiliadoInput" 
-      placeholder="Ejemplo: BLR001"
+      placeholder="Código afiliado. Ejemplo: BLR4821"
+    />
+
+    <input 
+      type="password" 
+      id="pinInput" 
+      placeholder="PIN de acceso"
     />
 
     <button onclick="cargarDashboard()">Ingresar</button>
@@ -136,6 +148,8 @@
   </div>
 
   <div id="dashboard" class="hidden">
+
+    <button class="logout" onclick="cerrarSesion()">Cerrar sesión</button>
 
     <h2 id="tituloAfiliado"></h2>
 
@@ -151,7 +165,7 @@
       </div>
 
       <div class="card">
-        <h3>Pago a Beloura</h3>
+        <h3>Pago a BELOURA</h3>
         <p id="totalBeloura">$0</p>
       </div>
 
@@ -176,7 +190,7 @@
       </div>
 
       <div class="card">
-        <h3>Saldo pendiente Beloura</h3>
+        <h3>Saldo pendiente BELOURA</h3>
         <p id="saldoPendienteBeloura">$0</p>
       </div>
     </div>
@@ -191,11 +205,11 @@
               <th>Código</th>
               <th>Cliente</th>
               <th>Libras</th>
-              
+              <th>Estado envío</th>
               <th>Estado pago</th>
               <th>Operación</th>
               <th>Total cliente</th>
-              <th>Pago Beloura</th>
+              <th>Pago BELOURA</th>
               <th>Pagado</th>
               <th>Saldo</th>
               <th>Ganancia</th>
@@ -211,28 +225,37 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbwZ7l2Yef6gXTG6RC0G6xMJ3Lslhup2EiXp9ePt8_FmO1JjXIFD69WwoG8OXNIwqC_J6A/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxSSG4jVEmdQSPAlQqzeeUE34SBaacn_hp1Xtd9oJQ9b4if5H0k5-Rn0UlIis89UhW6vA/exec";
 
   async function cargarDashboard() {
     const afiliado = document.getElementById("afiliadoInput").value.trim().toUpperCase();
+    const pin = document.getElementById("pinInput").value.trim();
     const errorMsg = document.getElementById("errorMsg");
 
     errorMsg.textContent = "";
 
     if (!afiliado) {
-      errorMsg.textContent = "Ingresa un código de afiliado.";
+      errorMsg.textContent = "Ingresa tu código de afiliado.";
+      return;
+    }
+
+    if (!pin) {
+      errorMsg.textContent = "Ingresa tu PIN de acceso.";
       return;
     }
 
     try {
-      const url = `${API_URL}?action=partner&afiliado=${encodeURIComponent(afiliado)}`;
+      const url = `${API_URL}?action=partner&afiliado=${encodeURIComponent(afiliado)}&pin=${encodeURIComponent(pin)}`;
       const res = await fetch(url);
       const data = await res.json();
 
       if (!data.ok) {
-        errorMsg.textContent = data.error || "No se pudo cargar el dashboard.";
+        errorMsg.textContent = data.error || "Código o PIN incorrecto.";
         return;
       }
+
+      localStorage.setItem("beloura_afiliado", afiliado);
+      localStorage.setItem("beloura_pin", pin);
 
       mostrarDashboard(data);
 
@@ -283,8 +306,8 @@
         <td>${envio.codigo || ""}</td>
         <td>${envio.cliente || ""}</td>
         <td>${envio.libras || 0}</td>
-       
-       <td>${envio.estadoPago || "Pendiente"}</td>
+        <td class="status">${envio.estado || ""}</td>
+        <td>${envio.estadoPago || "Pendiente"}</td>
         <td>${envio.estadoOperacion || "Activo"}</td>
         <td>${formatoDinero(envio.totalCliente || 0)}</td>
         <td>${formatoDinero(envio.pagoBeloura || 0)}</td>
@@ -297,9 +320,32 @@
     });
   }
 
+  function cerrarSesion() {
+    localStorage.removeItem("beloura_afiliado");
+    localStorage.removeItem("beloura_pin");
+
+    document.getElementById("dashboard").classList.add("hidden");
+    document.getElementById("loginBox").classList.remove("hidden");
+
+    document.getElementById("afiliadoInput").value = "";
+    document.getElementById("pinInput").value = "";
+    document.getElementById("errorMsg").textContent = "";
+  }
+
   function formatoDinero(valor) {
     return "$" + Number(valor || 0).toFixed(2);
   }
+
+  window.onload = function() {
+    const afiliadoGuardado = localStorage.getItem("beloura_afiliado");
+    const pinGuardado = localStorage.getItem("beloura_pin");
+
+    if (afiliadoGuardado && pinGuardado) {
+      document.getElementById("afiliadoInput").value = afiliadoGuardado;
+      document.getElementById("pinInput").value = pinGuardado;
+      cargarDashboard();
+    }
+  };
 </script>
 
 </body>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BELOURA Partner Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #111;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .login-box, .card, table {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 14px;
+      background: #111;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .card p {
+      font-size: 26px;
+      font-weight: bold;
+      margin: 10px 0 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow-x: auto;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .error {
+      color: red;
+      margin-top: 15px;
+    }
+
+    .status {
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>BELOURA Partner Dashboard</h1>
+  <p>Panel simple para afiliados</p>
+</header>
+
+<div class="container">
+
+  <div class="login-box" id="loginBox">
+    <h2>Ingreso de afiliado</h2>
+    <p>Ingresa tu código de afiliado.</p>
+
+    <input 
+      type="text" 
+      id="afiliadoInput" 
+      placeholder="Ejemplo: AF-EC-001"
+    />
+
+    <button onclick="cargarDashboard()">Ingresar</button>
+
+    <div class="error" id="errorMsg"></div>
+  </div>
+
+  <div id="dashboard" class="hidden">
+
+    <h2 id="tituloAfiliado"></h2>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Total libras</h3>
+        <p id="totalLibras">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Total vendido</h3>
+        <p id="totalVenta">$0</p>
+      </div>
+
+      <div class="card">
+        <h3>Pago a BELOURA</h3>
+        <p id="totalBeloura">$0</p>
+      </div>
+
+      <div class="card">
+        <h3>Ganancia afiliado</h3>
+        <p id="totalGanancia">$0</p>
+      </div>
+
+      <div class="card">
+        <h3>Total envíos</h3>
+        <p id="totalEnvios">0</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Mis envíos</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Cliente</th>
+            <th>Libras</th>
+            <th>Estado</th>
+            <th>Total cliente</th>
+            <th>Pago BELOURA</th>
+            <th>Ganancia</th>
+          </tr>
+        </thead>
+        <tbody id="tablaEnvios"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbxxlBZ7nRKi_H8bpD9miJ_w-N-bMEk2pZgf8N6ghiEBgPrflalePeIC71QIyQx8l1w2nw/exec";
+
+  async function cargarDashboard() {
+    const afiliado = document.getElementById("afiliadoInput").value.trim();
+    const errorMsg = document.getElementById("errorMsg");
+
+    errorMsg.textContent = "";
+
+    if (!afiliado) {
+      errorMsg.textContent = "Ingresa un código de afiliado.";
+      return;
+    }
+
+    try {
+      const url = `${API_URL}?action=partner&afiliado=${encodeURIComponent(afiliado)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (!data.ok) {
+        errorMsg.textContent = data.error || "No se pudo cargar el dashboard.";
+        return;
+      }
+
+      mostrarDashboard(data);
+
+    } catch (error) {
+      errorMsg.textContent = "Error conectando con el sistema.";
+      console.error(error);
+    }
+  }
+
+  function mostrarDashboard(data) {
+    document.getElementById("loginBox").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+
+    document.getElementById("tituloAfiliado").textContent = 
+      `Afiliado: ${data.afiliado}`;
+
+    document.getElementById("totalLibras").textContent = 
+      data.resumen.totalLibras + " lb";
+
+    document.getElementById("totalVenta").textContent = 
+      formatoDinero(data.resumen.totalVenta);
+
+    document.getElementById("totalBeloura").textContent = 
+      formatoDinero(data.resumen.totalBeloura);
+
+    document.getElementById("totalGanancia").textContent = 
+      formatoDinero(data.resumen.totalGanancia);
+
+    document.getElementById("totalEnvios").textContent = 
+      data.resumen.totalEnvios;
+
+    const tbody = document.getElementById("tablaEnvios");
+    tbody.innerHTML = "";
+
+    data.envios.forEach(envio => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${envio.codigo}</td>
+        <td>${envio.cliente}</td>
+        <td>${envio.libras}</td>
+        <td class="status">${envio.estado}</td>
+        <td>${formatoDinero(envio.totalCliente)}</td>
+        <td>${formatoDinero(envio.pagoBeloura)}</td>
+        <td>${formatoDinero(envio.ganancia)}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function formatoDinero(valor) {
+    return "$" + Number(valor || 0).toFixed(2);
+  }
+</script>
+
+</body>
+</html>

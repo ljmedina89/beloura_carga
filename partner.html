@@ -21,12 +21,12 @@
     }
 
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 30px auto;
       padding: 20px;
     }
 
-    .login-box, .card, table {
+    .login-box, .card, .table-card {
       background: white;
       border-radius: 14px;
       padding: 20px;
@@ -41,6 +41,7 @@
       margin-top: 10px;
       border: 1px solid #ccc;
       border-radius: 10px;
+      box-sizing: border-box;
     }
 
     button {
@@ -68,15 +69,19 @@
     }
 
     .card p {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: bold;
       margin: 10px 0 0;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      overflow-x: auto;
+      min-width: 1000px;
     }
 
     th, td {
@@ -84,6 +89,7 @@
       border-bottom: 1px solid #eee;
       text-align: left;
       font-size: 14px;
+      white-space: nowrap;
     }
 
     th {
@@ -121,7 +127,7 @@
     <input 
       type="text" 
       id="afiliadoInput" 
-      placeholder="Ejemplo: AF-EC-001"
+      placeholder="Ejemplo: BLR001"
     />
 
     <button onclick="cargarDashboard()">Ingresar</button>
@@ -158,25 +164,46 @@
         <h3>Total envíos</h3>
         <p id="totalEnvios">0</p>
       </div>
+
+      <div class="card">
+        <h3>Envíos activos</h3>
+        <p id="enviosActivos">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Envíos liquidados</h3>
+        <p id="enviosLiquidados">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Saldo pendiente BELOURA</h3>
+        <p id="saldoPendienteBeloura">$0</p>
+      </div>
     </div>
 
-    <div class="card">
+    <div class="table-card">
       <h2>Mis envíos</h2>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Código</th>
-            <th>Cliente</th>
-            <th>Libras</th>
-            <th>Estado</th>
-            <th>Total cliente</th>
-            <th>Pago BELOURA</th>
-            <th>Ganancia</th>
-          </tr>
-        </thead>
-        <tbody id="tablaEnvios"></tbody>
-      </table>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Cliente</th>
+              <th>Libras</th>
+              <th>Estado envío</th>
+              <th>Estado pago</th>
+              <th>Operación</th>
+              <th>Total cliente</th>
+              <th>Pago BELOURA</th>
+              <th>Pagado</th>
+              <th>Saldo</th>
+              <th>Ganancia</th>
+            </tr>
+          </thead>
+          <tbody id="tablaEnvios"></tbody>
+        </table>
+      </div>
     </div>
 
   </div>
@@ -184,10 +211,10 @@
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbxxlBZ7nRKi_H8bpD9miJ_w-N-bMEk2pZgf8N6ghiEBgPrflalePeIC71QIyQx8l1w2nw/exec";
+  const API_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT";
 
   async function cargarDashboard() {
-    const afiliado = document.getElementById("afiliadoInput").value.trim();
+    const afiliado = document.getElementById("afiliadoInput").value.trim().toUpperCase();
     const errorMsg = document.getElementById("errorMsg");
 
     errorMsg.textContent = "";
@@ -223,19 +250,28 @@
       `Afiliado: ${data.afiliado}`;
 
     document.getElementById("totalLibras").textContent = 
-      data.resumen.totalLibras + " lb";
+      (data.resumen.totalLibras || 0) + " lb";
 
     document.getElementById("totalVenta").textContent = 
-      formatoDinero(data.resumen.totalVenta);
+      formatoDinero(data.resumen.totalVenta || 0);
 
     document.getElementById("totalBeloura").textContent = 
-      formatoDinero(data.resumen.totalBeloura);
+      formatoDinero(data.resumen.totalBeloura || 0);
 
     document.getElementById("totalGanancia").textContent = 
-      formatoDinero(data.resumen.totalGanancia);
+      formatoDinero(data.resumen.totalGanancia || 0);
 
     document.getElementById("totalEnvios").textContent = 
-      data.resumen.totalEnvios;
+      data.resumen.totalEnvios || 0;
+
+    document.getElementById("enviosActivos").textContent =
+      data.resumen.enviosActivos || 0;
+
+    document.getElementById("enviosLiquidados").textContent =
+      data.resumen.enviosLiquidados || 0;
+
+    document.getElementById("saldoPendienteBeloura").textContent =
+      formatoDinero(data.resumen.saldoPendienteBeloura || 0);
 
     const tbody = document.getElementById("tablaEnvios");
     tbody.innerHTML = "";
@@ -244,13 +280,17 @@
       const tr = document.createElement("tr");
 
       tr.innerHTML = `
-        <td>${envio.codigo}</td>
-        <td>${envio.cliente}</td>
-        <td>${envio.libras}</td>
-        <td class="status">${envio.estado}</td>
-        <td>${formatoDinero(envio.totalCliente)}</td>
-        <td>${formatoDinero(envio.pagoBeloura)}</td>
-        <td>${formatoDinero(envio.ganancia)}</td>
+        <td>${envio.codigo || ""}</td>
+        <td>${envio.cliente || ""}</td>
+        <td>${envio.libras || 0}</td>
+        <td class="status">${envio.estado || ""}</td>
+        <td>${envio.estadoPago || "Pendiente"}</td>
+        <td>${envio.estadoOperacion || "Activo"}</td>
+        <td>${formatoDinero(envio.totalCliente || 0)}</td>
+        <td>${formatoDinero(envio.pagoBeloura || 0)}</td>
+        <td>${formatoDinero(envio.montoPagadoBeloura || 0)}</td>
+        <td>${formatoDinero(envio.saldoPendienteBeloura || 0)}</td>
+        <td>${formatoDinero(envio.ganancia || 0)}</td>
       `;
 
       tbody.appendChild(tr);

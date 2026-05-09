@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Afiliados BELOURA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f6f8;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .success {
+      text-align: center;
+      margin-top: 20px;
+      color: green;
+    }
+
+    .error {
+      color: red;
+      margin-top: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Únete a BELOURA</h1>
+
+  <input id="nombre" placeholder="Nombre completo">
+  <input id="telefono" placeholder="WhatsApp">
+  <input id="ciudad" placeholder="Ciudad">
+  <input id="provincia" placeholder="Provincia">
+  <input id="email" placeholder="Correo (opcional)">
+  <input id="precioVenta" placeholder="Precio por libra (ej: 7)">
+
+  <button onclick="registrar()">Registrarme</button>
+
+  <div class="success" id="success"></div>
+  <div class="error" id="error"></div>
+</div>
+
+<script>
+const API_URL = "TU_URL_DE_APPS_SCRIPT";
+
+async function registrar() {
+  const data = {
+    action: "registrarAfiliado",
+    nombre: document.getElementById("nombre").value,
+    telefono: document.getElementById("telefono").value,
+    ciudad: document.getElementById("ciudad").value,
+    provincia: document.getElementById("provincia").value,
+    email: document.getElementById("email").value,
+    precioBase: 4,
+    precioVenta: document.getElementById("precioVenta").value
+  };
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+
+    const json = await res.json();
+
+    if (json.ok) {
+      document.getElementById("success").innerHTML = `
+        ✅ Registro exitoso<br><br>
+        Tu código: <b>${json.codigoAfiliado}</b><br>
+        Tu PIN: <b>${json.pin}</b>
+      `;
+      document.getElementById("error").textContent = "";
+    } else {
+      document.getElementById("error").textContent = json.error;
+    }
+
+  } catch (err) {
+    document.getElementById("error").textContent = "Error de conexión";
+  }
+}
+</script>
+
+</body>
+</html>

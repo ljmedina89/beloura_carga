@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>BELOURA Admin</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f4f6f8;
+  margin: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.card p {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+th {
+  background: #111;
+  color: white;
+}
+
+button {
+  padding: 6px 10px;
+  border: none;
+  background: black;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.5);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-content {
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  width:300px;
+}
+
+input, select {
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>Dashboard Financiero</h1>
+
+  <div class="cards" id="cards"></div>
+
+  <h2>Cuentas por cobrar</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Envío</th>
+        <th>Afiliado</th>
+        <th>Cliente</th>
+        <th>Libras</th>
+        <th>Debe</th>
+        <th>Pagado</th>
+        <th>Saldo</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Registrar pago</h3>
+
+    <input id="monto" placeholder="Monto">
+
+    <select id="metodo">
+      <option>Zelle</option>
+      <option>Efectivo</option>
+      <option>Transferencia</option>
+      <option>Otro</option>
+    </select>
+
+    <input id="ref" placeholder="Referencia">
+
+    <button onclick="guardarPago()">Guardar</button>
+  </div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbzXSmIX44Vkze37yv7HhnkrDTpmT9NnOkliHfuu-CFnIEjDkmeCfnF6y0g6KQKCjOb5qw/exec";
+const SECRET = "Beloura2025@";
+
+let envioActual = "";
+
+async function cargar() {
+  const res = await fetch(API_URL, {
+    method:"POST",
+    body: JSON.stringify({
+      action:"adminDashboard",
+      secretKey: SECRET
+    })
+  });
+
+  const data = await res.json();
+
+  renderCards(data.resumen);
+  renderTabla(data.cuentasPorCobrar);
+}
+
+function renderCards(r) {
+  document.getElementById("cards").innerHTML = `
+    <div class="card"><h3>Total libras</h3><p>${r.totalLibras}</p></div>
+    <div class="card"><h3>Total vendido</h3><p>$${r.totalVendidoCliente.toFixed(2)}</p></div>
+    <div class="card"><h3>Debe BELOURA</h3><p>$${r.totalDebeBeloura.toFixed(2)}</p></div>
+    <div class="card"><h3>Pagado</h3><p>$${r.totalPagadoBeloura.toFixed(2)}</p></div>
+    <div class="card"><h3>Saldo</h3><p>$${r.saldoPendienteBeloura.toFixed(2)}</p></div>
+  `;
+}
+
+function renderTabla(lista) {
+  let html = "";
+
+  lista.forEach(e => {
+    html += `
+      <tr>
+        <td>${e.codigoEnvio}</td>
+        <td>${e.afiliadoNombre}</td>
+        <td>${e.cliente}</td>
+        <td>${e.libras}</td>
+        <td>$${e.pagoBeloura}</td>
+        <td>$${e.montoPagado}</td>
+        <td>$${e.saldo}</td>
+        <td>
+          <button onclick="abrirPago('${e.codigoEnvio}')">Pagar</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("tabla").innerHTML = html;
+}
+
+function abrirPago(codigo) {
+  envioActual = codigo;
+  document.getElementById("modal").style.display = "flex";
+}
+
+async function guardarPago() {
+  const monto = document.getElementById("monto").value;
+  const metodo = document.getElementById("metodo").value;
+  const ref = document.getElementById("ref").value;
+
+  await fetch(API_URL, {
+    method:"POST",
+    body: JSON.stringify({
+      action:"registrarPagoEnvio",
+      secretKey: SECRET,
+      CodigoEnvio: envioActual,
+      MontoPago: Number(monto),
+      MetodoPago: metodo,
+      Referencia: ref
+    })
+  });
+
+  document.getElementById("modal").style.display = "none";
+  cargar();
+}
+
+cargar();
+</script>
+
+</body>
+</html>

@@ -3,148 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>BELOURA Admin</title>
+<title>BELOURA Admin Financiero</title>
 
 <style>
-body {
-  font-family: Arial;
-  background: #f4f6f8;
-  margin: 0;
-}
-
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px;
-}
-
-h1 {
-  margin-bottom: 10px;
-}
-
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.card {
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-
-.card h3 {
-  margin: 0;
-  font-size: 14px;
-  color: #666;
-}
-
-.card p {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-th, td {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  text-align: left;
-}
-
-th {
-  background: #111;
-  color: white;
-}
-
-button {
-  padding: 6px 10px;
-  border: none;
-  background: black;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.modal {
-  position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: rgba(0,0,0,0.5);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
-
-.modal-content {
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  width:300px;
-}
-
-input, select {
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-}
+body{font-family:Arial;background:#f4f6f8;margin:0;color:#111}
+.container{max-width:1300px;margin:auto;padding:25px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:15px;margin-bottom:25px}
+.card{background:white;padding:18px;border-radius:14px;box-shadow:0 5px 15px rgba(0,0,0,.08)}
+.card h3{font-size:14px;color:#666;margin:0}
+.card p{font-size:22px;font-weight:bold;margin:12px 0 0}
+.tabs{display:flex;gap:10px;margin:20px 0;flex-wrap:wrap}
+.tabs button{background:#111;color:white;border:none;border-radius:10px;padding:10px 15px;cursor:pointer}
+.section{display:none}
+.section.active{display:block}
+table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;margin-top:10px}
+th,td{padding:11px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
+th{background:#111;color:white}
+.btn{background:#111;color:white;border:none;border-radius:8px;padding:7px 10px;cursor:pointer}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center}
+.modal-content{background:white;padding:22px;border-radius:14px;width:340px}
+input,select{width:100%;padding:11px;margin-top:10px;border:1px solid #ccc;border-radius:8px}
 </style>
 </head>
 
 <body>
-
 <div class="container">
-  <h1>Dashboard Financiero</h1>
+  <h1>BELOURA • Dashboard Financiero</h1>
 
   <div class="cards" id="cards"></div>
 
-  <h2>Cuentas por cobrar</h2>
+  <div class="tabs">
+    <button onclick="showSection('paquetes')">Todos los paquetes</button>
+    <button onclick="showSection('afiliados')">Afiliados</button>
+    <button onclick="showSection('cobrar')">Cuentas por cobrar</button>
+    <button onclick="showSection('pagadas')">Cuentas pagadas</button>
+  </div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Envío</th>
-        <th>Afiliado</th>
-        <th>Cliente</th>
-        <th>Libras</th>
-        <th>Debe</th>
-        <th>Pagado</th>
-        <th>Saldo</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody id="tabla"></tbody>
-  </table>
+  <section id="paquetes" class="section active">
+    <h2>Todos los paquetes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Envío</th><th>Guía</th><th>Afiliado</th><th>Cliente</th>
+          <th>Libras</th><th>Total cliente</th><th>Pago BELOURA</th>
+          <th>Pagado</th><th>Saldo</th><th>Estado</th><th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaPaquetes"></tbody>
+    </table>
+  </section>
+
+  <section id="afiliados" class="section">
+    <h2>Resumen por afiliado</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Afiliado</th><th>Nombre</th><th>Envíos</th><th>Libras</th>
+          <th>Total vendido</th><th>Debe BELOURA</th><th>Pagado</th>
+          <th>Saldo</th><th>Ganancia afiliado</th>
+        </tr>
+      </thead>
+      <tbody id="tablaAfiliados"></tbody>
+    </table>
+  </section>
+
+  <section id="cobrar" class="section">
+    <h2>Cuentas por cobrar</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Envío</th><th>Afiliado</th><th>Cliente</th><th>Libras</th>
+          <th>Debe</th><th>Pagado</th><th>Saldo</th><th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaCobrar"></tbody>
+    </table>
+  </section>
+
+  <section id="pagadas" class="section">
+    <h2>Cuentas pagadas</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Envío</th><th>Afiliado</th><th>Cliente</th><th>Libras</th>
+          <th>Debe</th><th>Pagado</th><th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="tablaPagadas"></tbody>
+    </table>
+  </section>
 </div>
 
 <div class="modal" id="modal">
   <div class="modal-content">
     <h3>Registrar pago</h3>
-
-    <input id="monto" placeholder="Monto">
-
+    <input id="monto" type="number" step="0.01" placeholder="Monto pagado">
     <select id="metodo">
       <option>Zelle</option>
       <option>Efectivo</option>
       <option>Transferencia</option>
+      <option>Cash App</option>
       <option>Otro</option>
     </select>
-
     <input id="ref" placeholder="Referencia">
-
-    <button onclick="guardarPago()">Guardar</button>
+    <button class="btn" onclick="guardarPago()">Guardar pago</button>
+    <button class="btn" style="background:#777;margin-top:10px" onclick="cerrarModal()">Cancelar</button>
   </div>
 </div>
 
@@ -153,83 +116,148 @@ const API_URL = "https://script.google.com/macros/s/AKfycbzXSmIX44Vkze37yv7Hhnkr
 const SECRET = "Beloura2025@";
 
 let envioActual = "";
+let dataGlobal = null;
 
-async function cargar() {
-  const res = await fetch(API_URL, {
+function money(v){ return "$" + Number(v || 0).toFixed(2); }
+function num(v){ return Number(v || 0).toFixed(2); }
+
+async function cargar(){
+  const res = await fetch(API_URL,{
     method:"POST",
-    body: JSON.stringify({
-      action:"adminDashboard",
-      secretKey: SECRET
-    })
+    body:JSON.stringify({action:"adminDashboard",secretKey:SECRET})
   });
 
   const data = await res.json();
+  if(!data.ok){ alert(data.error || "Error cargando dashboard"); return; }
 
+  dataGlobal = data;
   renderCards(data.resumen);
-  renderTabla(data.cuentasPorCobrar);
+  renderPaquetes([...data.cuentasPorCobrar, ...data.cuentasPagadas]);
+  renderAfiliados(data.porAfiliado);
+  renderCobrar(data.cuentasPorCobrar);
+  renderPagadas(data.cuentasPagadas);
 }
 
-function renderCards(r) {
+function renderCards(r){
   document.getElementById("cards").innerHTML = `
-    <div class="card"><h3>Total libras</h3><p>${r.totalLibras}</p></div>
-    <div class="card"><h3>Total vendido</h3><p>$${r.totalVendidoCliente.toFixed(2)}</p></div>
-    <div class="card"><h3>Debe BELOURA</h3><p>$${r.totalDebeBeloura.toFixed(2)}</p></div>
-    <div class="card"><h3>Pagado</h3><p>$${r.totalPagadoBeloura.toFixed(2)}</p></div>
-    <div class="card"><h3>Saldo</h3><p>$${r.saldoPendienteBeloura.toFixed(2)}</p></div>
+    <div class="card"><h3>Total envíos</h3><p>${r.totalEnvios}</p></div>
+    <div class="card"><h3>Total libras</h3><p>${num(r.totalLibras)} lb</p></div>
+    <div class="card"><h3>Total vendido</h3><p>${money(r.totalVendidoCliente)}</p></div>
+    <div class="card"><h3>Debe BELOURA</h3><p>${money(r.totalDebeBeloura)}</p></div>
+    <div class="card"><h3>Pagado</h3><p>${money(r.totalPagadoBeloura)}</p></div>
+    <div class="card"><h3>Saldo pendiente</h3><p>${money(r.saldoPendienteBeloura)}</p></div>
+    <div class="card"><h3>Ganancia afiliados</h3><p>${money(r.gananciaAfiliados)}</p></div>
+    <div class="card"><h3>Pagos parciales</h3><p>${r.enviosParciales}</p></div>
   `;
 }
 
-function renderTabla(lista) {
-  let html = "";
-
-  lista.forEach(e => {
-    html += `
-      <tr>
-        <td>${e.codigoEnvio}</td>
-        <td>${e.afiliadoNombre}</td>
-        <td>${e.cliente}</td>
-        <td>${e.libras}</td>
-        <td>$${e.pagoBeloura}</td>
-        <td>$${e.montoPagado}</td>
-        <td>$${e.saldo}</td>
-        <td>
-          <button onclick="abrirPago('${e.codigoEnvio}')">Pagar</button>
-        </td>
-      </tr>
-    `;
-  });
-
-  document.getElementById("tabla").innerHTML = html;
+function renderPaquetes(lista){
+  document.getElementById("tablaPaquetes").innerHTML = lista.map(e=>`
+    <tr>
+      <td>${e.codigoEnvio}</td>
+      <td>${e.codigoGuia || ""}</td>
+      <td>${e.afiliadoNombre || e.afiliadoId || "Venta directa"}</td>
+      <td>${e.cliente || ""}</td>
+      <td>${e.libras}</td>
+      <td>${money(e.totalCliente)}</td>
+      <td>${money(e.pagoBeloura)}</td>
+      <td>${money(e.montoPagado)}</td>
+      <td>${money(e.saldo)}</td>
+      <td>${e.estadoPago}</td>
+      <td>${e.saldo > 0 ? `<button class="btn" onclick="abrirPago('${e.codigoEnvio}')">Registrar pago</button>` : "Pagado"}</td>
+    </tr>
+  `).join("");
 }
 
-function abrirPago(codigo) {
+function renderAfiliados(lista){
+  document.getElementById("tablaAfiliados").innerHTML = lista.map(a=>`
+    <tr>
+      <td>${a.afiliadoId}</td>
+      <td>${a.afiliadoNombre}</td>
+      <td>${a.totalEnvios}</td>
+      <td>${num(a.totalLibras)}</td>
+      <td>${money(a.totalVendidoCliente)}</td>
+      <td>${money(a.totalDebeBeloura)}</td>
+      <td>${money(a.totalPagadoBeloura)}</td>
+      <td>${money(a.saldoPendienteBeloura)}</td>
+      <td>${money(a.gananciaAfiliado)}</td>
+    </tr>
+  `).join("");
+}
+
+function renderCobrar(lista){
+  document.getElementById("tablaCobrar").innerHTML = lista.map(e=>`
+    <tr>
+      <td>${e.codigoEnvio}</td>
+      <td>${e.afiliadoNombre || e.afiliadoId}</td>
+      <td>${e.cliente}</td>
+      <td>${e.libras}</td>
+      <td>${money(e.pagoBeloura)}</td>
+      <td>${money(e.montoPagado)}</td>
+      <td>${money(e.saldo)}</td>
+      <td><button class="btn" onclick="abrirPago('${e.codigoEnvio}')">Registrar pago</button></td>
+    </tr>
+  `).join("");
+}
+
+function renderPagadas(lista){
+  document.getElementById("tablaPagadas").innerHTML = lista.map(e=>`
+    <tr>
+      <td>${e.codigoEnvio}</td>
+      <td>${e.afiliadoNombre || e.afiliadoId}</td>
+      <td>${e.cliente}</td>
+      <td>${e.libras}</td>
+      <td>${money(e.pagoBeloura)}</td>
+      <td>${money(e.montoPagado)}</td>
+      <td>${e.estadoPago}</td>
+    </tr>
+  `).join("");
+}
+
+function showSection(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function abrirPago(codigo){
   envioActual = codigo;
   document.getElementById("modal").style.display = "flex";
 }
 
-async function guardarPago() {
-  const monto = document.getElementById("monto").value;
+function cerrarModal(){
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("monto").value = "";
+  document.getElementById("ref").value = "";
+}
+
+async function guardarPago(){
+  const monto = Number(document.getElementById("monto").value || 0);
   const metodo = document.getElementById("metodo").value;
   const ref = document.getElementById("ref").value;
 
-  await fetch(API_URL, {
+  if(monto <= 0){ alert("Ingresa un monto válido"); return; }
+
+  const res = await fetch(API_URL,{
     method:"POST",
-    body: JSON.stringify({
+    body:JSON.stringify({
       action:"registrarPagoEnvio",
-      secretKey: SECRET,
-      CodigoEnvio: envioActual,
-      MontoPago: Number(monto),
-      MetodoPago: metodo,
-      Referencia: ref
+      secretKey:SECRET,
+      CodigoEnvio:envioActual,
+      MontoPago:monto,
+      MetodoPago:metodo,
+      Referencia:ref,
+      RegistradoPor:"Leonardo"
     })
   });
 
-  document.getElementById("modal").style.display = "none";
+  const data = await res.json();
+  if(!data.ok){ alert(data.error || "Error registrando pago"); return; }
+
+  cerrarModal();
   cargar();
 }
 
 cargar();
 </script>
-
 </body>
 </html>

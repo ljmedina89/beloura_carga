@@ -6,31 +6,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: #f4f6f8;
       margin: 0;
+      color: #111;
     }
 
     .container {
-      max-width: 500px;
-      margin: 50px auto;
+      max-width: 520px;
+      margin: 45px auto;
       background: white;
       padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      border-radius: 18px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.1);
     }
 
     h1 {
       text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: bold;
     }
 
     input {
       width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 8px;
+      padding: 13px;
+      margin-top: 6px;
+      border-radius: 10px;
       border: 1px solid #ccc;
+      font-size: 15px;
     }
 
     button {
@@ -40,79 +61,208 @@
       background: black;
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .secondary {
+      background: #444;
+      margin-top: 10px;
     }
 
     .success {
-      text-align: center;
       margin-top: 20px;
-      color: green;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #10b981;
+      padding: 15px;
+      border-radius: 12px;
+      display: none;
+      text-align: center;
+      line-height: 1.5;
     }
 
     .error {
-      color: red;
-      margin-top: 15px;
+      margin-top: 20px;
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #ef4444;
+      padding: 15px;
+      border-radius: 12px;
+      display: none;
       text-align: center;
+      line-height: 1.5;
+    }
+
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 28px 0;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+      margin-top: 10px;
     }
   </style>
 </head>
+
 <body>
 
 <div class="container">
   <h1>Únete a BELOURA</h1>
+  <p class="subtitle">Regístrate como afiliado y recibe tu código + PIN de acceso.</p>
 
-  <input id="nombre" placeholder="Nombre completo">
-  <input id="telefono" placeholder="WhatsApp">
-  <input id="ciudad" placeholder="Ciudad">
-  <input id="provincia" placeholder="Provincia">
-  <input id="email" placeholder="Correo (opcional)">
-  <input id="precioVenta" placeholder="Precio por libra (ej: 7)">
+  <label>Nombre completo</label>
+  <input id="nombre" placeholder="Ej: María Pérez">
+
+  <label>Cédula / Documento</label>
+  <input id="cedula" placeholder="Ej: 1200000000">
+
+  <label>WhatsApp</label>
+  <input id="telefono" placeholder="Ej: 0999999999">
+
+  <label>Ciudad</label>
+  <input id="ciudad" placeholder="Ej: Babahoyo">
+
+  <label>Provincia</label>
+  <input id="provincia" placeholder="Ej: Los Ríos">
+
+  <label>Correo</label>
+  <input id="email" type="email" placeholder="Ej: correo@email.com">
+
+  <label>Precio por libra que deseas vender</label>
+  <input id="precioVenta" type="number" step="0.01" placeholder="Ej: 7">
 
   <button onclick="registrar()">Registrarme</button>
 
-  <div class="success" id="success"></div>
-  <div class="error" id="error"></div>
+  <div id="success" class="success"></div>
+  <div id="error" class="error"></div>
+
+  <div class="divider"></div>
+
+  <h3 style="text-align:center;">¿Olvidaste tu PIN?</h3>
+  <p class="small">Ingresa tu cédula y correo registrados para generar un nuevo PIN.</p>
+
+  <button class="secondary" onclick="recuperarPin()">Recuperar PIN</button>
 </div>
 
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwZ7l2Yef6gXTG6RC0G6xMJ3Lslhup2EiXp9ePt8_FmO1JjXIFD69WwoG8OXNIwqC_J6A/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbxrTqDHb90QZWTs23D6nyyIQcvqslCvmkigeTZxkgn_KVf-Wy5tVM8uvB-R4B8cY-JtfQ/exec";
 
-async function registrar() {
-  const data = {
-    action: "registrarAfiliado",
-    nombre: document.getElementById("nombre").value,
-    telefono: document.getElementById("telefono").value,
-    ciudad: document.getElementById("ciudad").value,
-    provincia: document.getElementById("provincia").value,
-    email: document.getElementById("email").value,
-    precioBase: 4,
-    precioVenta: document.getElementById("precioVenta").value
-  };
+  function mostrarExito(msg) {
+    const success = document.getElementById("success");
+    const error = document.getElementById("error");
 
-  try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify(data)
-    });
+    success.innerHTML = msg;
+    success.style.display = "block";
+    error.style.display = "none";
+  }
 
-    const json = await res.json();
+  function mostrarError(msg) {
+    const success = document.getElementById("success");
+    const error = document.getElementById("error");
 
-    if (json.ok) {
-      document.getElementById("success").innerHTML = `
-        ✅ Registro exitoso<br><br>
-        Tu código: <b>${json.codigoAfiliado}</b><br>
-        Tu PIN: <b>${json.pin}</b>
-      `;
-      document.getElementById("error").textContent = "";
-    } else {
-      document.getElementById("error").textContent = json.error;
+    error.innerHTML = msg;
+    error.style.display = "block";
+    success.style.display = "none";
+  }
+
+  async function registrar() {
+    const nombre = document.getElementById("nombre").value.trim();
+    const cedula = document.getElementById("cedula").value.trim();
+    const telefono = document.getElementById("telefono").value.trim();
+    const ciudad = document.getElementById("ciudad").value.trim();
+    const provincia = document.getElementById("provincia").value.trim();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const precioVenta = document.getElementById("precioVenta").value.trim();
+
+    if (!nombre || !cedula || !telefono || !ciudad || !provincia || !email) {
+      mostrarError("Completa todos los campos obligatorios.");
+      return;
     }
 
-  } catch (err) {
-    document.getElementById("error").textContent = "Error de conexión";
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "registrarAfiliado",
+          nombre,
+          cedula,
+          telefono,
+          ciudad,
+          provincia,
+          email,
+          precioBase: 5,
+          precioVenta: precioVenta || 7,
+          observacion: "Registro desde formulario web"
+        })
+      });
+
+      const json = await res.json();
+
+      if (json.ok) {
+        mostrarExito(`
+          ✅ Registro exitoso<br><br>
+          Tu código de afiliado:<br>
+          <strong>${json.codigoAfiliado}</strong><br><br>
+          Tu PIN de acceso:<br>
+          <strong>${json.pin}</strong><br><br>
+          Guarda esta información para entrar a tu dashboard.
+        `);
+      } else {
+        mostrarError(json.error || "No se pudo registrar el afiliado.");
+      }
+
+    } catch (err) {
+      console.error(err);
+      mostrarError("Error de conexión con el sistema.");
+    }
   }
-}
+
+  async function recuperarPin() {
+    const cedula = document.getElementById("cedula").value.trim();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+
+    if (!cedula || !email) {
+      mostrarError("Para recuperar tu PIN debes ingresar cédula y correo.");
+      return;
+    }
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "recuperarPinAfiliado",
+          cedula,
+          email
+        })
+      });
+
+      const json = await res.json();
+
+      if (json.ok) {
+        mostrarExito(`
+          ✅ PIN recuperado correctamente<br><br>
+          Código de afiliado:<br>
+          <strong>${json.codigoAfiliado}</strong><br><br>
+          Nuevo PIN:<br>
+          <strong>${json.pin}</strong><br><br>
+          Usa este PIN para ingresar a tu dashboard.
+        `);
+      } else {
+        mostrarError(json.error || "No se pudo recuperar el PIN.");
+      }
+
+    } catch (err) {
+      console.error(err);
+      mostrarError("Error de conexión con el sistema.");
+    }
+  }
 </script>
 
 </body>

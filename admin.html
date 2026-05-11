@@ -6,23 +6,166 @@
 <title>BELOURA Admin Financiero</title>
 
 <style>
-body{font-family:Arial;background:#f4f6f8;margin:0;color:#111}
-.container{max-width:1300px;margin:auto;padding:25px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:15px;margin-bottom:25px}
-.card{background:white;padding:18px;border-radius:14px;box-shadow:0 5px 15px rgba(0,0,0,.08)}
-.card h3{font-size:14px;color:#666;margin:0}
-.card p{font-size:22px;font-weight:bold;margin:12px 0 0}
-.tabs{display:flex;gap:10px;margin:20px 0;flex-wrap:wrap}
-.tabs button{background:#111;color:white;border:none;border-radius:10px;padding:10px 15px;cursor:pointer}
-.section{display:none}
-.section.active{display:block}
-table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;margin-top:10px}
-th,td{padding:11px;border-bottom:1px solid #eee;text-align:left;font-size:14px}
-th{background:#111;color:white}
-.btn{background:#111;color:white;border:none;border-radius:8px;padding:7px 10px;cursor:pointer}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center}
-.modal-content{background:white;padding:22px;border-radius:14px;width:340px}
-input,select{width:100%;padding:11px;margin-top:10px;border:1px solid #ccc;border-radius:8px}
+body{
+  font-family:'Inter',sans-serif;
+  background: linear-gradient(135deg,#0f172a,#1e293b);
+  margin:0;
+  color:#e5e7eb;
+}
+
+.container{
+  max-width:1300px;
+  margin:auto;
+  padding:30px;
+}
+
+/* TITULO */
+h1{
+  font-size:28px;
+  font-weight:600;
+  margin-bottom:20px;
+}
+
+/* CARDS */
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:18px;
+  margin-bottom:30px;
+}
+
+.card{
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  border:1px solid rgba(255,255,255,0.1);
+  padding:20px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,.3);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 15px 30px rgba(0,0,0,.4);
+}
+
+.card h3{
+  font-size:13px;
+  color:#94a3b8;
+  margin:0;
+}
+
+.card p{
+  font-size:22px;
+  font-weight:600;
+  margin-top:10px;
+  color:#f8fafc;
+}
+
+/* TABS */
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+}
+
+.tabs button{
+  background: linear-gradient(135deg,#2563eb,#7c3aed);
+  border:none;
+  padding:10px 16px;
+  border-radius:10px;
+  color:white;
+  font-weight:500;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.tabs button:hover{
+  opacity:.85;
+}
+
+/* SECCIONES */
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
+/* TABLAS */
+table{
+  width:100%;
+  border-collapse:collapse;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(8px);
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 10px 25px rgba(0,0,0,.3);
+}
+
+th{
+  background: linear-gradient(135deg,#1e293b,#0f172a);
+  color:#e2e8f0;
+  padding:12px;
+  font-size:13px;
+  text-align:left;
+}
+
+td{
+  padding:11px;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  font-size:13px;
+}
+
+tr:hover{
+  background: rgba(255,255,255,0.03);
+}
+
+/* BOTONES */
+.btn{
+  background: linear-gradient(135deg,#22c55e,#16a34a);
+  border:none;
+  padding:7px 12px;
+  border-radius:8px;
+  color:white;
+  cursor:pointer;
+  font-size:12px;
+  transition:.2s;
+}
+
+.btn:hover{
+  opacity:.85;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal-content{
+  background:#0f172a;
+  padding:25px;
+  border-radius:16px;
+  width:350px;
+  box-shadow:0 20px 40px rgba(0,0,0,.5);
+}
+
+input,select{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  border:1px solid #334155;
+  background:#020617;
+  color:white;
+}
 </style>
 </head>
 

@@ -361,32 +361,91 @@ input,select,textarea{
 
     <!-- ENVIOS -->
     <section id="envios" class="section">
-      <div class="panel">
-        <h2>Envíos</h2>
-        <p class="placeholder">
-          Aquí integraremos el formulario completo de registro de envíos:
-          afiliado, remitente, destinatario, tracking Enviworld, descripción,
-          peso, valor declarado y generación de PDF.
-        </p>
-        <button class="btn blue">Registrar nuevo envío</button>
-      </div>
+  <div class="panel">
+    <h2>Registrar envío</h2>
 
-      <div class="panel">
-        <h2>Todos los paquetes</h2>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Envío</th><th>Guía</th><th>Afiliado</th><th>Cliente</th>
-                <th>Libras</th><th>Total cliente</th><th>Pago BELOURA</th>
-                <th>Pagado</th><th>Saldo</th><th>Estado</th><th>Acción</th>
-              </tr>
-            </thead>
-            <tbody id="tablaPaquetesEnvios"></tbody>
-          </table>
+    <form id="formEnvio">
+      <div class="grid-2">
+        <div>
+          <label>Afiliado / vendedor</label>
+          <select id="SelectAfiliado" name="AFILIADO_ID">
+            <option value="">Venta directa BELOURA</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Tracking interno Enviworld</label>
+          <input id="TrackingInterno" name="TrackingInterno" placeholder="Tracking externo / Enviworld">
         </div>
       </div>
-    </section>
+
+      <div class="grid-2" style="margin-top:16px;">
+        <div>
+          <label>Remitente</label>
+          <select id="SelectRemitente" required>
+            <option value="">Seleccionar remitente...</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Destinatario</label>
+          <select id="SelectDestinatario" required>
+            <option value="">Seleccionar destinatario...</option>
+          </select>
+        </div>
+      </div>
+
+      <input type="hidden" id="CodigoRemitente" name="CodigoRemitente">
+      <input type="hidden" id="CodigoDestinatario" name="CodigoDestinatario">
+      <input type="hidden" id="CodigoCliente" name="CodigoCliente">
+
+      <h3>Datos remitente</h3>
+      <div class="grid-2">
+        <input id="RemitenteNombre" name="RemitenteNombre" placeholder="Nombre remitente">
+        <input id="RemitenteTelefono" name="RemitenteTelefono" placeholder="Teléfono remitente">
+      </div>
+
+      <h3>Datos destinatario</h3>
+      <div class="grid-2">
+        <input id="DestNombre" name="DestNombre" placeholder="Nombre destinatario">
+        <input id="DestCedula" name="DestCedula" placeholder="Cédula destinatario">
+        <input id="DestTelefono" name="DestTelefono" placeholder="Teléfono destinatario">
+        <input id="CiudadDestino" name="CiudadDestino" placeholder="Ciudad destino">
+      </div>
+
+      <input id="DestDireccion" name="DestDireccion" placeholder="Dirección completa" style="margin-top:12px;">
+
+      <h3>Paquete</h3>
+      <div class="grid-2">
+        <input id="Descripcion" name="Descripcion" placeholder="Descripción del paquete" required>
+        <input id="PesoLb" name="PesoLb" type="number" step="0.01" placeholder="Peso lb" required>
+        <input id="ValorDeclarado" name="ValorDeclarado" type="number" step="0.01" placeholder="Valor declarado" required>
+
+        <select id="Tipo" name="Tipo" required>
+          <option value="">Tipo de envío</option>
+          <option value="4x4">4x4</option>
+          <option value="Ropa">Ropa</option>
+          <option value="Zapatos">Zapatos</option>
+          <option value="Electronico">Electrónico</option>
+          <option value="Mixto">Mixto</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+
+      <div class="grid-2" style="margin-top:12px;">
+        <select id="EstadoInicial" name="EstadoInicial">
+          <option value="Recibido en bodega NY">Recibido en bodega NY</option>
+          <option value="Recibido en Arlington TX">Recibido en Arlington TX</option>
+        </select>
+
+        <select id="CodigoGuiaSelect" name="CodigoGuiaSelect">
+          <option value="">Sin consolidar</option>
+        </select>
+      </div>
+
+      <textarea id="Observacion" name="Observacion" placeholder="Observación interna" style="margin-top:12px;"></textarea>
+
+      <button class="btn blue" type="submit" style="margin-top:16px;">Guardar envío</button
 
     <!-- CLIENTES -->
     <section id="clientes" class="section">

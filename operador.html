@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BELOURA Operador</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7eb}.app{min-height:100vh;background:radial-gradient(circle at top right,rgba(37,99,235,.20),transparent 34%),radial-gradient(circle at bottom left,rgba(124,58,237,.16),transparent 35%),#020617}.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}.login-card{width:100%;max-width:440px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:24px;padding:28px;box-shadow:0 30px 70px rgba(0,0,0,.45)}.brand{font-size:26px;font-weight:900;margin-bottom:6px}.brand span{color:#38bdf8}.muted{color:#94a3b8}.small{font-size:.8rem}.login-card h1{font-size:20px;margin:20px 0 8px}label{display:block;font-size:.82rem;margin-bottom:5px;color:#cbd5e1;font-weight:700}input,select,textarea{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#020617;color:#e5e7eb;margin-top:8px}input:focus,select:focus,textarea:focus{outline:none;border-color:#38bdf8;box-shadow:0 0 0 1px #38bdf855}textarea{min-height:70px;resize:vertical}.btn{border:0;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:900;color:white;background:linear-gradient(135deg,#22c55e,#16a34a)}.btn.secondary{background:linear-gradient(135deg,#64748b,#334155)}.btn.blue{background:linear-gradient(135deg,#0ea5e9,#2563eb)}.btn.red{background:linear-gradient(135deg,#ef4444,#b91c1c)}.btn:disabled{opacity:.6;cursor:not-allowed}.alert{margin-top:12px;border-radius:12px;padding:10px 12px;font-size:.85rem}.alert-ok{background:#022c22;border:1px solid #16a34a;color:#bbf7d0}.alert-error{background:#450a0a;border:1px solid #b91c1c;color:#fecaca}.layout{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.sidebar{background:linear-gradient(180deg,#020617,#0f172a);border-right:1px solid rgba(255,255,255,.08);padding:24px 18px;position:sticky;top:0;height:100vh}.sidebar .brand{font-size:22px}.operator-box{margin-top:16px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.05);border-radius:16px;padding:12px;color:#cbd5e1;font-size:.85rem}.menu{margin-top:24px;display:flex;flex-direction:column;gap:8px}.menu button{width:100%;text-align:left;border:0;padding:12px 14px;border-radius:14px;background:transparent;color:#cbd5e1;cursor:pointer;font-weight:700}.menu button.active,.menu button:hover{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}.main{padding:28px}.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px}.topbar h1{margin:0;font-size:28px}.topbar p{margin:6px 0 0;color:#94a3b8}.badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);padding:8px 14px;border-radius:999px;color:#cbd5e1;font-size:13px}.section{display:none}.section.active{display:block}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:20px;padding:18px;box-shadow:0 18px 35px rgba(0,0,0,.25)}.card h3{color:#94a3b8;margin:0;font-size:13px}.card p{margin:12px 0 0;font-size:24px;font-weight:900}.card.blue{border-left:4px solid #38bdf8}.card.green{border-left:4px solid #22c55e}.card.orange{border-left:4px solid #f59e0b}.card.red{border-left:4px solid #ef4444}.panel{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);border-radius:22px;padding:22px;margin-bottom:24px;box-shadow:0 18px 35px rgba(0,0,0,.22)}.panel h2{margin-top:0}.section-title{font-size:.9rem;font-weight:900;margin:18px 0 8px;text-transform:uppercase;letter-spacing:.06em;color:#94a3b8}.grid{display:grid;gap:12px}.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}.flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.info-box{border-radius:12px;border:1px dashed #334155;padding:10px 12px;font-size:.8rem;color:#9ca3af;min-height:58px;background:rgba(2,6,23,.45)}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:900px}th{background:rgba(15,23,42,.95);color:#e2e8f0;padding:12px;font-size:13px;text-align:left}td{padding:12px;border-bottom:1px solid rgba(255,255,255,.07);font-size:13px;color:#cbd5e1;vertical-align:top}tr:hover{background:rgba(255,255,255,.04)}.status{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:900}.status.ok{background:#064e3b;color:#bbf7d0}.status.warn{background:#78350f;color:#fde68a}.status.bad{background:#7f1d1d;color:#fecaca}.status.info{background:#1e3a8a;color:#bfdbfe}@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{height:auto;position:relative}.menu{flex-direction:row;overflow-x:auto}.menu button{min-width:150px}.grid-2,.grid-3{grid-template-columns:1fr}.topbar{align-items:flex-start;gap:12px;flex-direction:column}}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div class="app">
+
+  <div id="loginView" class="login-wrap">
+    <div class="login-card">
+      <div class="brand">BELOURA <span>Operador</span></div>
+      <div class="muted">Acceso privado para registrar clientes, paquetes y guías.</div>
+      <h1>Ingresar al panel</h1>
+      <label for="loginOperador">Código de operador</label>
+      <input id="loginOperador" placeholder="Ej: OP001" autocomplete="username">
+      <label for="loginPin" style="margin-top:12px;">PIN</label>
+      <input id="loginPin" type="password" placeholder="PIN de acceso" autocomplete="current-password">
+      <button class="btn blue" id="btnLogin" style="width:100%;margin-top:18px;" onclick="loginOperador()">Entrar</button>
+      <div id="loginAlert" class="alert" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div id="panelView" class="layout" style="display:none;">
+    <aside class="sidebar">
+      <div class="brand">BELOURA <span>Operador</span></div>
+      <small class="muted">Panel limitado para registro operativo.</small>
+      <div class="operator-box" id="operatorBox">Operador activo</div>
+      <div class="menu">
+        <button class="active" onclick="showModule('inicio', this)">🏠 Inicio</button>
+        <button onclick="showModule('clientes', this)">👥 Clientes</button>
+        <button onclick="showModule('envios', this)">📦 Registrar envío</button>
+        <button onclick="showModule('misenvios', this)">📋 Mis envíos</button>
+        <button onclick="showModule('tracking', this)">🚚 Tracking</button>
+        <button onclick="cerrarSesion()">🔒 Salir</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div><h1 id="pageTitle">Inicio</h1><p id="pageSubtitle">Resumen operativo de tus registros.</p></div>
+        <div class="badge">Acceso operador</div>
+      </div>
+
+      <section id="inicio" class="section active">
+        <div class="cards" id="homeCards"></div>
+        <div class="panel"><h2>Notas para el operador</h2><p class="muted">Registra clientes y envíos con datos completos. Los pagos y saldos globales son controlados por administración BELOURA.</p></div>
+      </section>
+
+      <section id="clientes" class="section">
+        <div class="panel">
+          <h2>Registrar cliente</h2>
+          <form id="formCliente">
+            <div class="section-title">Datos del cliente / persona</div>
+            <div class="grid grid-2"><div><label for="cliNombre">Nombre completo</label><input id="cliNombre" name="NombreCompleto" required></div><div><label for="cliCedula">Cédula</label><input id="cliCedula" name="Cedula" required></div></div>
+            <div class="grid grid-3" style="margin-top:10px;"><div><label for="cliTelefono">Teléfono</label><input id="cliTelefono" name="Telefono" required></div><div><label for="cliWhatsApp">WhatsApp</label><input id="cliWhatsApp" name="WhatsApp"></div><div><label for="cliEmail">Email</label><input id="cliEmail" name="Email"></div></div>
+            <div class="grid grid-2" style="margin-top:10px;"><div><label for="cliCiudad">Ciudad residencia</label><input id="cliCiudad" name="CiudadDestino" required placeholder="Babahoyo, Quito, Guayaquil..."></div><div><label for="cliDireccion">Dirección</label><input id="cliDireccion" name="Direccion" required></div></div>
+            <div style="margin-top:10px;"><label for="cliNotas">Notas</label><textarea id="cliNotas" name="Notas" placeholder="Cliente recomendado, frecuencia, etc."></textarea></div>
+            <div class="section-title">Acciones</div>
+            <div class="flex"><button class="btn" id="btnGuardarCliente" type="submit">Guardar cliente</button><button class="btn secondary" type="button" onclick="limpiarCliente()">Limpiar</button></div>
+            <div id="alertCliente" class="alert" style="display:none;"></div>
+          </form>
+        </div>
+      </section>
+
+      <section id="envios" class="section">
+        <div class="panel">
+          <h2>Registrar envío</h2>
+          <form id="formEnvio">
+            <div class="section-title">Afiliado / vendedor</div>
+            <div class="grid grid-2"><div><label for="SelectAfiliado">Afiliado que vendió el servicio</label><select id="SelectAfiliado" name="AFILIADO_ID"><option value="">Venta directa BELOURA / Sin afiliado</option></select><span class="small muted">Selecciona afiliado si aplica.</span></div><div><label>Información del afiliado</label><div id="AfiliadoInfo" class="info-box">Venta directa BELOURA.</div></div></div>
+
+            <div class="section-title">Remitente / origen</div>
+            <div class="grid grid-2"><div><label for="SelectRemitente">Seleccionar remitente</label><select id="SelectRemitente" required><option value="">Seleccionar remitente…</option></select></div><div><label>Información del remitente</label><div id="RemitenteInfo" class="info-box">Selecciona un remitente para autocompletar sus datos.</div></div></div>
+            <input type="hidden" id="CodigoRemitente" name="CodigoRemitente">
+            <div class="grid grid-3" style="margin-top:10px;"><div><label for="RemitenteNombre">Nombre remitente</label><input id="RemitenteNombre" name="RemitenteNombre" required></div><div><label for="RemitenteCedula">Cédula remitente</label><input id="RemitenteCedula" name="RemitenteCedula"></div><div><label for="RemitenteTelefono">Teléfono remitente</label><input id="RemitenteTelefono" name="RemitenteTelefono" required></div></div>
+            <div class="grid grid-3" style="margin-top:10px;"><div><label for="RemitenteEmail">Email remitente</label><input id="RemitenteEmail" name="RemitenteEmail"></div><div><label for="RemitenteCiudad">Ciudad remitente</label><input id="RemitenteCiudad" name="RemitenteCiudad"></div><div><label for="TiendaOrigen">Tienda origen</label><input id="TiendaOrigen" name="TiendaOrigen" placeholder="Amazon, Shein, Enviworld..."></div></div>
+            <div style="margin-top:10px;"><label for="RemitenteDireccion">Dirección remitente</label><input id="RemitenteDireccion" name="RemitenteDireccion"></div>
+
+            <div class="section-title">Destinatario en Ecuador</div>
+            <div class="grid grid-2"><div><label for="SelectDestinatario">Seleccionar destinatario</label><select id="SelectDestinatario" required><option value="">Seleccionar destinatario…</option></select></div><div><label>Información del destinatario</label><div id="DestinatarioInfo" class="info-box">Selecciona un destinatario para autocompletar sus datos.</div></div></div>
+            <input type="hidden" id="CodigoDestinatario" name="CodigoDestinatario"><input type="hidden" id="CodigoCliente" name="CodigoCliente">
+            <div class="grid grid-2" style="margin-top:10px;"><div><label for="DestNombre">Nombre completo</label><input id="DestNombre" name="DestNombre" required></div><div><label for="DestCedula">Cédula</label><input id="DestCedula" name="DestCedula" required></div></div>
+            <div class="grid grid-3" style="margin-top:10px;"><div><label for="DestTelefono">Teléfono</label><input id="DestTelefono" name="DestTelefono" required></div><div><label for="DestEmail">Email</label><input id="DestEmail" name="DestEmail"></div><div><label for="CiudadDestino">Ciudad destino</label><input id="CiudadDestino" name="CiudadDestino" required placeholder="Guayaquil, Babahoyo..."></div></div>
+            <div class="grid grid-2" style="margin-top:10px;"><div><label for="DestDireccion">Dirección completa</label><input id="DestDireccion" name="DestDireccion" required></div><div><label for="DestReferencia">Referencia</label><input id="DestReferencia" name="DestReferencia" placeholder="Barrio, esquina, local cercano..."></div></div>
+
+            <div class="section-title">Paquete</div>
+            <div class="grid grid-3"><div><label for="Descripcion">Descripción</label><input id="Descripcion" name="Descripcion" required placeholder="Ropa, zapatos, perfumes..."></div><div><label for="PesoLb">Peso (lb)</label><input id="PesoLb" name="PesoLb" type="number" step="0.01" min="0" required></div><div><label for="ValorDeclarado">Valor declarado (USD)</label><input id="ValorDeclarado" name="ValorDeclarado" type="number" step="0.01" min="0" required></div></div>
+            <div class="grid grid-2" style="margin-top:10px;"><div><label for="Tipo">Tipo de envío</label><select id="Tipo" name="Tipo" required><option value="">Seleccionar…</option><option value="4x4">4x4</option><option value="Ropa">Ropa</option><option value="Zapatos">Zapatos</option><option value="Electronico">Electrónico</option><option value="Mixto">Mixto</option><option value="Otro">Otro</option></select></div><div><label for="EstadoInicial">Estado inicial</label><select id="EstadoInicial" name="EstadoInicial" required><option value="Recibido en bodega NY">Recibido en bodega NY</option><option value="Recibido en Arlington TX">Recibido en Arlington TX</option></select></div></div>
+            <div class="grid grid-2" style="margin-top:10px;"><div><label for="TrackingInterno">Tracking interno Enviworld</label><input id="TrackingInterno" name="TrackingInterno" placeholder="Tracking Enviworld / guía externa"></div><div><label for="CodigoGuiaSelect">Consolidar en guía</label><select id="CodigoGuiaSelect" name="CodigoGuiaSelect"><option value="">Sin consolidar (guía individual)</option></select><span class="small muted">Selecciona una guía existente si aplica.</span></div></div>
+            <div class="section-title">Notas internas</div><label for="Observacion">Observación</label><textarea id="Observacion" name="Observacion" placeholder="Instrucciones especiales, pago pendiente, etc."></textarea>
+            <div class="section-title">Acciones</div>
+            <div class="flex"><button type="submit" class="btn" id="btnGuardarEnvio">Guardar envío + PDF guía</button><button type="button" class="btn secondary" onclick="limpiarEnvio()">Limpiar</button></div>
+            <div id="alertEnvio" class="alert" style="display:none;"></div>
+          </form>
+        </div>
+      </section>
+
+      <section id="misenvios" class="section">
+        <div class="panel"><h2>Mis envíos registrados</h2><div class="table-wrap"><table><thead><tr><th>Envío</th><th>Guía</th><th>Afiliado</th><th>Cliente</th><th>Libras</th><th>Estado</th><th>Pago</th><th>Fecha</th></tr></thead><tbody id="tablaMisEnvios"></tbody></table></div></div>
+      </section>
+
+      <section id="tracking" class="section">
+        <div class="panel"><h2>Buscar tracking</h2><div class="grid grid-2"><div><label for="trackingCode">Código de envío / guía / tracking</label><input id="trackingCode" placeholder="NY0001, GNY0001..."></div><div style="display:flex;align-items:end;"><button class="btn blue" onclick="buscarTracking()">Buscar</button></div></div><div id="trackingResult" class="alert" style="display:none;"></div></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div id="qrcode" style="display:none;"></div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbxNq9MjzWYHjNdWm3ilNSydv2ytwsKdJSN2US7xZfzguTsPkruDBy9KQh6c-gnjVFVXKQ/exec";
+let operadorSesion = null;
+const clientesCache = {};
+const afiliadosCache = {};
+
+const titles = {inicio:["Inicio","Resumen operativo de tus registros."],clientes:["Clientes","Registro básico de remitentes y destinatarios."],envios:["Registrar envío","Crea paquetes, guías y vincula cliente/afiliado."],misenvios:["Mis envíos","Paquetes registrados por tu usuario operador."],tracking:["Tracking","Consulta básica de estado de paquetes."]};
+function money(v){return "$"+Number(v||0).toFixed(2)}
+function num(v){return Number(v||0).toFixed(2)}
+function showAlert(el,msg,ok){el.style.display="block";el.textContent=msg;el.className="alert "+(ok?"alert-ok":"alert-error")}
+function clearAlert(el){el.style.display="none";el.textContent=""}
+function statusBadge(estado){if(estado==="Pagado")return`<span class="status ok">Pagado</span>`;if(estado==="Parcial")return`<span class="status warn">Parcial</span>`;if(estado==="Pendiente")return`<span class="status bad">Pendiente</span>`;return`<span class="status info">${estado||"Activo"}</span>`}
+async function postAPI(payload){const res=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});return await res.json()}
+function authPayload(extra={}){return {operadorId:operadorSesion.operadorId,pin:operadorSesion.pin,...extra}}
+
+function showModule(id,btn){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.getElementById("pageTitle").textContent=titles[id][0];document.getElementById("pageSubtitle").textContent=titles[id][1];if(id==="misenvios")cargarDashboardOperador();}
+
+async function loginOperador(){const operadorId=document.getElementById("loginOperador").value.trim().toUpperCase();const pin=document.getElementById("loginPin").value.trim();const alert=document.getElementById("loginAlert");clearAlert(alert);if(!operadorId||!pin){showAlert(alert,"Ingresa código de operador y PIN.",false);return}const btn=document.getElementById("btnLogin");btn.disabled=true;btn.textContent="Validando...";try{const data=await postAPI({action:"operadorLogin",operadorId,pin});if(!data.ok){showAlert(alert,data.error||"Acceso no autorizado",false);return}operadorSesion={...data.operador,pin};localStorage.setItem("belouraOperador",JSON.stringify(operadorSesion));iniciarPanel();}catch(e){console.error(e);showAlert(alert,"Error de conexión.",false)}finally{btn.disabled=false;btn.textContent="Entrar"}}
+
+function iniciarPanel(){document.getElementById("loginView").style.display="none";document.getElementById("panelView").style.display="grid";document.getElementById("operatorBox").innerHTML=`<strong>${operadorSesion.nombre}</strong><br>Código: ${operadorSesion.operadorId}<br>Rol: ${operadorSesion.rol||"Operador"}<br>Ciudad: ${operadorSesion.ciudad||"-"}`;loadClientes();loadAfiliados();loadGuias();cargarDashboardOperador();}
+function cerrarSesion(){localStorage.removeItem("belouraOperador");operadorSesion=null;location.reload();}
+
+async function cargarDashboardOperador(){if(!operadorSesion)return;const data=await postAPI({action:"operadorDashboard",...authPayload()});if(!data.ok){console.error(data.error||"Error dashboard operador");return}renderHome(data.resumen||{});renderMisEnvios(data.envios||[])}
+function renderHome(r){document.getElementById("homeCards").innerHTML=`<div class="card blue"><h3>Mis envíos</h3><p>${r.totalEnvios||0}</p></div><div class="card green"><h3>Total libras</h3><p>${num(r.totalLibras)} lb</p></div><div class="card orange"><h3>Activos</h3><p>${r.enviosActivos||0}</p></div><div class="card red"><h3>Pendientes de pago</h3><p>${r.enviosPendientes||0}</p></div>`}
+function renderMisEnvios(lista){const tbody=document.getElementById("tablaMisEnvios");tbody.innerHTML=(lista||[]).map(e=>`<tr><td>${e.codigoEnvio||""}</td><td>${e.codigoGuia||""}</td><td>${e.afiliadoNombre||e.afiliadoId||"Venta directa"}</td><td>${e.cliente||""}</td><td>${num(e.libras)}</td><td>${e.estado||""}</td><td>${statusBadge(e.estadoPago)}</td><td>${e.fecha||""}</td></tr>`).join("")}
+
+const selectAfiliado=document.getElementById("SelectAfiliado");const afiliadoInfoDiv=document.getElementById("AfiliadoInfo");const selectRemitente=document.getElementById("SelectRemitente");const selectDestinatario=document.getElementById("SelectDestinatario");const hiddenCodigoRemitente=document.getElementById("CodigoRemitente");const hiddenCodigoDestinatario=document.getElementById("CodigoDestinatario");const hiddenCodigoCliente=document.getElementById("CodigoCliente");const remitenteInfoDiv=document.getElementById("RemitenteInfo");const destinatarioInfoDiv=document.getElementById("DestinatarioInfo");
+
+async function loadClientes(){const data=await postAPI({action:"operadorListClientes",...authPayload()});if(!data.ok){console.error(data.error);return}selectRemitente.innerHTML='<option value="">Seleccionar remitente…</option>';selectDestinatario.innerHTML='<option value="">Seleccionar destinatario…</option>';Object.keys(clientesCache).forEach(k=>delete clientesCache[k]);(data.clientes||[]).forEach(c=>{const codigo=c.CodigoCliente||c.codigoCliente||"";if(!codigo)return;const cliente={CodigoCliente:codigo,NombreCompleto:c.NombreCompleto||c.Nombre||c.nombre||"",Cedula:c.Cedula||c.cedula||"",Telefono:c.Telefono||c.telefono||"",WhatsApp:c.WhatsApp||c.whatsapp||"",Email:c.Email||c.Correo||c.email||c.correo||"",CiudadDestino:c.CiudadDestino||c.Ciudad||c.ciudad||"",Direccion:c.Direccion||c.direccion||""};clientesCache[codigo]=cliente;const label=`${codigo} — ${cliente.NombreCompleto}`;const optR=document.createElement("option");optR.value=codigo;optR.textContent=label;selectRemitente.appendChild(optR);const optD=document.createElement("option");optD.value=codigo;optD.textContent=label;selectDestinatario.appendChild(optD)})}
+async function loadAfiliados(){const data=await postAPI({action:"operadorListAfiliados",...authPayload()});if(!data.ok){console.error(data.error);return}selectAfiliado.innerHTML='<option value="">Venta directa BELOURA / Sin afiliado</option>';Object.keys(afiliadosCache).forEach(k=>delete afiliadosCache[k]);(data.afiliados||[]).forEach(a=>{const codigo=a.codigoAfiliado||a.CodigoAfiliado||"";if(!codigo)return;afiliadosCache[codigo]={codigoAfiliado:codigo,nombre:a.nombre||a.Nombre||"",telefono:a.telefono||a.Telefono||"",ciudad:a.ciudad||a.Ciudad||""};const opt=document.createElement("option");opt.value=codigo;opt.textContent=`${codigo} — ${afiliadosCache[codigo].nombre}`;selectAfiliado.appendChild(opt)})}
+async function loadGuias(){const selectGuia=document.getElementById("CodigoGuiaSelect");if(!selectGuia)return;selectGuia.innerHTML='<option value="">Sin consolidar (guía individual)</option>';const data=await postAPI({action:"operadorListGuias",...authPayload()});if(!data.ok)return;(data.guias||[]).forEach(g=>{const opt=document.createElement("option");opt.value=g;opt.textContent=g;selectGuia.appendChild(opt)})}
+function renderAfiliadoInfo(code){const a=afiliadosCache[code];if(!a){afiliadoInfoDiv.textContent="Venta directa BELOURA.";return}afiliadoInfoDiv.innerHTML=`<strong>${a.nombre}</strong><br>Código: ${a.codigoAfiliado}<br>Tel: ${a.telefono||"-"}<br>Ciudad: ${a.ciudad||"-"}`}
+function renderPersonaInfo(div,code,tipo){const c=clientesCache[code];if(!c){div.textContent=`Selecciona un ${tipo} para autocompletar sus datos.`;return}div.innerHTML=`<strong>${c.NombreCompleto}</strong><br>Código: ${c.CodigoCliente}<br>Cédula: ${c.Cedula||"-"}<br>Tel: ${c.Telefono||c.WhatsApp||"-"}<br>Ciudad: ${c.CiudadDestino||"-"}<br>Dirección: ${c.Direccion||"-"}`}
+function autocompletarRemitente(code){const c=clientesCache[code];if(!c)return;hiddenCodigoRemitente.value=c.CodigoCliente;document.getElementById("RemitenteNombre").value=c.NombreCompleto||"";document.getElementById("RemitenteCedula").value=c.Cedula||"";document.getElementById("RemitenteTelefono").value=c.Telefono||c.WhatsApp||"";document.getElementById("RemitenteEmail").value=c.Email||"";document.getElementById("RemitenteCiudad").value=c.CiudadDestino||"";document.getElementById("RemitenteDireccion").value=c.Direccion||"";renderPersonaInfo(remitenteInfoDiv,code,"remitente")}
+function autocompletarDestinatario(code){const c=clientesCache[code];if(!c)return;hiddenCodigoDestinatario.value=c.CodigoCliente;hiddenCodigoCliente.value=c.CodigoCliente;document.getElementById("DestNombre").value=c.NombreCompleto||"";document.getElementById("DestCedula").value=c.Cedula||"";document.getElementById("DestTelefono").value=c.Telefono||c.WhatsApp||"";document.getElementById("DestEmail").value=c.Email||"";document.getElementById("CiudadDestino").value=c.CiudadDestino||"";document.getElementById("DestDireccion").value=c.Direccion||"";renderPersonaInfo(destinatarioInfoDiv,code,"destinatario")}
+selectAfiliado.addEventListener("change",()=>renderAfiliadoInfo(selectAfiliado.value));selectRemitente.addEventListener("change",()=>autocompletarRemitente(selectRemitente.value));selectDestinatario.addEventListener("change",()=>autocompletarDestinatario(selectDestinatario.value));
+
+const formCliente=document.getElementById("formCliente");const btnGuardarCliente=document.getElementById("btnGuardarCliente");const alertCliente=document.getElementById("alertCliente");
+function limpiarCliente(){formCliente.reset();clearAlert(alertCliente)}
+formCliente.addEventListener("submit",async(e)=>{e.preventDefault();clearAlert(alertCliente);const fd=new FormData(formCliente);const payload={action:"operadorCreateCliente",...authPayload(),NombreCompleto:fd.get("NombreCompleto")||"",Cedula:fd.get("Cedula")||"",Telefono:fd.get("Telefono")||"",WhatsApp:fd.get("WhatsApp")||"",Email:fd.get("Email")||"",CiudadDestino:fd.get("CiudadDestino")||"",Direccion:fd.get("Direccion")||"",Notas:fd.get("Notas")||""};btnGuardarCliente.disabled=true;btnGuardarCliente.textContent="Guardando...";try{const data=await postAPI(payload);if(!data.ok){showAlert(alertCliente,"Error: "+(data.error||"desconocido"),false)}else{showAlert(alertCliente,`Cliente creado correctamente. Código: ${data.codigoCliente||""}`,true);formCliente.reset();loadClientes()}}catch(err){console.error(err);showAlert(alertCliente,"Error de conexión.",false)}finally{btnGuardarCliente.disabled=false;btnGuardarCliente.textContent="Guardar cliente"}});
+
+const formEnvio=document.getElementById("formEnvio");const btnGuardarEnvio=document.getElementById("btnGuardarEnvio");const alertEnvio=document.getElementById("alertEnvio");
+function limpiarEnvio(){formEnvio.reset();hiddenCodigoRemitente.value="";hiddenCodigoDestinatario.value="";hiddenCodigoCliente.value="";selectAfiliado.value="";selectRemitente.value="";selectDestinatario.value="";renderAfiliadoInfo("");renderPersonaInfo(remitenteInfoDiv,"","remitente");renderPersonaInfo(destinatarioInfoDiv,"","destinatario");clearAlert(alertEnvio)}
+formEnvio.addEventListener("submit",async(e)=>{e.preventDefault();clearAlert(alertEnvio);const fd=new FormData(formEnvio);const codigoAfiliado=(fd.get("AFILIADO_ID")||"").toUpperCase().trim();const codigoRemitente=(fd.get("CodigoRemitente")||"").toUpperCase().trim();const codigoDestinatario=(fd.get("CodigoDestinatario")||"").toUpperCase().trim();if(!codigoRemitente){showAlert(alertEnvio,"Debes seleccionar un remitente.",false);return}if(!codigoDestinatario){showAlert(alertEnvio,"Debes seleccionar un destinatario.",false);return}const payload={action:"operadorCreateEnvio",...authPayload(),OperadorID:operadorSesion.operadorId,OperadorNombre:operadorSesion.nombre,CanalRegistro:"Operador",AFILIADO_ID:codigoAfiliado,CodigoAfiliado:codigoAfiliado,CodigoCliente:codigoDestinatario,CodigoRemitente:codigoRemitente,CodigoDestinatario:codigoDestinatario,RemitenteNombre:fd.get("RemitenteNombre")||"",RemitenteCedula:fd.get("RemitenteCedula")||"",RemitenteTelefono:fd.get("RemitenteTelefono")||"",RemitenteEmail:fd.get("RemitenteEmail")||"",RemitenteCiudad:fd.get("RemitenteCiudad")||"",RemitenteDireccion:fd.get("RemitenteDireccion")||"",TiendaOrigen:fd.get("TiendaOrigen")||"",Descripcion:fd.get("Descripcion")||"",PesoLb:fd.get("PesoLb")||"",ValorDeclarado:fd.get("ValorDeclarado")||"",Tipo:fd.get("Tipo")||"",EstadoInicial:fd.get("EstadoInicial")||"",TrackingInterno:fd.get("TrackingInterno")||"",DestNombre:fd.get("DestNombre")||"",DestCedula:fd.get("DestCedula")||"",DestTelefono:fd.get("DestTelefono")||"",DestEmail:fd.get("DestEmail")||"",CiudadDestino:fd.get("CiudadDestino")||"",DestDireccion:fd.get("DestDireccion")||"",DestReferencia:fd.get("DestReferencia")||"",Observacion:fd.get("Observacion")||"",Usuario:operadorSesion.nombre,CodigoGuia:fd.get("CodigoGuiaSelect")||""};btnGuardarEnvio.disabled=true;btnGuardarEnvio.textContent="Guardando...";try{const data=await postAPI(payload);if(!data.ok){showAlert(alertEnvio,"Error: "+(data.error||"desconocido"),false)}else{const codigoEnvio=data.codigoEnvio||"";const codigoGuia=(data.codigoGuia||"").toString().trim().toUpperCase()||("G"+codigoEnvio);showAlert(alertEnvio,`Envío creado correctamente. Código: ${codigoEnvio} • Guía: ${codigoGuia}`,true);await generarGuiaPDF(codigoEnvio,{...payload,CodigoGuia:codigoGuia});loadGuias();cargarDashboardOperador();const selectedAfiliado=codigoAfiliado,selectedRemitente=codigoRemitente,selectedDestinatario=codigoDestinatario;formEnvio.reset();selectAfiliado.value=selectedAfiliado;selectRemitente.value=selectedRemitente;selectDestinatario.value=selectedDestinatario;renderAfiliadoInfo(selectedAfiliado);autocompletarRemitente(selectedRemitente);autocompletarDestinatario(selectedDestinatario)}}catch(err){console.error(err);showAlert(alertEnvio,"Error de conexión.",false)}finally{btnGuardarEnvio.disabled=false;btnGuardarEnvio.textContent="Guardar envío + PDF guía"}});
+
+async function buscarTracking(){const code=document.getElementById("trackingCode").value.trim();const box=document.getElementById("trackingResult");clearAlert(box);if(!code){showAlert(box,"Ingresa un código para buscar.",false);return}const data=await postAPI({action:"operadorTrack",...authPayload(),codigoEnvio:code});if(!data.found&&!data.ok){showAlert(box,data.error||"No encontrado",false);return}if(!data.found){showAlert(box,"No encontramos ese envío.",false);return}const e=data.envio||{};box.style.display="block";box.className="alert alert-ok";box.innerHTML=`<strong>${e.CodigoEnvio||""}</strong><br>Destino: ${e.DestNombre||""} / ${e.CiudadDestino||""}<br>Estado: ${e.EstadoActual||""}<br>Guía: ${e.CodigoGuia||""}`}
+
+async function generarGuiaPDF(codigoEnvio,data){try{const{jsPDF}=window.jspdf;const codigoGuia=(data.CodigoGuia||"").toString().trim().toUpperCase()||codigoEnvio;const doc=new jsPDF({orientation:"portrait",unit:"pt",format:[288,432]});const pesoLb=data.PesoLb||"";const destNombre=data.DestNombre||"";const destCedula=data.DestCedula||"";const destTelefono=data.DestTelefono||"";const ciudadDestino=data.CiudadDestino||"";const destDireccion=data.DestDireccion||"";const tipo=data.Tipo||"";const estadoInicial=data.EstadoInicial||"Recibido en bodega NY";let origenLinea2="BODEGA NY",origenLinea3="NEW YORK, NY";if(estadoInicial==="Recibido en Arlington TX"){origenLinea2="2504 PLAZA ST";origenLinea3="ARLINGTON TX 76010"}doc.setFont("Helvetica","Bold");doc.setFontSize(9);doc.text("BELOURA COURIER",18,20);doc.setFont("Helvetica","Normal");doc.text(origenLinea2,18,32);doc.text(origenLinea3,18,44);doc.setFont("Helvetica","Bold");doc.setFontSize(10);doc.text(`${pesoLb} LBS`,220,20,{align:"right"});doc.setFontSize(8);doc.text("1 OF 1",220,32,{align:"right"});doc.setLineWidth(.8);doc.line(18,54,270,54);doc.setFontSize(9);doc.setFont("Helvetica","Bold");doc.text("SHIP TO:",18,70);doc.setFontSize(11);doc.text(String(destNombre).toUpperCase(),18,86);doc.setFont("Helvetica","Normal");doc.setFontSize(9);doc.text(String(destDireccion).toUpperCase(),18,100);doc.text(String(ciudadDestino).toUpperCase(),18,112);doc.text(`TEL: ${destTelefono}`,18,124);doc.text(`ID: ${destCedula}`,18,136);doc.setLineWidth(1.2);doc.rect(18,150,252,80);doc.setFont("Helvetica","Bold");doc.setFontSize(24);doc.text(codigoGuia.replace("-"," "),144,188,{align:"center"});doc.setFontSize(9);doc.text(String(tipo).toUpperCase(),144,204,{align:"center"});doc.setFontSize(8);doc.setFont("Helvetica","Normal");doc.text(`ENVÍO INTERNO: ${codigoEnvio}`,144,216,{align:"center"});const trackingUrl=`https://ny.beloura.shop/ecuador.html?guia=${encodeURIComponent(codigoGuia)}`;const qrContainer=document.getElementById("qrcode");qrContainer.innerHTML="";new QRCode(qrContainer,{text:trackingUrl,width:120,height:120,correctLevel:QRCode.CorrectLevel.M});await new Promise(resolve=>setTimeout(resolve,300));const canvas=qrContainer.querySelector("canvas");if(canvas){doc.addImage(canvas.toDataURL("image/png"),"PNG",24,242,96,96)}doc.setLineWidth(.6);const baseY=260,barXStart=140;for(let i=0;i<20;i++){const x=barXStart+i*3;const h=i%2===0?70:55;doc.line(x,baseY,x,baseY+h)}doc.setFontSize(8);doc.text(`TRACKING: ${codigoGuia}`,200,340,{align:"center"});doc.line(18,360,270,360);doc.setFont("Helvetica","Bold");doc.text("BELOURA COURIER",18,374);doc.setFont("Helvetica","Normal");doc.text("Guía interna para manejo logístico y entrega en Ecuador.",18,386);doc.text("www.beloura.shop",18,398);doc.save(`Guia_${codigoGuia}.pdf`)}catch(e){console.error("Error generando PDF:",e)}}
+
+document.addEventListener("DOMContentLoaded",()=>{const saved=localStorage.getItem("belouraOperador");if(saved){try{operadorSesion=JSON.parse(saved);iniciarPanel()}catch(e){localStorage.removeItem("belouraOperador")}}});
+</script>
+</body>
+</html>

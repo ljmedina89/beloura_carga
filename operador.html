@@ -76,9 +76,21 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
         <div class="panel">
           <h2>Registrar envío</h2>
           <form id="formEnvio">
-            <div class="section-title">Afiliado / vendedor</div>
-            <div class="grid grid-2"><div><label for="SelectAfiliado">Afiliado que vendió el servicio</label><select id="SelectAfiliado" name="AFILIADO_ID"><option value="">Venta directa BELOURA / Sin afiliado</option></select><span class="small muted">Selecciona afiliado si aplica.</span></div><div><label>Información del afiliado</label><div id="AfiliadoInfo" class="info-box">Venta directa BELOURA.</div></div></div>
-
+            <div class="section-title">Facturación del operador</div>
+<div class="grid grid-2" style="margin-top:10px;">
+  <div>
+    <label>Registro operativo</label>
+    <div class="info-box">
+      Este envío será registrado bajo tu código de operador. La administración BELOURA controlará afiliados, precios y liquidaciones.
+    </div>
+  </div>
+  <div>
+    <label>Guía BELOURA</label>
+    <div class="info-box">
+      El sistema generará una guía BELOURA para identificar el paquete.
+    </div>
+  </div>
+</div>
             <div class="section-title">Remitente / origen</div>
             <div class="grid grid-2"><div><label for="SelectRemitente">Seleccionar remitente</label><select id="SelectRemitente" required><option value="">Seleccionar remitente…</option></select></div><div><label>Información del remitente</label><div id="RemitenteInfo" class="info-box">Selecciona un remitente para autocompletar sus datos.</div></div></div>
             <input type="hidden" id="CodigoRemitente" name="CodigoRemitente">

@@ -177,40 +177,40 @@ async function loadClientes() {
     const clientes = data.clientes || [];
 
     clientes.forEach(c => {
-      const codigo = c.CodigoCliente || c.codigoCliente || "";
-      if (!codigo) return;
+  const codigo = String(c.CodigoCliente || c.codigoCliente || "").trim().toUpperCase();
+  if (!codigo) return;
 
-      const nombreCompleto =
-        c.NombreCompleto ||
-        c.Nombre ||
-        c.nombre ||
-        "";
+  const nombreCompleto =
+    c.NombreCompleto ||
+    c.Nombre ||
+    c.nombre ||
+    "";
 
-      const cliente = {
-        CodigoCliente: codigo,
-        NombreCompleto: nombreCompleto,
-        Cedula: c.Cedula || c.cedula || "",
-        Telefono: c.Telefono || c.telefono || "",
-        WhatsApp: c.WhatsApp || c.whatsapp || "",
-        Email: c.Email || c.Correo || c.email || c.correo || "",
-        CiudadDestino: c.CiudadDestino || c.Ciudad || c.ciudad || "",
-        Direccion: c.Direccion || c.direccion || ""
-      };
+  const cliente = {
+    CodigoCliente: codigo,
+    NombreCompleto: nombreCompleto,
+    Cedula: c.Cedula || c.cedula || "",
+    Telefono: c.Telefono || c.telefono || "",
+    WhatsApp: c.WhatsApp || c.whatsapp || "",
+    Email: c.Email || c.Correo || c.email || c.correo || "",
+    CiudadDestino: c.CiudadDestino || c.Ciudad || c.ciudad || "",
+    Direccion: c.Direccion || c.direccion || ""
+  };
 
-      clientesCache[codigo] = cliente;
+  clientesCache[codigo] = cliente;
 
-      const label = `${codigo} — ${nombreCompleto || "Sin nombre"}`;
+  const label = `${codigo} — ${nombreCompleto || "Sin nombre"}`;
 
-      const optR = document.createElement("option");
-      optR.value = codigo;
-      optR.textContent = label;
-      selectRemitente.appendChild(optR);
+  const optR = document.createElement("option");
+  optR.value = codigo;
+  optR.textContent = label;
+  selectRemitente.appendChild(optR);
 
-      const optD = document.createElement("option");
-      optD.value = codigo;
-      optD.textContent = label;
-      selectDestinatario.appendChild(optD);
-    });
+  const optD = document.createElement("option");
+  optD.value = codigo;
+  optD.textContent = label;
+  selectDestinatario.appendChild(optD);
+});
 
     console.log("Clientes operador cargados:", clientes.length);
 
@@ -220,15 +220,93 @@ async function loadClientes() {
 }
 async function loadGuias(){const selectGuia=document.getElementById("CodigoGuiaSelect");if(!selectGuia)return;selectGuia.innerHTML='<option value="">Sin consolidar (guía individual)</option>';const data=await postAPI({action:"operadorListGuias",...authPayload()});if(!data.ok)return;(data.guias||[]).forEach(g=>{const opt=document.createElement("option");opt.value=g;opt.textContent=g;selectGuia.appendChild(opt)})}
 
-function renderPersonaInfo(div,code,tipo){const c=clientesCache[code];if(!c){div.textContent=`Selecciona un ${tipo} para autocompletar sus datos.`;return}div.innerHTML=`<strong>${c.NombreCompleto}</strong><br>Código: ${c.CodigoCliente}<br>Cédula: ${c.Cedula||"-"}<br>Tel: ${c.Telefono||c.WhatsApp||"-"}<br>Ciudad: ${c.CiudadDestino||"-"}<br>Dirección: ${c.Direccion||"-"}`}
-function autocompletarRemitente(code){const c=clientesCache[code];if(!c)return;hiddenCodigoRemitente.value=c.CodigoCliente;document.getElementById("RemitenteNombre").value=c.NombreCompleto||"";document.getElementById("RemitenteCedula").value=c.Cedula||"";document.getElementById("RemitenteTelefono").value=c.Telefono||c.WhatsApp||"";document.getElementById("RemitenteEmail").value=c.Email||"";document.getElementById("RemitenteCiudad").value=c.CiudadDestino||"";document.getElementById("RemitenteDireccion").value=c.Direccion||"";renderPersonaInfo(remitenteInfoDiv,code,"remitente")}
-function autocompletarDestinatario(code){const c=clientesCache[code];if(!c)return;hiddenCodigoDestinatario.value=c.CodigoCliente;hiddenCodigoCliente.value=c.CodigoCliente;document.getElementById("DestNombre").value=c.NombreCompleto||"";document.getElementById("DestCedula").value=c.Cedula||"";document.getElementById("DestTelefono").value=c.Telefono||c.WhatsApp||"";document.getElementById("DestEmail").value=c.Email||"";document.getElementById("CiudadDestino").value=c.CiudadDestino||"";document.getElementById("DestDireccion").value=c.Direccion||"";renderPersonaInfo(destinatarioInfoDiv,code,"destinatario")}
+function getClienteByCode(code) {
+  const codigo = String(code || "").trim().toUpperCase();
 
+  if (!codigo) return null;
 
-const formCliente=document.getElementById("formCliente");const btnGuardarCliente=document.getElementById("btnGuardarCliente");const alertCliente=document.getElementById("alertCliente");
-function limpiarCliente(){formCliente.reset();clearAlert(alertCliente)}
-formCliente.addEventListener("submit",async(e)=>{e.preventDefault();clearAlert(alertCliente);const fd=new FormData(formCliente);const payload={action:"operadorCreateCliente",...authPayload(),NombreCompleto:fd.get("NombreCompleto")||"",Cedula:fd.get("Cedula")||"",Telefono:fd.get("Telefono")||"",WhatsApp:fd.get("WhatsApp")||"",Email:fd.get("Email")||"",CiudadDestino:fd.get("CiudadDestino")||"",Direccion:fd.get("Direccion")||"",Notas:fd.get("Notas")||""};btnGuardarCliente.disabled=true;btnGuardarCliente.textContent="Guardando...";try{const data=await postAPI(payload);if(!data.ok){showAlert(alertCliente,"Error: "+(data.error||"desconocido"),false)}else{showAlert(alertCliente,`Cliente creado correctamente. Código: ${data.codigoCliente||""}`,true);formCliente.reset();loadClientes()}}catch(err){console.error(err);showAlert(alertCliente,"Error de conexión.",false)}finally{btnGuardarCliente.disabled=false;btnGuardarCliente.textContent="Guardar cliente"}});
+  if (clientesCache[codigo]) {
+    return clientesCache[codigo];
+  }
 
+  const encontrado = Object.values(clientesCache).find(c => {
+    return String(c.CodigoCliente || "").trim().toUpperCase() === codigo;
+  });
+
+  return encontrado || null;
+}
+
+function renderPersonaInfo(div, code, tipo) {
+  const c = getClienteByCode(code);
+
+  if (!c) {
+    div.textContent = `Selecciona un ${tipo} para autocompletar sus datos.`;
+    return;
+  }
+
+  div.innerHTML = `
+    <strong>${c.NombreCompleto || ""}</strong><br>
+    Código: ${c.CodigoCliente || ""}<br>
+    Cédula: ${c.Cedula || "-"}<br>
+    Tel: ${c.Telefono || c.WhatsApp || "-"}<br>
+    Ciudad: ${c.CiudadDestino || "-"}<br>
+    Dirección: ${c.Direccion || "-"}
+  `;
+}
+
+function autocompletarRemitente(code) {
+  const c = getClienteByCode(code);
+
+  console.log("Remitente seleccionado:", code, c);
+
+  if (!c) {
+    hiddenCodigoRemitente.value = "";
+    return;
+  }
+
+  hiddenCodigoRemitente.value = c.CodigoCliente || "";
+
+  document.getElementById("RemitenteNombre").value = c.NombreCompleto || "";
+  document.getElementById("RemitenteCedula").value = c.Cedula || "";
+  document.getElementById("RemitenteTelefono").value = c.Telefono || c.WhatsApp || "";
+  document.getElementById("RemitenteEmail").value = c.Email || "";
+  document.getElementById("RemitenteCiudad").value = c.CiudadDestino || "";
+  document.getElementById("RemitenteDireccion").value = c.Direccion || "";
+
+  renderPersonaInfo(remitenteInfoDiv, code, "remitente");
+}
+
+function autocompletarDestinatario(code) {
+  const c = getClienteByCode(code);
+
+  console.log("Destinatario seleccionado:", code, c);
+
+  if (!c) {
+    hiddenCodigoDestinatario.value = "";
+    hiddenCodigoCliente.value = "";
+    return;
+  }
+
+  hiddenCodigoDestinatario.value = c.CodigoCliente || "";
+  hiddenCodigoCliente.value = c.CodigoCliente || "";
+
+  document.getElementById("DestNombre").value = c.NombreCompleto || "";
+  document.getElementById("DestCedula").value = c.Cedula || "";
+  document.getElementById("DestTelefono").value = c.Telefono || c.WhatsApp || "";
+  document.getElementById("DestEmail").value = c.Email || "";
+  document.getElementById("CiudadDestino").value = c.CiudadDestino || "";
+  document.getElementById("DestDireccion").value = c.Direccion || "";
+
+  renderPersonaInfo(destinatarioInfoDiv, code, "destinatario");
+}
+
+selectRemitente.addEventListener("change", function () {
+  autocompletarRemitente(this.value);
+});
+
+selectDestinatario.addEventListener("change", function () {
+  autocompletarDestinatario(this.value);
+});
 const formEnvio=document.getElementById("formEnvio");const btnGuardarEnvio=document.getElementById("btnGuardarEnvio");const alertEnvio=document.getElementById("alertEnvio");
 function limpiarEnvio(){formEnvio.reset();hiddenCodigoRemitente.value="";hiddenCodigoDestinatario.value="";hiddenCodigoCliente.value="";selectAfiliado.value="";selectRemitente.value="";selectDestinatario.value="";renderAfiliadoInfo("");renderPersonaInfo(remitenteInfoDiv,"","remitente");renderPersonaInfo(destinatarioInfoDiv,"","destinatario");clearAlert(alertEnvio)}
 formEnvio.addEventListener("submit",async(e)=>{e.preventDefault();clearAlert(alertEnvio);const fd=new FormData(formEnvio);const codigoRemitente=(fd.get("CodigoRemitente")||"").toUpperCase().trim();const codigoDestinatario=(fd.get("CodigoDestinatario")||"").toUpperCase().trim();if(!codigoRemitente){showAlert(alertEnvio,"Debes seleccionar un remitente.",false);return}if(!codigoDestinatario){showAlert(alertEnvio,"Debes seleccionar un destinatario.",false);return}const payload={action:"operadorCreateEnvio",...authPayload(),OperadorID:operadorSesion.operadorId,OperadorNombre:operadorSesion.nombre,CanalRegistro:"Operador",CodigoCliente:codigoDestinatario,CodigoRemitente:codigoRemitente,CodigoDestinatario:codigoDestinatario,RemitenteNombre:fd.get("RemitenteNombre")||"",RemitenteCedula:fd.get("RemitenteCedula")||"",RemitenteTelefono:fd.get("RemitenteTelefono")||"",RemitenteEmail:fd.get("RemitenteEmail")||"",RemitenteCiudad:fd.get("RemitenteCiudad")||"",RemitenteDireccion:fd.get("RemitenteDireccion")||"",TiendaOrigen:fd.get("TiendaOrigen")||"",Descripcion:fd.get("Descripcion")||"",PesoLb:fd.get("PesoLb")||"",ValorDeclarado:fd.get("ValorDeclarado")||"",Tipo:fd.get("Tipo")||"",EstadoInicial:fd.get("EstadoInicial")||"",TrackingInterno:fd.get("TrackingInterno")||"",DestNombre:fd.get("DestNombre")||"",DestCedula:fd.get("DestCedula")||"",DestTelefono:fd.get("DestTelefono")||"",DestEmail:fd.get("DestEmail")||"",CiudadDestino:fd.get("CiudadDestino")||"",DestDireccion:fd.get("DestDireccion")||"",DestReferencia:fd.get("DestReferencia")||"",Observacion:fd.get("Observacion")||"",Usuario:operadorSesion.nombre,CodigoGuia:fd.get("CodigoGuiaSelect")||""};btnGuardarEnvio.disabled=true;btnGuardarEnvio.textContent="Guardando...";try{const data=await postAPI(payload);if(!data.ok){showAlert(alertEnvio,"Error: "+(data.error||"desconocido"),false)}else{const codigoEnvio=data.codigoEnvio||"";const codigoGuia=(data.codigoGuia||"").toString().trim().toUpperCase()||("G"+codigoEnvio);showAlert(alertEnvio,`Envío creado correctamente. Código: ${codigoEnvio} • Guía: ${codigoGuia}`,true);await generarGuiaPDF(codigoEnvio,{...payload,CodigoGuia:codigoGuia});loadGuias();cargarDashboardOperador();selectedRemitente=codigoRemitente,selectedDestinatario=codigoDestinatario;formEnvio.reset();selectRemitente.value=selectedRemitente;selectDestinatario.value=selectedDestinatario;autocompletarRemitente(selectedRemitente);autocompletarDestinatario(selectedDestinatario)}}catch(err){console.error(err);showAlert(alertEnvio,"Error de conexión.",false)}finally{btnGuardarEnvio.disabled=false;btnGuardarEnvio.textContent="Guardar envío + PDF guía"}});

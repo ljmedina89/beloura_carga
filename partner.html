@@ -6,6 +6,8 @@
   <title>BELOURA Partner Dashboard</title>
 
   <style>
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -26,7 +28,7 @@
       padding: 20px;
     }
 
-    .login-box, .card, .table-card {
+    .login-box, .card, .table-card, .panel {
       background: white;
       border-radius: 14px;
       padding: 20px;
@@ -34,14 +36,21 @@
       margin-bottom: 20px;
     }
 
-    input {
+    input, select {
       width: 100%;
       padding: 14px;
       font-size: 16px;
-      margin-top: 10px;
+      margin-top: 8px;
       border: 1px solid #ccc;
       border-radius: 10px;
       box-sizing: border-box;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 12px;
     }
 
     button {
@@ -54,11 +63,37 @@
       border-radius: 10px;
       font-size: 16px;
       cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .btn-blue {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    }
+
+    .btn-green {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
     }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 15px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 15px;
     }
 
@@ -74,9 +109,7 @@
       margin: 10px 0 0;
     }
 
-    .table-wrap {
-      overflow-x: auto;
-    }
+    .table-wrap { overflow-x: auto; }
 
     table {
       width: 100%;
@@ -92,27 +125,87 @@
       white-space: nowrap;
     }
 
-    th {
-      background: #f0f0f0;
-    }
+    th { background: #f0f0f0; }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
     .error {
       color: red;
       margin-top: 15px;
     }
 
-    .status {
-      font-weight: bold;
-    }
+    .status { font-weight: bold; }
 
     .logout {
       max-width: 180px;
       background: #444;
       margin-bottom: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .tab-btn {
+      width: auto;
+      margin: 0;
+      padding: 11px 16px;
+      background: #e5e7eb;
+      color: #111;
+      border-radius: 999px;
+    }
+
+    .tab-btn.active {
+      background: #111;
+      color: white;
+    }
+
+    .success-box, .error-box {
+      display: none;
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 12px;
+      line-height: 1.45;
+    }
+
+    .success-box {
+      background: #ecfdf5;
+      border: 1px solid #10b981;
+      color: #065f46;
+    }
+
+    .error-box {
+      background: #fef2f2;
+      border: 1px solid #ef4444;
+      color: #991b1b;
+    }
+
+    .muted {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .pill-ok { background: #dcfce7; color: #166534; }
+    .pill-warn { background: #fef3c7; color: #92400e; }
+    .pill-bad { background: #fee2e2; color: #991b1b; }
+    .pill-info { background: #dbeafe; color: #1e40af; }
+
+    @media(max-width: 700px) {
+      .container { margin: 10px auto; padding: 12px; }
+      table { min-width: 900px; }
+      .tab-btn { width: 100%; }
     }
   </style>
 </head>
@@ -130,20 +223,10 @@
     <h2>Ingreso de afiliado</h2>
     <p>Ingresa tu código de afiliado y PIN de acceso.</p>
 
-    <input 
-      type="text" 
-      id="afiliadoInput" 
-      placeholder="Código afiliado. Ejemplo: BLR4821"
-    />
-
-    <input 
-      type="password" 
-      id="pinInput" 
-      placeholder="PIN de acceso"
-    />
+    <input type="text" id="afiliadoInput" placeholder="Código afiliado. Ejemplo: BLR4821" />
+    <input type="password" id="pinInput" placeholder="PIN de acceso" />
 
     <button onclick="cargarDashboard()">Ingresar</button>
-
     <div class="error" id="errorMsg"></div>
   </div>
 
@@ -153,79 +236,143 @@
 
     <h2 id="tituloAfiliado"></h2>
 
-    <div class="grid">
-      <div class="card">
-        <h3>Total libras</h3>
-        <p id="totalLibras">0</p>
-      </div>
-
-      <div class="card">
-        <h3>Total vendido</h3>
-        <p id="totalVenta">$0</p>
-      </div>
-
-      <div class="card">
-        <h3>Pago a BELOURA</h3>
-        <p id="totalBeloura">$0</p>
-      </div>
-
-      <div class="card">
-        <h3>Ganancia afiliado</h3>
-        <p id="totalGanancia">$0</p>
-      </div>
-
-      <div class="card">
-        <h3>Total envíos</h3>
-        <p id="totalEnvios">0</p>
-      </div>
-
-      <div class="card">
-        <h3>Envíos activos</h3>
-        <p id="enviosActivos">0</p>
-      </div>
-
-      <div class="card">
-        <h3>Envíos liquidados</h3>
-        <p id="enviosLiquidados">0</p>
-      </div>
-
-      <div class="card">
-        <h3>Saldo pendiente BELOURA</h3>
-        <p id="saldoPendienteBeloura">$0</p>
-      </div>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="mostrarModulo('envios', this)">📦 Envíos</button>
+      <button class="tab-btn" onclick="mostrarModulo('iptv', this)">📺 IPTV</button>
     </div>
 
-    <div class="table-card">
-      <h2>Mis envíos</h2>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Código</th>
-              <th>Cliente</th>
-              <th>Libras</th>
-              <th>Estado envío</th>
-              <th>Estado pago</th>
-              <th>Operación</th>
-              <th>Total cliente</th>
-              <th>Pago BELOURA</th>
-              <th>Pagado</th>
-              <th>Saldo</th>
-              <th>Ganancia</th>
-            </tr>
-          </thead>
-          <tbody id="tablaEnvios"></tbody>
-        </table>
+    <section id="mod-envios">
+      <div class="grid">
+        <div class="card"><h3>Total libras</h3><p id="totalLibras">0</p></div>
+        <div class="card"><h3>Total vendido</h3><p id="totalVenta">$0</p></div>
+        <div class="card"><h3>Pago a BELOURA</h3><p id="totalBeloura">$0</p></div>
+        <div class="card"><h3>Ganancia afiliado</h3><p id="totalGanancia">$0</p></div>
+        <div class="card"><h3>Total envíos</h3><p id="totalEnvios">0</p></div>
+        <div class="card"><h3>Envíos activos</h3><p id="enviosActivos">0</p></div>
+        <div class="card"><h3>Envíos liquidados</h3><p id="enviosLiquidados">0</p></div>
+        <div class="card"><h3>Saldo pendiente BELOURA</h3><p id="saldoPendienteBeloura">$0</p></div>
       </div>
-    </div>
+
+      <div class="table-card">
+        <h2>Mis envíos</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Cliente</th>
+                <th>Libras</th>
+                <th>Estado envío</th>
+                <th>Estado pago</th>
+                <th>Operación</th>
+                <th>Total cliente</th>
+                <th>Pago BELOURA</th>
+                <th>Pagado</th>
+                <th>Saldo</th>
+                <th>Ganancia</th>
+              </tr>
+            </thead>
+            <tbody id="tablaEnvios"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="mod-iptv" class="hidden">
+      <div class="grid">
+        <div class="card"><h3>Total cuentas</h3><p id="iptvTotalCuentas">0</p></div>
+        <div class="card"><h3>Activas</h3><p id="iptvActivas">0</p></div>
+        <div class="card"><h3>Por vencer</h3><p id="iptvPorVencer">0</p></div>
+        <div class="card"><h3>Vencidas</h3><p id="iptvVencidas">0</p></div>
+        <div class="card"><h3>Total vendido</h3><p id="iptvTotalVendido">$0</p></div>
+        <div class="card"><h3>Debe a BELOURA</h3><p id="iptvDebeBeloura">$0</p></div>
+        <div class="card"><h3>Saldo pendiente</h3><p id="iptvSaldoPendiente">$0</p></div>
+        <div class="card"><h3>Ganancia afiliado</h3><p id="iptvGanancia">$0</p></div>
+      </div>
+
+      <div class="panel">
+        <h2>Solicitar nueva cuenta IPTV</h2>
+        <p class="muted">
+          Registra los datos del cliente. BELOURA activará la cuenta y asignará usuario y clave.
+          Precio base para afiliado: $5. Precio sugerido de venta: $10.
+        </p>
+
+        <div class="grid-3">
+          <div>
+            <label>Nombre del cliente</label>
+            <input id="iptvClienteNombre" placeholder="Ej: Juan Pérez">
+          </div>
+
+          <div>
+            <label>Teléfono / WhatsApp</label>
+            <input id="iptvClienteTelefono" placeholder="Ej: 0999999999">
+          </div>
+
+          <div>
+            <label>Email</label>
+            <input id="iptvClienteEmail" placeholder="Opcional">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label>Plan</label>
+            <select id="iptvTipoPlan">
+              <option value="Mensual">Mensual</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Observación</label>
+            <input id="iptvObservacion" placeholder="Notas del cliente, dispositivo, etc.">
+          </div>
+        </div>
+
+        <button class="btn-blue" id="btnSolicitarIPTV" onclick="solicitarCuentaIPTV()">
+          Solicitar cuenta IPTV
+        </button>
+
+        <div id="iptvSolicitudOk" class="success-box"></div>
+        <div id="iptvSolicitudError" class="error-box"></div>
+      </div>
+
+      <div class="table-card">
+        <h2>Mis cuentas IPTV</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>CuentaID</th>
+                <th>Cliente</th>
+                <th>Teléfono</th>
+                <th>Usuario</th>
+                <th>Clave</th>
+                <th>Plan</th>
+                <th>Inicio</th>
+                <th>Vencimiento</th>
+                <th>Días</th>
+                <th>Estado cuenta</th>
+                <th>Estado pago</th>
+                <th>Pago BELOURA</th>
+                <th>Saldo</th>
+                <th>Ganancia</th>
+              </tr>
+            </thead>
+            <tbody id="tablaIPTV"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
   </div>
 
 </div>
 
 <script>
-  const API_URL = "https://script.google.com/macros/s/AKfycbyY2nKCo_Etz8OGAWMQVDhWAUqlTkZT5fPuLdM2scxv2663PUsanUF0tJWvgQkG03J23w/exec";
+  const API_URL = "https://script.google.com/macros/s/AKfycbx6AXhfE_p1k0q5dRo0VpJPWtcGqrCUgyIvpcbYvXs1i3_-K6LH7DMN0L2MRcDP8Sc1Hw/exec";
+
+  let afiliadoActual = "";
+  let pinActual = "";
 
   async function cargarDashboard() {
     const afiliado = document.getElementById("afiliadoInput").value.trim().toUpperCase();
@@ -254,10 +401,14 @@
         return;
       }
 
+      afiliadoActual = afiliado;
+      pinActual = pin;
+
       localStorage.setItem("beloura_afiliado", afiliado);
       localStorage.setItem("beloura_pin", pin);
 
       mostrarDashboard(data);
+      cargarIPTVAfiliado();
 
     } catch (error) {
       errorMsg.textContent = "Error conectando con el sistema.";
@@ -269,39 +420,22 @@
     document.getElementById("loginBox").classList.add("hidden");
     document.getElementById("dashboard").classList.remove("hidden");
 
-    document.getElementById("tituloAfiliado").textContent = 
-      `Afiliado: ${data.afiliado}`;
+    document.getElementById("tituloAfiliado").textContent = `Afiliado: ${data.afiliado}`;
 
-    document.getElementById("totalLibras").textContent = 
-      (data.resumen.totalLibras || 0) + " lb";
-
-    document.getElementById("totalVenta").textContent = 
-      formatoDinero(data.resumen.totalVenta || 0);
-
-    document.getElementById("totalBeloura").textContent = 
-      formatoDinero(data.resumen.totalBeloura || 0);
-
-    document.getElementById("totalGanancia").textContent = 
-      formatoDinero(data.resumen.totalGanancia || 0);
-
-    document.getElementById("totalEnvios").textContent = 
-      data.resumen.totalEnvios || 0;
-
-    document.getElementById("enviosActivos").textContent =
-      data.resumen.enviosActivos || 0;
-
-    document.getElementById("enviosLiquidados").textContent =
-      data.resumen.enviosLiquidados || 0;
-
-    document.getElementById("saldoPendienteBeloura").textContent =
-      formatoDinero(data.resumen.saldoPendienteBeloura || 0);
+    document.getElementById("totalLibras").textContent = (data.resumen.totalLibras || 0) + " lb";
+    document.getElementById("totalVenta").textContent = formatoDinero(data.resumen.totalVenta || 0);
+    document.getElementById("totalBeloura").textContent = formatoDinero(data.resumen.totalBeloura || 0);
+    document.getElementById("totalGanancia").textContent = formatoDinero(data.resumen.totalGanancia || 0);
+    document.getElementById("totalEnvios").textContent = data.resumen.totalEnvios || 0;
+    document.getElementById("enviosActivos").textContent = data.resumen.enviosActivos || 0;
+    document.getElementById("enviosLiquidados").textContent = data.resumen.enviosLiquidados || 0;
+    document.getElementById("saldoPendienteBeloura").textContent = formatoDinero(data.resumen.saldoPendienteBeloura || 0);
 
     const tbody = document.getElementById("tablaEnvios");
     tbody.innerHTML = "";
 
     data.envios.forEach(envio => {
       const tr = document.createElement("tr");
-
       tr.innerHTML = `
         <td>${envio.codigo || ""}</td>
         <td>${envio.cliente || ""}</td>
@@ -315,14 +449,177 @@
         <td>${formatoDinero(envio.saldoPendienteBeloura || 0)}</td>
         <td>${formatoDinero(envio.ganancia || 0)}</td>
       `;
-
       tbody.appendChild(tr);
     });
+  }
+
+  function mostrarModulo(modulo, btn) {
+    document.getElementById("mod-envios").classList.add("hidden");
+    document.getElementById("mod-iptv").classList.add("hidden");
+
+    document.getElementById("mod-" + modulo).classList.remove("hidden");
+
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    if (modulo === "iptv") {
+      cargarIPTVAfiliado();
+    }
+  }
+
+  async function cargarIPTVAfiliado() {
+    if (!afiliadoActual || !pinActual) return;
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "iptvAfiliado",
+          AFILIADO_ID: afiliadoActual,
+          pin: pinActual
+        })
+      });
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        console.warn("Error IPTV afiliado:", data.error);
+        return;
+      }
+
+      renderIPTV(data);
+
+    } catch (error) {
+      console.error("Error cargando IPTV:", error);
+    }
+  }
+
+  function renderIPTV(data) {
+    const r = data.resumen || {};
+
+    document.getElementById("iptvTotalCuentas").textContent = r.totalCuentas || 0;
+    document.getElementById("iptvActivas").textContent = r.activas || 0;
+    document.getElementById("iptvPorVencer").textContent = r.porVencer || 0;
+    document.getElementById("iptvVencidas").textContent = r.vencidas || 0;
+    document.getElementById("iptvTotalVendido").textContent = formatoDinero(r.totalVendido || 0);
+    document.getElementById("iptvDebeBeloura").textContent = formatoDinero(r.debeBeloura || 0);
+    document.getElementById("iptvSaldoPendiente").textContent = formatoDinero(r.saldoPendiente || 0);
+    document.getElementById("iptvGanancia").textContent = formatoDinero(r.gananciaAfiliado || 0);
+
+    const tbody = document.getElementById("tablaIPTV");
+    tbody.innerHTML = "";
+
+    const cuentas = data.cuentas || [];
+
+    cuentas.forEach(c => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${c.cuentaId || ""}</td>
+        <td>${c.cliente || ""}</td>
+        <td>${c.telefono || ""}</td>
+        <td>${c.usuarioIPTV || "Pendiente"}</td>
+        <td>${c.claveIPTV || "Pendiente"}</td>
+        <td>${c.tipoPlan || ""}</td>
+        <td>${limpiarFecha(c.fechaInicio)}</td>
+        <td>${limpiarFecha(c.fechaVencimiento)}</td>
+        <td>${c.diasRestantes === "" ? "-" : c.diasRestantes}</td>
+        <td>${badgeEstadoCuenta(c.estadoCuenta)}</td>
+        <td>${badgeEstadoPago(c.estadoPago)}</td>
+        <td>${formatoDinero(c.pagoBeloura || 0)}</td>
+        <td>${formatoDinero(c.saldoPendienteBeloura || 0)}</td>
+        <td>${formatoDinero(c.gananciaAfiliado || 0)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function solicitarCuentaIPTV() {
+    const clienteNombre = document.getElementById("iptvClienteNombre").value.trim();
+    const clienteTelefono = document.getElementById("iptvClienteTelefono").value.trim();
+    const clienteEmail = document.getElementById("iptvClienteEmail").value.trim();
+    const tipoPlan = document.getElementById("iptvTipoPlan").value;
+    const observacion = document.getElementById("iptvObservacion").value.trim();
+
+    limpiarMsgSolicitudIPTV();
+
+    if (!clienteNombre || !clienteTelefono) {
+      mostrarSolicitudIPTV("Ingresa nombre y teléfono del cliente.", false);
+      return;
+    }
+
+    const btn = document.getElementById("btnSolicitarIPTV");
+    btn.disabled = true;
+    btn.textContent = "Enviando solicitud...";
+
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "solicitarCuentaIPTV",
+          AFILIADO_ID: afiliadoActual,
+          pin: pinActual,
+          ClienteNombre: clienteNombre,
+          ClienteTelefono: clienteTelefono,
+          ClienteEmail: clienteEmail,
+          TipoPlan: tipoPlan,
+          DuracionDias: 30,
+          PrecioBase: 5,
+          PrecioVenta: 10,
+          Observacion: observacion || "Solicitud desde panel afiliado"
+        })
+      });
+
+      const data = await res.json();
+
+      if (!data.ok) {
+        mostrarSolicitudIPTV(data.error || "No se pudo registrar la solicitud.", false);
+        return;
+      }
+
+      mostrarSolicitudIPTV("Solicitud registrada correctamente. Código: " + data.cuentaId, true);
+
+      document.getElementById("iptvClienteNombre").value = "";
+      document.getElementById("iptvClienteTelefono").value = "";
+      document.getElementById("iptvClienteEmail").value = "";
+      document.getElementById("iptvObservacion").value = "";
+
+      cargarIPTVAfiliado();
+
+    } catch (error) {
+      console.error(error);
+      mostrarSolicitudIPTV("Error de conexión con el sistema.", false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Solicitar cuenta IPTV";
+    }
+  }
+
+  function mostrarSolicitudIPTV(msg, ok) {
+    const okBox = document.getElementById("iptvSolicitudOk");
+    const errorBox = document.getElementById("iptvSolicitudError");
+
+    if (ok) {
+      okBox.textContent = msg;
+      okBox.style.display = "block";
+      errorBox.style.display = "none";
+    } else {
+      errorBox.textContent = msg;
+      errorBox.style.display = "block";
+      okBox.style.display = "none";
+    }
+  }
+
+  function limpiarMsgSolicitudIPTV() {
+    document.getElementById("iptvSolicitudOk").style.display = "none";
+    document.getElementById("iptvSolicitudError").style.display = "none";
   }
 
   function cerrarSesion() {
     localStorage.removeItem("beloura_afiliado");
     localStorage.removeItem("beloura_pin");
+
+    afiliadoActual = "";
+    pinActual = "";
 
     document.getElementById("dashboard").classList.add("hidden");
     document.getElementById("loginBox").classList.remove("hidden");
@@ -334,6 +631,33 @@
 
   function formatoDinero(valor) {
     return "$" + Number(valor || 0).toFixed(2);
+  }
+
+  function limpiarFecha(valor) {
+    if (!valor) return "-";
+    return String(valor).split(" ")[0];
+  }
+
+  function badgeEstadoCuenta(estado) {
+    const e = String(estado || "").toLowerCase();
+
+    if (e.includes("activa")) return '<span class="pill pill-ok">Activa</span>';
+    if (e.includes("solicitada")) return '<span class="pill pill-info">Solicitada</span>';
+    if (e.includes("vencida")) return '<span class="pill pill-bad">Vencida</span>';
+    if (e.includes("suspendida")) return '<span class="pill pill-warn">Suspendida</span>';
+
+    return `<span class="pill pill-info">${estado || "Pendiente"}</span>`;
+  }
+
+  function badgeEstadoPago(estado) {
+    const e = String(estado || "").toLowerCase();
+
+    if (e.includes("pagado")) return '<span class="pill pill-ok">Pagado</span>';
+    if (e.includes("parcial")) return '<span class="pill pill-warn">Parcial</span>';
+    if (e.includes("activación")) return '<span class="pill pill-info">Pendiente activación</span>';
+    if (e.includes("pendiente")) return '<span class="pill pill-bad">Pendiente</span>';
+
+    return `<span class="pill pill-info">${estado || "Pendiente"}</span>`;
   }
 
   window.onload = function() {

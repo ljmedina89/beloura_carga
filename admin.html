@@ -25,6 +25,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
       <button onclick="showModule('afiliados', this)">🤝 Afiliados</button>
       <button onclick="showModule('finanzas', this)">💰 Finanzas</button>
       <button onclick="showModule('pagos', this)">🧾 Pagos</button>
+      <button onclick="showModule('iptv', this)">📺 IPTV</button>
       <button onclick="showModule('operadores', this)">🧑‍💼 Operadores</button>
       <button onclick="showModule('tracking', this)">🚚 Tracking</button>
       <button onclick="showModule('config', this)">⚙️ Configuración</button>
@@ -97,6 +98,59 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     <section id="afiliados" class="section"><div class="panel"><h2>Resumen por afiliado</h2><div class="table-wrap"><table><thead><tr><th>Afiliado</th><th>Nombre</th><th>Envíos</th><th>Libras</th><th>Total vendido</th><th>Debe BELOURA</th><th>Pagado</th><th>Saldo</th><th>Ganancia afiliado</th></tr></thead><tbody id="tablaAfiliados"></tbody></table></div></div></section>
     <section id="finanzas" class="section"><div class="cards" id="financeCards"></div><div class="panel"><div class="subtabs"><button class="active" onclick="showFinanceTab('todos', this)">Todos los paquetes</button><button onclick="showFinanceTab('cobrar', this)">Cuentas por cobrar</button><button onclick="showFinanceTab('pagadas', this)">Cuentas pagadas</button></div><div id="fin-todos" class="finance-tab"><h2>Todos los paquetes</h2><div class="table-wrap"><table><thead><tr><th>Envío</th><th>Guía</th><th>Operador</th><th>Afiliado</th><th>Cliente</th><th>Libras</th><th>Total cliente</th><th>Pago BELOURA</th><th>Pagado</th><th>Saldo</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="tablaPaquetesFinanzas"></tbody></table></div></div><div id="fin-cobrar" class="finance-tab" style="display:none;"><h2>Cuentas por cobrar</h2><div class="table-wrap"><table><thead><tr><th>Envío</th><th>Operador</th><th>Afiliado</th><th>Cliente</th><th>Libras</th><th>Debe</th><th>Pagado</th><th>Saldo</th><th>Acción</th></tr></thead><tbody id="tablaCobrar"></tbody></table></div></div><div id="fin-pagadas" class="finance-tab" style="display:none;"><h2>Cuentas pagadas</h2><div class="table-wrap"><table><thead><tr><th>Envío</th><th>Operador</th><th>Afiliado</th><th>Cliente</th><th>Libras</th><th>Debe</th><th>Pagado</th><th>Estado</th></tr></thead><tbody id="tablaPagadas"></tbody></table></div></div></div></section>
     <section id="pagos" class="section"><div class="panel"><h2>Historial de pagos</h2><div class="table-wrap"><table><thead><tr><th>ID</th><th>Fecha</th><th>Envío</th><th>Afiliado</th><th>Cliente</th><th>Monto</th><th>Método</th><th>Referencia</th></tr></thead><tbody id="tablaPagos"></tbody></table></div></div></section>
+    <section id="iptv" class="section">
+  <div class="cards" id="iptvAdminCards"></div>
+
+  <div class="panel">
+    <h2>Solicitudes IPTV pendientes</h2>
+    <p class="placeholder">
+      Cuentas solicitadas por afiliados que necesitan activación de usuario y clave.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cuenta</th>
+            <th>Afiliado</th>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Plan</th>
+            <th>Estado</th>
+            <th>Pago</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="tablaIPTVSolicitudes"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Todas las cuentas IPTV</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Cuenta</th>
+            <th>Afiliado</th>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Usuario</th>
+            <th>Clave</th>
+            <th>Inicio</th>
+            <th>Vence</th>
+            <th>Estado</th>
+            <th>Estado pago</th>
+            <th>Saldo</th>
+          </tr>
+        </thead>
+        <tbody id="tablaIPTVCuentas"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
     <section id="operadores" class="section">
       <div class="panel">
         <h2>Registrar operador</h2>
@@ -125,9 +179,37 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
 
 <div class="modal" id="modalPago"><div class="modal-content"><h2>Registrar pago</h2><input id="monto" type="number" step="0.01" placeholder="Monto pagado"><select id="metodo"><option>Zelle</option><option>Efectivo</option><option>Transferencia</option><option>Cash App</option><option>Otro</option></select><input id="ref" placeholder="Referencia"><button class="btn" onclick="guardarPago()">Guardar pago</button><button class="btn secondary" style="margin-top:10px" onclick="cerrarModal()">Cancelar</button></div></div>
 <div id="qrcode" style="display:none;"></div>
+<div class="modal" id="modalActivarIPTV">
+  <div class="modal-content">
+    <h2>Activar cuenta IPTV</h2>
 
+    <input id="iptvCuentaIdActiva" readonly placeholder="CuentaID">
+
+    <label>Usuario IPTV</label>
+    <input id="iptvUsuarioActiva" placeholder="Usuario IPTV">
+
+    <label>Clave IPTV</label>
+    <input id="iptvClaveActiva" placeholder="Clave IPTV">
+
+    <label>Fecha inicio</label>
+    <input id="iptvFechaInicioActiva" type="date">
+
+    <label>Duración</label>
+    <select id="iptvDuracionActiva">
+      <option value="30">30 días</option>
+      <option value="60">60 días</option>
+      <option value="90">90 días</option>
+    </select>
+
+    <label>Observación</label>
+    <input id="iptvObsActiva" placeholder="Opcional">
+
+    <button class="btn blue" onclick="guardarActivacionIPTV()">Activar cuenta</button>
+    <button class="btn secondary" style="margin-top:10px" onclick="cerrarModalActivarIPTV()">Cancelar</button>
+  </div>
+</div>
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxtOrNNdYdqe5TN45ktBEzPQy60fyqTHYCSfg0wGNHbkQ5-10ZWV1GfN_0YQzy--rFxWA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwNinsqZmQ8E9GQccMMLJHVjFbeUaQL1cmIaYxTbMhHld78Goj4lG5r--ylRof59ce8TQ/exec";
 const SECRET = "Beloura2025@";
 let envioActual = "";
 let dataGlobal = null;
@@ -135,11 +217,24 @@ const clientesCache = {};
 const afiliadosCache = {};
 const operadoresCache = {};
 
-const titles = {inicio:["Resumen General","Vista ejecutiva del ecosistema BELOURA."],envios:["Gestión de Envíos","Registro, control y seguimiento de paquetes."],clientes:["Clientes","Base maestra de remitentes y destinatarios."],afiliados:["Afiliados","Red comercial, saldos y rendimiento."],finanzas:["Finanzas","Cuentas por cobrar, pagadas y flujo financiero."],pagos:["Pagos y Abonos","Historial y registro de pagos."],operadores:["Operadores","Registro de operadores, roles y control de origen."],tracking:["Tracking y Estados","Control logístico de guías y estados."],config:["Configuración","Reglas internas del sistema."]};
+const titles = {inicio:["Resumen General","Vista ejecutiva del ecosistema BELOURA."],envios:["Gestión de Envíos","Registro, control y seguimiento de paquetes."],clientes:["Clientes","Base maestra de remitentes y destinatarios."],afiliados:["Afiliados","Red comercial, saldos y rendimiento."],finanzas:["Finanzas","Cuentas por cobrar, pagadas y flujo financiero."],pagos:["Pagos y Abonos","Historial y registro de pagos."],iptv:["IPTV","Solicitudes, activaciones y control de cuentas digitales."],operadores:["Operadores","Registro de operadores, roles y control de origen."],tracking:["Tracking y Estados","Control logístico de guías y estados."],config:["Configuración","Reglas internas del sistema."]};
 function money(v){return "$"+Number(v||0).toFixed(2)}
 function num(v){return Number(v||0).toFixed(2)}
 function estadoBadge(estado){if(estado==="Pagado")return`<span class="status ok">Pagado</span>`;if(estado==="Parcial")return`<span class="status warn">Parcial</span>`;if(estado==="Pendiente")return`<span class="status bad">Pendiente</span>`;return`<span class="status info">${estado||"Activo"}</span>`}
-function showModule(id,btn){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.getElementById("pageTitle").textContent=titles[id][0];document.getElementById("pageSubtitle").textContent=titles[id][1];if(id==="operadores")loadOperadores();if(id==="pagos")listarPagos();}
+function showModule(id, btn){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+
+  document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+
+  document.getElementById("pageTitle").textContent = titles[id][0];
+  document.getElementById("pageSubtitle").textContent = titles[id][1];
+
+  if (id === "iptv") {
+    cargarIPTVAdmin();
+  }
+}
 function showFinanceTab(id,btn){document.querySelectorAll(".finance-tab").forEach(t=>t.style.display="none");document.getElementById("fin-"+id).style.display="block";document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
 async function postAPI(payload){const res=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});return await res.json()}
 function showAlert(element,message,ok){element.style.display="block";element.textContent=message;element.className="alert "+(ok?"alert-ok":"alert-error")}
@@ -187,7 +282,253 @@ async function generarGuiaPDF(codigoEnvio,data){try{const{jsPDF}=window.jspdf;co
 function abrirPago(codigo){envioActual=codigo;document.getElementById("modalPago").style.display="flex"}
 function cerrarModal(){document.getElementById("modalPago").style.display="none";document.getElementById("monto").value="";document.getElementById("ref").value=""}
 async function guardarPago(){const monto=Number(document.getElementById("monto").value||0);const metodo=document.getElementById("metodo").value;const ref=document.getElementById("ref").value;if(monto<=0){alert("Ingresa un monto válido");return}const data=await postAPI({action:"registrarPagoEnvio",secretKey:SECRET,CodigoEnvio:envioActual,MontoPago:monto,MetodoPago:metodo,Referencia:ref,RegistradoPor:"Leonardo"});if(!data.ok){alert(data.error||"Error registrando pago");return}cerrarModal();cargarDashboard();listarPagos()}
+let iptvAdminData = [];
 
+async function cargarIPTVAdmin() {
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "listarCuentasIPTV",
+        secretKey: SECRET
+      })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      console.warn("Error cargando IPTV:", data.error);
+      return;
+    }
+
+    iptvAdminData = data.cuentas || [];
+
+    renderIPTVAdmin(iptvAdminData);
+
+  } catch (error) {
+    console.error("Error cargando IPTV admin:", error);
+  }
+}
+
+function renderIPTVAdmin(cuentas) {
+  const solicitudes = cuentas.filter(c => {
+    return String(c.EstadoCuenta || "").trim().toLowerCase() === "solicitada";
+  });
+
+  const activas = cuentas.filter(c => {
+    return String(c.EstadoCuenta || "").trim().toLowerCase() === "activa";
+  });
+
+  const vencidas = cuentas.filter(c => {
+    return String(c.EstadoCuenta || "").trim().toLowerCase() === "vencida";
+  });
+
+  let totalDebe = 0;
+  let totalSaldo = 0;
+  let totalGananciaAfiliado = 0;
+
+  cuentas.forEach(c => {
+    totalDebe += Number(c.PagoBeloura || 0);
+    totalSaldo += Number(c.SaldoPendienteBeloura || 0);
+    totalGananciaAfiliado += Number(c.GananciaAfiliado || 0);
+  });
+
+  const cards = document.getElementById("iptvAdminCards");
+
+  if (cards) {
+    cards.innerHTML = `
+      <div class="card blue"><h3>Total cuentas</h3><p>${cuentas.length}</p></div>
+      <div class="card orange"><h3>Solicitadas</h3><p>${solicitudes.length}</p></div>
+      <div class="card green"><h3>Activas</h3><p>${activas.length}</p></div>
+      <div class="card red"><h3>Vencidas</h3><p>${vencidas.length}</p></div>
+      <div class="card purple"><h3>Debe BELOURA</h3><p>${money(totalDebe)}</p></div>
+      <div class="card orange"><h3>Saldo pendiente</h3><p>${money(totalSaldo)}</p></div>
+      <div class="card green"><h3>Ganancia afiliados</h3><p>${money(totalGananciaAfiliado)}</p></div>
+    `;
+  }
+
+  renderIPTVSolicitudes(solicitudes);
+  renderIPTVCuentas(cuentas);
+}
+
+function renderIPTVSolicitudes(solicitudes) {
+  const tbody = document.getElementById("tablaIPTVSolicitudes");
+  if (!tbody) return;
+
+  if (!solicitudes.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8">No hay solicitudes IPTV pendientes.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = solicitudes.map(c => `
+    <tr>
+      <td>${safe(c.CuentaID)}</td>
+      <td>${safe(c.AfiliadoNombre || c.AFILIADO_ID)}</td>
+      <td>${safe(c.ClienteNombre)}</td>
+      <td>${safe(c.ClienteTelefono)}</td>
+      <td>${safe(c.TipoPlan)}</td>
+      <td><span class="status info">${safe(c.EstadoCuenta)}</span></td>
+      <td>${safe(c.EstadoPago)}</td>
+      <td>
+        <button class="btn blue" onclick="abrirModalActivarIPTV('${safe(c.CuentaID)}')">
+          Activar
+        </button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function renderIPTVCuentas(cuentas) {
+  const tbody = document.getElementById("tablaIPTVCuentas");
+  if (!tbody) return;
+
+  if (!cuentas.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="11">No hay cuentas IPTV registradas.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = cuentas.map(c => `
+    <tr>
+      <td>${safe(c.CuentaID)}</td>
+      <td>${safe(c.AfiliadoNombre || c.AFILIADO_ID)}</td>
+      <td>${safe(c.ClienteNombre)}</td>
+      <td>${safe(c.ClienteTelefono)}</td>
+      <td>${safe(c.UsuarioIPTV || "Pendiente")}</td>
+      <td>${safe(c.ClaveIPTV || "Pendiente")}</td>
+      <td>${limpiarFechaAdmin(c.FechaInicio)}</td>
+      <td>${limpiarFechaAdmin(c.FechaVencimiento)}</td>
+      <td>${badgeIPTVEstadoCuenta(c.EstadoCuenta)}</td>
+      <td>${badgeIPTVEstadoPago(c.EstadoPago)}</td>
+      <td>${money(c.SaldoPendienteBeloura || 0)}</td>
+    </tr>
+  `).join("");
+}
+
+function abrirModalActivarIPTV(cuentaId) {
+  const cuenta = iptvAdminData.find(c => {
+    return String(c.CuentaID || "").trim().toUpperCase() === String(cuentaId || "").trim().toUpperCase();
+  });
+
+  if (!cuenta) {
+    alert("No se encontró la cuenta IPTV.");
+    return;
+  }
+
+  document.getElementById("iptvCuentaIdActiva").value = cuenta.CuentaID || "";
+  document.getElementById("iptvUsuarioActiva").value = cuenta.UsuarioIPTV || "";
+  document.getElementById("iptvClaveActiva").value = cuenta.ClaveIPTV || "";
+
+  const hoy = new Date();
+  document.getElementById("iptvFechaInicioActiva").value = hoy.toISOString().slice(0, 10);
+
+  document.getElementById("iptvDuracionActiva").value = "30";
+  document.getElementById("iptvObsActiva").value = "";
+
+  document.getElementById("modalActivarIPTV").style.display = "flex";
+}
+
+function cerrarModalActivarIPTV() {
+  document.getElementById("modalActivarIPTV").style.display = "none";
+}
+
+async function guardarActivacionIPTV() {
+  const cuentaId = document.getElementById("iptvCuentaIdActiva").value.trim();
+  const usuario = document.getElementById("iptvUsuarioActiva").value.trim();
+  const clave = document.getElementById("iptvClaveActiva").value.trim();
+  const fechaInicio = document.getElementById("iptvFechaInicioActiva").value;
+  const duracion = Number(document.getElementById("iptvDuracionActiva").value || 30);
+  const obs = document.getElementById("iptvObsActiva").value.trim();
+
+  if (!cuentaId) {
+    alert("Falta CuentaID.");
+    return;
+  }
+
+  if (!usuario || !clave) {
+    alert("Ingresa usuario y clave IPTV.");
+    return;
+  }
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "activarCuentaIPTV",
+        secretKey: SECRET,
+
+        CuentaID: cuentaId,
+        UsuarioIPTV: usuario,
+        ClaveIPTV: clave,
+        FechaInicio: fechaInicio,
+        DuracionDias: duracion,
+        TipoPlan: "Mensual",
+        PrecioBase: 5,
+        PrecioVenta: 10,
+        Observacion: obs || "Cuenta activada desde admin BELOURA"
+      })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      alert(data.error || "No se pudo activar la cuenta.");
+      return;
+    }
+
+    cerrarModalActivarIPTV();
+    await cargarIPTVAdmin();
+
+    alert("Cuenta IPTV activada correctamente.");
+
+  } catch (error) {
+    console.error(error);
+    alert("Error de conexión con el sistema.");
+  }
+}
+
+function badgeIPTVEstadoCuenta(estado) {
+  const e = String(estado || "").toLowerCase();
+
+  if (e.includes("activa")) return `<span class="status ok">Activa</span>`;
+  if (e.includes("solicitada")) return `<span class="status info">Solicitada</span>`;
+  if (e.includes("vencida")) return `<span class="status bad">Vencida</span>`;
+  if (e.includes("suspendida")) return `<span class="status warn">Suspendida</span>`;
+
+  return `<span class="status info">${safe(estado || "Pendiente")}</span>`;
+}
+
+function badgeIPTVEstadoPago(estado) {
+  const e = String(estado || "").toLowerCase();
+
+  if (e.includes("pagado")) return `<span class="status ok">Pagado</span>`;
+  if (e.includes("parcial")) return `<span class="status warn">Parcial</span>`;
+  if (e.includes("activación")) return `<span class="status info">Pendiente activación</span>`;
+  if (e.includes("pendiente")) return `<span class="status bad">Pendiente</span>`;
+
+  return `<span class="status info">${safe(estado || "Pendiente")}</span>`;
+}
+
+function limpiarFechaAdmin(valor) {
+  if (!valor) return "-";
+  return String(valor).split(" ")[0];
+}
+
+function safe(value) {
+  return String(value || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 document.addEventListener("DOMContentLoaded",()=>{cargarDashboard();loadClientes();loadAfiliados();loadOperadores();loadGuias();listarPagos()});
 </script>
 </body>

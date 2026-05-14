@@ -209,6 +209,34 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     <button class="btn secondary" style="margin-top:10px" onclick="cerrarModalActivarIPTV()">Cancelar</button>
   </div>
 </div>
+  <div class="modal" id="modalPagoIPTV">
+  <div class="modal-content">
+    <h2>Registrar pago IPTV</h2>
+
+    <input id="iptvPagoCuentaId" readonly placeholder="CuentaID">
+
+    <label>Monto pagado</label>
+    <input id="iptvPagoMonto" type="number" step="0.01" placeholder="Monto pagado">
+
+    <label>Método de pago</label>
+    <select id="iptvPagoMetodo">
+      <option>Zelle</option>
+      <option>Efectivo</option>
+      <option>Transferencia</option>
+      <option>Cash App</option>
+      <option>Otro</option>
+    </select>
+
+    <label>Referencia</label>
+    <input id="iptvPagoReferencia" placeholder="Referencia">
+
+    <label>Observación</label>
+    <input id="iptvPagoObservacion" placeholder="Opcional">
+
+    <button class="btn blue" onclick="guardarPagoIPTV()">Guardar pago IPTV</button>
+    <button class="btn secondary" style="margin-top:10px" onclick="cerrarPagoIPTV()">Cancelar</button>
+  </div>
+</div>
 <script>
 const API_URL = "https://script.google.com/macros/s/AKfycbwK1wvWW4ocEA4lBVl0TJZeUIVADzF5mC4yGAFFSBf9FW-8TX8lo7CkAxhsfDEI_JNaIg/exec";
 const SECRET = "Beloura2025@";
@@ -444,34 +472,7 @@ function abrirModalActivarIPTV(cuentaId) {
 function cerrarModalActivarIPTV() {
   document.getElementById("modalActivarIPTV").style.display = "none";
 }
-<div class="modal" id="modalPagoIPTV">
-  <div class="modal-content">
-    <h2>Registrar pago IPTV</h2>
 
-    <input id="iptvPagoCuentaId" readonly placeholder="CuentaID">
-
-    <label>Monto pagado</label>
-    <input id="iptvPagoMonto" type="number" step="0.01" placeholder="Monto pagado">
-
-    <label>Método de pago</label>
-    <select id="iptvPagoMetodo">
-      <option>Zelle</option>
-      <option>Efectivo</option>
-      <option>Transferencia</option>
-      <option>Cash App</option>
-      <option>Otro</option>
-    </select>
-
-    <label>Referencia</label>
-    <input id="iptvPagoReferencia" placeholder="Referencia">
-
-    <label>Observación</label>
-    <input id="iptvPagoObservacion" placeholder="Opcional">
-
-    <button class="btn blue" onclick="guardarPagoIPTV()">Guardar pago IPTV</button>
-    <button class="btn secondary" style="margin-top:10px" onclick="cerrarPagoIPTV()">Cancelar</button>
-  </div>
-</div>
 async function guardarActivacionIPTV() {
   const cuentaId = document.getElementById("iptvCuentaIdActiva").value.trim();
   const usuario = document.getElementById("iptvUsuarioActiva").value.trim();

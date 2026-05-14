@@ -144,6 +144,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
             <th>Estado</th>
             <th>Estado pago</th>
             <th>Saldo</th>
+            <th>Acción</th>
           </tr>
         </thead>
         <tbody id="tablaIPTVCuentas"></tbody>
@@ -209,7 +210,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   </div>
 </div>
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwNinsqZmQ8E9GQccMMLJHVjFbeUaQL1cmIaYxTbMhHld78Goj4lG5r--ylRof59ce8TQ/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwK1wvWW4ocEA4lBVl0TJZeUIVADzF5mC4yGAFFSBf9FW-8TX8lo7CkAxhsfDEI_JNaIg/exec";
 const SECRET = "Beloura2025@";
 let envioActual = "";
 let dataGlobal = null;
@@ -408,6 +409,11 @@ function renderIPTVCuentas(cuentas) {
       <td>${badgeIPTVEstadoCuenta(c.EstadoCuenta)}</td>
       <td>${badgeIPTVEstadoPago(c.EstadoPago)}</td>
       <td>${money(c.SaldoPendienteBeloura || 0)}</td>
+<td>
+  ${Number(c.SaldoPendienteBeloura || 0) > 0
+    ? `<button class="btn" onclick="abrirPagoIPTV('${safe(c.CuentaID)}')">Registrar pago</button>`
+    : "Pagado"}
+</td>
     </tr>
   `).join("");
 }
@@ -438,7 +444,34 @@ function abrirModalActivarIPTV(cuentaId) {
 function cerrarModalActivarIPTV() {
   document.getElementById("modalActivarIPTV").style.display = "none";
 }
+<div class="modal" id="modalPagoIPTV">
+  <div class="modal-content">
+    <h2>Registrar pago IPTV</h2>
 
+    <input id="iptvPagoCuentaId" readonly placeholder="CuentaID">
+
+    <label>Monto pagado</label>
+    <input id="iptvPagoMonto" type="number" step="0.01" placeholder="Monto pagado">
+
+    <label>Método de pago</label>
+    <select id="iptvPagoMetodo">
+      <option>Zelle</option>
+      <option>Efectivo</option>
+      <option>Transferencia</option>
+      <option>Cash App</option>
+      <option>Otro</option>
+    </select>
+
+    <label>Referencia</label>
+    <input id="iptvPagoReferencia" placeholder="Referencia">
+
+    <label>Observación</label>
+    <input id="iptvPagoObservacion" placeholder="Opcional">
+
+    <button class="btn blue" onclick="guardarPagoIPTV()">Guardar pago IPTV</button>
+    <button class="btn secondary" style="margin-top:10px" onclick="cerrarPagoIPTV()">Cancelar</button>
+  </div>
+</div>
 async function guardarActivacionIPTV() {
   const cuentaId = document.getElementById("iptvCuentaIdActiva").value.trim();
   const usuario = document.getElementById("iptvUsuarioActiva").value.trim();
@@ -530,6 +563,84 @@ function safe(value) {
     .replaceAll("'", "&#039;");
 }
 document.addEventListener("DOMContentLoaded",()=>{cargarDashboard();loadClientes();loadAfiliados();loadOperadores();loadGuias();listarPagos()});
+function abrirPagoIPTV(cuentaId) {
+  document.getElementById("iptvPagoCuentaId").value = cuentaId;
+  document.getElementById("iptvPagoMonto").value = "";
+  document.getElementById("iptvPagoReferencia").value = "";
+  document.getElementById("iptvPagoObservacion").value = "";
+
+  const cuenta = iptvAdminData.find(c => {
+    return String(c.CuentaID || "").trim().toUpperCase() === String(cuentaId || "").trim().toUpperCase();
+  });
+
+  if (cuenta) {
+    const saldo = Number(cuenta.SaldoPendienteBeloura || 0);
+    if (saldo > 0) {
+      document.getElementById("iptvPagoMonto").value = saldo.toFixed(2);
+    }
+  }
+
+  document.getElementById("modalPagoIPTV").style.display = "flex";
+}
+
+function cerrarPagoIPTV() {
+  document.getElementById("modalPagoIPTV").style.display = "none";
+  document.getElementById("iptvPagoCuentaId").value = "";
+  document.getElementById("iptvPagoMonto").value = "";
+  document.getElementById("iptvPagoReferencia").value = "";
+  document.getElementById("iptvPagoObservacion").value = "";
+}
+
+async function guardarPagoIPTV() {
+  const cuentaId = document.getElementById("iptvPagoCuentaId").value.trim();
+  const monto = Number(document.getElementById("iptvPagoMonto").value || 0);
+  const metodo = document.getElementById("iptvPagoMetodo").value;
+  const referencia = document.getElementById("iptvPagoReferencia").value.trim();
+  const observacion = document.getElementById("iptvPagoObservacion").value.trim();
+
+  if (!cuentaId) {
+    alert("Falta CuentaID.");
+    return;
+  }
+
+  if (monto <= 0) {
+    alert("Ingresa un monto válido.");
+    return;
+  }
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "registrarPagoIPTV",
+        secretKey: SECRET,
+
+        CuentaID: cuentaId,
+        MontoPago: monto,
+        MetodoPago: metodo,
+        Referencia: referencia,
+        Observacion: observacion,
+        RegistradoPor: "Leonardo"
+      })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      alert(data.error || "No se pudo registrar el pago IPTV.");
+      return;
+    }
+
+    cerrarPagoIPTV();
+    await cargarIPTVAdmin();
+
+    alert("Pago IPTV registrado correctamente.");
+
+  } catch (error) {
+    console.error(error);
+    alert("Error de conexión con el sistema.");
+  }
+}
 </script>
 </body>
 </html>

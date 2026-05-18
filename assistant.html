@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Asistente BELOURA</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+    }
+
+    .chat-button {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #111827;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 20px;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      z-index: 9999;
+    }
+
+    .chat-box {
+      position: fixed;
+      right: 20px;
+      bottom: 85px;
+      width: 350px;
+      max-width: 92%;
+      height: 560px;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+      z-index: 9999;
+    }
+
+    .chat-header {
+      background: #111827;
+      color: white;
+      padding: 16px;
+    }
+
+    .chat-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .chat-header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background: #f9fafb;
+    }
+
+    .message {
+      margin-bottom: 12px;
+      padding: 11px 13px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .bot {
+      background: white;
+      color: #111827;
+      border: 1px solid #e5e7eb;
+    }
+
+    .user {
+      background: #111827;
+      color: white;
+      margin-left: auto;
+      max-width: 80%;
+    }
+
+    .quick-options {
+      padding: 12px;
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      display: grid;
+      gap: 8px;
+    }
+
+    .quick-options button {
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .quick-options button:hover {
+      background: #f3f4f6;
+    }
+
+    .input-area {
+      display: flex;
+      border-top: 1px solid #e5e7eb;
+      background: white;
+    }
+
+    .input-area input {
+      flex: 1;
+      border: none;
+      padding: 14px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .input-area button {
+      border: none;
+      background: #111827;
+      color: white;
+      padding: 0 18px;
+      cursor: pointer;
+    }
+
+    .cta {
+      display: inline-block;
+      margin-top: 8px;
+      background: #111827;
+      color: white;
+      text-decoration: none;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+<button class="chat-button" onclick="toggleChat()">💬 Asistente BELOURA</button>
+
+<div class="chat-box" id="chatBox">
+
+  <div class="chat-header">
+    <h3>Asistente BELOURA</h3>
+    <p>Envíos, compras, afiliados, IPTV y tracking</p>
+  </div>
+
+  <div class="chat-body" id="chatBody">
+    <div class="message bot">
+      👋 Bienvenido a <strong>BELOURA</strong>.<br><br>
+      Soy tu asistente virtual. Te ayudo a rastrear paquetes, conocer nuestros servicios, afiliarte o comprar IPTV.
+    </div>
+  </div>
+
+  <div class="quick-options">
+    <button onclick="optionSelected('tracking')">📦 Rastrear paquete</button>
+    <button onclick="optionSelected('afiliado')">💼 Quiero ser afiliado</button>
+    <button onclick="optionSelected('compras')">🛒 Comprar en USA</button>
+    <button onclick="optionSelected('iptv')">📺 Comprar IPTV</button>
+    <button onclick="optionSelected('ganar')">💰 Cómo ganar dinero</button>
+    <button onclick="optionSelected('whatsapp')">📲 Hablar con asesor</button>
+  </div>
+
+  <div class="input-area">
+    <input type="text" id="userInput" placeholder="Escribe aquí..." onkeypress="handleKey(event)">
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
+
+</div>
+
+<script>
+  const WHATSAPP_NUMBER = "19726070561";
+
+  const TRACKING_URL = "https://trk.belourastore.com";
+  const PANEL_AFILIADO_URL = "https://trk.belourastore.com/partner";
+  const REGISTRO_AFILIADO_URL = "https://trk.belourastore.com/afiliados";
+  const IPTV_URL = "https://trk.belourastore.com/partner";
+
+  function toggleChat() {
+    const chat = document.getElementById("chatBox");
+    chat.style.display = chat.style.display === "flex" ? "none" : "flex";
+  }
+
+  function addMessage(text, sender = "bot") {
+    const chatBody = document.getElementById("chatBody");
+    const msg = document.createElement("div");
+    msg.className = `message ${sender}`;
+    msg.innerHTML = text;
+    chatBody.appendChild(msg);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function optionSelected(option) {
+    const labels = {
+      tracking: "📦 Rastrear paquete",
+      afiliado: "💼 Quiero ser afiliado",
+      compras: "🛒 Comprar en USA",
+      iptv: "📺 Comprar IPTV",
+      ganar: "💰 Cómo ganar dinero",
+      whatsapp: "📲 Hablar con asesor"
+    };
+
+    addMessage(labels[option], "user");
+
+    if (option === "tracking") {
+      addMessage(`
+        📦 Para rastrear tu paquete, puedes ingresar tu código en nuestra página de tracking.<br><br>
+        Ejemplo de código: <strong>NY1001</strong><br>
+        <a class="cta" href="${TRACKING_URL}" target="_blank">Ir al tracking</a>
+      `);
+    }
+
+    if (option === "afiliado") {
+      addMessage(`
+        💼 Como afiliado BELOURA puedes generar ingresos revendiendo nuestros servicios:<br><br>
+        ✅ Envíos USA → Ecuador<br>
+        ✅ Compras en tiendas de USA<br>
+        ✅ IPTV / Flujotv<br>
+        ✅ Productos del ecosistema BELOURA<br><br>
+        El proceso es simple:<br>
+        1. Te registras<br>
+        2. Recibes acceso o instrucciones<br>
+        3. Promocionas los servicios<br>
+        4. Cobras a tu cliente<br>
+        5. Pagas a BELOURA el valor base<br><br>
+        <a class="cta" href="${REGISTRO_AFILIADO_URL}" target="_blank">Registrarme como afiliado</a>
+      `);
+    }
+
+    if (option === "compras") {
+      addMessage(`
+        🛒 Con BELOURA puedes comprar en tiendas de USA como Burlington, Ross, Marshalls, Costco, Walmart, Amazon y más.<br><br>
+        Funcionamiento:<br>
+        1. Nos envías el producto o tienda<br>
+        2. Cotizamos la compra<br>
+        3. Pagas factura + servicio<br>
+        4. Enviamos a Ecuador<br><br>
+        Comisión referencial: <strong>$2 por producto comprado</strong> + envío por libra.<br><br>
+        <a class="cta" href="https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20BELOURA%2C%20quiero%20hacer%20una%20compra%20en%20USA" target="_blank">Solicitar compra</a>
+      `);
+    }
+
+    if (option === "iptv") {
+      addMessage(`
+        📺 BELOURA también ofrece servicio IPTV / Flujotv.<br><br>
+        Puedes:<br>
+        ✅ Comprar una cuenta para uso personal<br>
+        ✅ Revender cuentas como afiliado<br>
+        ✅ Generar ingresos mensuales<br><br>
+        <a class="cta" href="https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20BELOURA%2C%20quiero%20información%20sobre%20IPTV" target="_blank">Consultar IPTV</a>
+      `);
+    }
+
+    if (option === "ganar") {
+      addMessage(`
+        💰 Con BELOURA puedes generar ingresos de varias formas:<br><br>
+        📦 Vendiendo envíos a Ecuador<br>
+        🛒 Refiriendo compras en USA<br>
+        📺 Vendiendo IPTV<br>
+        👥 Recomendando nuevos clientes o afiliados<br><br>
+        La idea es que puedas ofrecer servicios reales, cobrar a tu cliente y quedarte con tu margen de ganancia.<br><br>
+        <a class="cta" href="${REGISTRO_AFILIADO_URL}" target="_blank">Quiero generar ingresos</a>
+      `);
+    }
+
+    if (option === "whatsapp") {
+      addMessage(`
+        📲 Puedes hablar directamente con un asesor BELOURA por WhatsApp.<br><br>
+        <a class="cta" href="https://wa.me/${WHATSAPP_NUMBER}?text=Hola%20BELOURA%2C%20necesito%20información" target="_blank">Abrir WhatsApp</a>
+      `);
+    }
+  }
+
+  function sendMessage() {
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    const lower = text.toLowerCase();
+
+    if (lower.includes("afiliado") || lower.includes("afiliar")) {
+      optionSelected("afiliado");
+    } else if (lower.includes("iptv") || lower.includes("flujo") || lower.includes("flujotv")) {
+      optionSelected("iptv");
+    } else if (lower.includes("tracking") || lower.includes("rastrear") || lower.includes("paquete") || lower.startsWith("ny")) {
+      optionSelected("tracking");
+    } else if (lower.includes("comprar") || lower.includes("usa") || lower.includes("tienda")) {
+      optionSelected("compras");
+    } else if (lower.includes("ganar") || lower.includes("dinero") || lower.includes("vender")) {
+      optionSelected("ganar");
+    } else {
+      addMessage(`
+        Gracias por escribirnos. Puedo ayudarte con:<br><br>
+        📦 Tracking<br>
+        💼 Afiliados<br>
+        🛒 Compras en USA<br>
+        📺 IPTV<br>
+        💰 Generación de ingresos<br><br>
+        Elige una opción de los botones o escribe lo que necesitas.
+      `);
+    }
+  }
+
+  function handleKey(event) {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  }
+</script>
+
+</body>
+</html>

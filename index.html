@@ -1109,6 +1109,15 @@
     bottom: 92px;
   }
 }
+
+    .ai-card-grid.compact {
+      grid-template-columns: 1fr;
+    }
+
+    .ai-card-grid.compact .ai-choice-card {
+      min-height: auto;
+    }
+
   </style>
 </head>
 <body>
@@ -1681,6 +1690,7 @@ function renderTrackingResponse(data, byCliente, code) {
       whatsapp: "19726070561",
       trackingUrl: "#tracking",
       panelAfiliado: "https://trk.belourastore.com/afiliados",
+      registroAfiliado: "https://trk.belourastore.com/afiliados",
       phoneLabel: "+1 972 607 0561"
     };
 
@@ -1889,36 +1899,163 @@ function renderTrackingResponse(data, byCliente, code) {
       aiAddBubble("💼 Generar ingresos", "user");
 
       aiTyping(() => {
-        aiAddBubble("Muy buena decisión. Te explico el modelo de afiliados BELOURA de forma simple.");
+        aiAddBubble("Perfecto. Te guío según la etapa en la que estés como afiliado BELOURA.");
         aiAddHTML(`
           <div class="ai-result-card">
-            <h4>💼 Afiliado BELOURA</h4>
+            <h4>💼 Centro de afiliados BELOURA</h4>
             <p>
-              Puedes revender servicios BELOURA, cobrar a tu cliente y conservar
-              tu margen. BELOURA te da estructura, servicios y soporte operativo.
+              Desde aquí puedes registrarte, entrar al panel, pedir acceso
+              o solicitar cuentas Flujotv/IPTV para tus clientes.
             </p>
 
             <div class="ai-list">
               <div>📦 Revende envíos USA → Ecuador</div>
               <div>🛒 Ofrece compras en tiendas de USA</div>
-              <div>📺 Revende IPTV / Flujotv</div>
-              <div>🔎 Usa tracking y panel de seguimiento</div>
-            </div>
-
-            <div class="ai-actions">
-              <a class="ai-action" target="_blank" href="${BELOURA_AI.panelAfiliado}">Ir al panel</a>
-              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero registrarme como afiliado y recibir más información.')}">Registrarme por WhatsApp</a>
+              <div>📺 Solicita y revende cuentas Flujotv/IPTV</div>
+              <div>🔎 Usa panel y tracking para seguimiento</div>
             </div>
           </div>
         `);
 
-        aiAddBubble("¿Qué te gustaría vender primero?");
+        aiAddBubble("¿Qué necesitas hacer ahora?");
         aiAddHTML(`
-          <div class="ai-chip-row">
-            <button class="ai-chip" onclick="affiliatePath('Envíos')">📦 Envíos</button>
-            <button class="ai-chip" onclick="affiliatePath('Compras en USA')">🛒 Compras</button>
-            <button class="ai-chip" onclick="affiliatePath('IPTV')">📺 IPTV</button>
-            <button class="ai-chip" onclick="affiliatePath('Todo el ecosistema')">🚀 Todo</button>
+          <div class="ai-card-grid compact">
+            <button class="ai-choice-card" onclick="affiliateStage('registro')">
+              <span class="ai-choice-icon">📝</span>
+              <span>
+                <strong>Quiero registrarme</strong>
+                <span>Nuevo afiliado BELOURA.</span>
+              </span>
+            </button>
+
+            <button class="ai-choice-card" onclick="affiliateStage('panel')">
+              <span class="ai-choice-icon">🔐</span>
+              <span>
+                <strong>Ya me registré</strong>
+                <span>Entrar al panel afiliado.</span>
+              </span>
+            </button>
+
+            <button class="ai-choice-card" onclick="affiliateStage('flujotv')">
+              <span class="ai-choice-icon">📺</span>
+              <span>
+                <strong>Solicitar Flujotv</strong>
+                <span>Cuenta para cliente o reventa.</span>
+              </span>
+            </button>
+
+            <button class="ai-choice-card" onclick="affiliateStage('ayuda')">
+              <span class="ai-choice-icon">💬</span>
+              <span>
+                <strong>Necesito ayuda</strong>
+                <span>Hablar con asesor BELOURA.</span>
+              </span>
+            </button>
+          </div>
+        `);
+      });
+    }
+
+    function affiliateStage(stage) {
+      const labels = {
+        registro: "📝 Quiero registrarme",
+        panel: "🔐 Ya me registré, quiero entrar al panel",
+        flujotv: "📺 Solicitar cuenta Flujotv/IPTV",
+        ayuda: "💬 Necesito ayuda"
+      };
+
+      aiAddBubble(labels[stage], "user");
+
+      if (stage === "registro") {
+        aiTyping(() => {
+          aiAddHTML(`
+            <div class="ai-result-card">
+              <h4>📝 Registro de afiliado</h4>
+              <p>
+                Regístrate para recibir instrucciones, código de afiliado
+                y acceso al ecosistema BELOURA.
+              </p>
+              <div class="ai-list">
+                <div>1. Completa tus datos</div>
+                <div>2. BELOURA valida tu registro</div>
+                <div>3. Recibes instrucciones y acceso</div>
+                <div>4. Empiezas a vender servicios</div>
+              </div>
+              <div class="ai-actions">
+                <a class="ai-action" target="_blank" href="${BELOURA_AI.registroAfiliado}">Registrarme</a>
+                <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero registrarme como afiliado y recibir mi código de acceso.')}">Registrarme por WhatsApp</a>
+              </div>
+            </div>
+          `);
+        });
+      }
+
+      if (stage === "panel") {
+        aiTyping(() => {
+          aiAddHTML(`
+            <div class="ai-result-card">
+              <h4>🔐 Acceso al panel afiliado</h4>
+              <p>
+                Si ya te registraste, entra al panel afiliado con el acceso
+                asignado por BELOURA. Si todavía no tienes usuario, código o PIN,
+                solicita tu acceso por WhatsApp.
+              </p>
+              <div class="ai-list">
+                <div>✅ Consulta tus envíos y clientes</div>
+                <div>✅ Revisa operaciones afiliadas</div>
+                <div>✅ Accede a herramientas de venta</div>
+              </div>
+              <div class="ai-actions">
+                <a class="ai-action" target="_blank" href="${BELOURA_AI.panelAfiliado}">Entrar al panel</a>
+                <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, ya me registré como afiliado y necesito mi acceso al panel.')}">No tengo mi acceso</a>
+              </div>
+            </div>
+          `);
+        });
+      }
+
+      if (stage === "flujotv") {
+        flowIPTVAffiliate();
+      }
+
+      if (stage === "ayuda") {
+        aiTyping(() => {
+          aiAddHTML(`
+            <div class="ai-result-card">
+              <h4>💬 Soporte para afiliados</h4>
+              <p>
+                Te conecto con BELOURA para revisar tu registro, acceso al panel
+                o solicitud de productos para vender.
+              </p>
+              <div class="ai-actions">
+                <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, necesito ayuda con mi registro o acceso como afiliado.')}">Hablar con asesor</a>
+              </div>
+            </div>
+          `);
+        });
+      }
+    }
+
+    function flowIPTVAffiliate() {
+      aiTyping(() => {
+        aiAddBubble("Perfecto. ¿Qué necesitas hacer con Flujotv/IPTV?");
+        aiAddHTML(`
+          <div class="ai-result-card">
+            <h4>📺 Flujotv / IPTV para afiliados</h4>
+            <p>
+              Como afiliado puedes solicitar cuentas para clientes, pedir información
+              de precios o iniciar como revendedor.
+            </p>
+            <div class="ai-list">
+              <div>✅ Cuenta para cliente final</div>
+              <div>✅ Información de precio afiliado</div>
+              <div>✅ Reventa mensual recurrente</div>
+            </div>
+            <div class="ai-actions">
+              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, soy afiliado y quiero solicitar una cuenta Flujotv para un cliente.')}">Solicitar cuenta cliente</a>
+              <a class="ai-action" target="_blank" href="${waLink('Hola BELOURA, quiero información de precios para revender Flujotv como afiliado.')}">Ver precios afiliado</a>
+              <a class="ai-action secondary" target="_blank" href="${waLink('Hola BELOURA, quiero empezar a revender Flujotv/IPTV.')}">Quiero revender</a>
+            </div>
           </div>
         `);
       });
@@ -1937,12 +2074,13 @@ function renderTrackingResponse(data, byCliente, code) {
             </p>
             <div class="ai-list">
               <div>1. Registras tus datos</div>
-              <div>2. Recibes instrucciones y acceso</div>
+              <div>2. Recibes instrucciones y acceso al panel</div>
               <div>3. Promocionas el servicio</div>
               <div>4. Cobras a tu cliente y mantienes tu margen</div>
             </div>
             <div class="ai-actions">
               <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero iniciar como afiliado vendiendo ' + product + '.')}">Iniciar afiliación</a>
+              <button class="ai-action secondary" onclick="flowAfiliado()">Ver centro afiliado</button>
             </div>
           </div>
         `);
@@ -1995,12 +2133,14 @@ function renderTrackingResponse(data, byCliente, code) {
             </p>
             <div class="ai-list">
               <div>✅ Activación rápida</div>
-              <div>✅ Opción para revendedores</div>
+              <div>✅ Opción para clientes finales</div>
+              <div>✅ Opción para afiliados y revendedores</div>
               <div>✅ Servicio recurrente mensual</div>
             </div>
             <div class="ai-actions">
-              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero información sobre IPTV / Flujotv.')}">Consultar IPTV</a>
-              <button class="ai-action secondary" onclick="flowAfiliado()">Revender como afiliado</button>
+              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero comprar una cuenta Flujotv/IPTV para uso personal.')}">Comprar para mí</a>
+              <button class="ai-action" onclick="flowIPTVAffiliate()">Soy afiliado</button>
+              <button class="ai-action secondary" onclick="flowAfiliado()">Quiero afiliarme</button>
             </div>
           </div>
         `);
@@ -2032,6 +2172,9 @@ function renderTrackingResponse(data, byCliente, code) {
       aiTyping(() => {
         if (value.includes("track") || value.includes("rastre") || value.includes("guia") || value.includes("guía") || value.includes("paquete") || value.startsWith("ny") || value.startsWith("cny")) {
           flowTracking();
+        } else if (value.includes("panel") || value.includes("acceso") || value.includes("pin") || value.includes("usuario")) {
+          flowAfiliado();
+          setTimeout(() => affiliateStage('panel'), 900);
         } else if (value.includes("afili") || value.includes("ganar") || value.includes("vender") || value.includes("ingreso")) {
           flowAfiliado();
         } else if (value.includes("iptv") || value.includes("flujo") || value.includes("flujotv")) {

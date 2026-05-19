@@ -609,156 +609,505 @@
     padding: 18px;
   }
 }
-.beloura-assistant-toggle{
-  position:fixed;
-  right:20px;
-  bottom:20px;
-  width:62px;
-  height:62px;
-  border-radius:50%;
-  background:#111827;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:26px;
-  cursor:pointer;
-  z-index:99999;
-  box-shadow:0 15px 35px rgba(0,0,0,.28);
+
+/* =========================================================
+   BELOURA IA ASSISTANT — V2 PREMIUM
+   ========================================================= */
+
+.beloura-ai-launcher {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255,255,255,.22);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59,130,246,.95), transparent 28%),
+    linear-gradient(135deg, #0f172a 0%, #111827 52%, #020617 100%);
+  color: #fff;
+  border-radius: 999px;
+  padding: 12px 16px 12px 12px;
+  cursor: pointer;
+  box-shadow: 0 22px 50px rgba(2, 6, 23, .34);
+  backdrop-filter: blur(16px);
+  transition: transform .22s ease, box-shadow .22s ease, opacity .22s ease;
 }
 
-.beloura-assistant{
-  position:fixed;
-  right:20px;
-  bottom:95px;
-  width:380px;
-  max-width:calc(100% - 30px);
-  height:620px;
-  background:#fff;
-  border-radius:28px;
-  overflow:hidden;
-  display:none;
-  flex-direction:column;
-  z-index:99999;
-  box-shadow:0 25px 60px rgba(0,0,0,.25);
+.beloura-ai-launcher:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 28px 65px rgba(2, 6, 23, .42);
 }
 
-.beloura-topbar{
-  background:#111827;
-  color:#fff;
-  padding:18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.beloura-ai-orb {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.24), rgba(255,255,255,.06)),
+    #2563eb;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.28), 0 10px 25px rgba(37,99,235,.35);
+  position: relative;
+  isolation: isolate;
 }
 
-.beloura-topbar h3{
-  margin:0;
-  font-size:18px;
+.beloura-ai-orb::after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.92);
+  opacity: .18;
+  animation: belouraPulse 1.9s infinite ease-in-out;
 }
 
-.beloura-topbar span{
-  font-size:12px;
-  opacity:.8;
+@keyframes belouraPulse {
+  0%, 100% { transform: scale(.86); opacity: .16; }
+  50% { transform: scale(1.35); opacity: .36; }
 }
 
-.beloura-topbar button{
-  border:none;
-  background:none;
-  color:#fff;
-  font-size:30px;
-  cursor:pointer;
+.beloura-ai-launcher-text {
+  display: grid;
+  line-height: 1.1;
 }
 
-.beloura-conversation{
-  flex:1;
-  overflow-y:auto;
-  padding:18px;
-  background:#f4f7fb;
+.beloura-ai-launcher-text strong {
+  font-size: 13px;
+  letter-spacing: .01em;
 }
 
-.bot-bubble,
-.user-bubble{
-  padding:14px 16px;
-  border-radius:20px;
-  margin-bottom:14px;
-  max-width:88%;
-  line-height:1.5;
-  font-size:14px;
+.beloura-ai-launcher-text span {
+  font-size: 11px;
+  color: rgba(255,255,255,.72);
+  font-weight: 700;
 }
 
-.bot-bubble{
-  background:#fff;
-  color:#111827;
-  border:1px solid #e5e7eb;
+.beloura-ai-panel {
+  position: fixed;
+  right: 22px;
+  bottom: 92px;
+  width: 410px;
+  max-width: calc(100vw - 28px);
+  height: min(690px, calc(100vh - 118px));
+  z-index: 99999;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,250,252,.96)),
+    #fff;
+  border: 1px solid rgba(226,232,240,.9);
+  box-shadow: 0 34px 85px rgba(2, 6, 23, .34);
+  backdrop-filter: blur(22px);
 }
 
-.user-bubble{
-  background:#111827;
-  color:#fff;
-  margin-left:auto;
+.beloura-ai-panel.open {
+  display: flex;
+  animation: belouraPanelIn .22s ease both;
 }
 
-.option-group{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-bottom:18px;
+@keyframes belouraPanelIn {
+  from { opacity: 0; transform: translateY(14px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.option-group button{
-  border:none;
-  background:#fff;
-  border:1px solid #dbe1ea;
-  border-radius:14px;
-  padding:12px 14px;
-  cursor:pointer;
-  font-size:13px;
-  transition:.2s;
+.beloura-ai-top {
+  padding: 18px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(59,130,246,.9), transparent 34%),
+    radial-gradient(circle at 90% 10%, rgba(23,189,91,.44), transparent 30%),
+    linear-gradient(135deg, #020617 0%, #0f172a 48%, #111827 100%);
+  position: relative;
 }
 
-.option-group button:hover{
-  background:#111827;
-  color:#fff;
+.beloura-ai-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
 }
 
-.info-card{
-  background:#fff;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:16px;
-  border:1px solid #e5e7eb;
+.beloura-ai-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.info-card h4{
-  margin-top:0;
-  margin-bottom:10px;
-  color:#111827;
+.beloura-ai-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  font-size: 22px;
 }
 
-.info-card p{
-  margin:0 0 10px;
-  font-size:14px;
-  color:#374151;
+.beloura-ai-brand h3 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: -.035em;
 }
 
-.card-actions{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:12px;
+.beloura-ai-brand p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: rgba(255,255,255,.72);
+  font-weight: 700;
 }
 
-.card-actions a,
-.card-actions button{
-  background:#111827;
-  color:#fff;
-  text-decoration:none;
-  border:none;
-  border-radius:12px;
-  padding:10px 14px;
-  cursor:pointer;
-  font-size:13px;
+.beloura-ai-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.beloura-ai-status {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255,255,255,.78);
+}
+
+.beloura-ai-dot {
+  width: 8px;
+  height: 8px;
+  background: #17bd5b;
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px rgba(23,189,91,.15);
+}
+
+.beloura-ai-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  background:
+    radial-gradient(circle at top left, rgba(37,99,235,.08), transparent 28%),
+    linear-gradient(180deg, #f8fafc, #ffffff);
+}
+
+.beloura-ai-body::-webkit-scrollbar {
+  width: 8px;
+}
+.beloura-ai-body::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.ai-bubble {
+  width: fit-content;
+  max-width: 88%;
+  padding: 13px 15px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  line-height: 1.48;
+  font-size: 14px;
+  animation: bubbleIn .2s ease both;
+}
+
+@keyframes bubbleIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.ai-bubble.bot {
+  background: #fff;
+  color: #0f172a;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .06);
+  border-top-left-radius: 8px;
+}
+
+.ai-bubble.user {
+  margin-left: auto;
+  color: #fff;
+  background: linear-gradient(135deg, #0f172a, #111827);
+  border-top-right-radius: 8px;
+  box-shadow: 0 10px 26px rgba(15,23,42,.18);
+}
+
+.ai-hero-card {
+  margin: 8px 0 14px;
+  padding: 16px;
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(15,23,42,.96), rgba(30,41,59,.96)),
+    #0f172a;
+  color: #fff;
+  box-shadow: 0 18px 40px rgba(15,23,42,.18);
+  border: 1px solid rgba(255,255,255,.08);
+}
+
+.ai-hero-card .eyebrow {
+  font-size: 11px;
+  font-weight: 900;
+  color: #93c5fd;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  margin-bottom: 8px;
+}
+
+.ai-hero-card h4 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  letter-spacing: -.04em;
+}
+
+.ai-hero-card p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255,255,255,.76);
+}
+
+.ai-card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin: 12px 0 16px;
+}
+
+.ai-choice-card {
+  border: 1px solid #e2e8f0;
+  background: rgba(255,255,255,.88);
+  border-radius: 18px;
+  padding: 14px;
+  cursor: pointer;
+  text-align: left;
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 12px;
+  align-items: center;
+  transition: .2s ease;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, .045);
+}
+
+.ai-choice-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(37,99,235,.45);
+  box-shadow: 0 15px 30px rgba(15, 23, 42, .10);
+}
+
+.ai-choice-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: #eff6ff;
+  font-size: 21px;
+}
+
+.ai-choice-card strong {
+  display: block;
+  font-size: 14px;
+  color: #0f172a;
+  margin-bottom: 3px;
+}
+
+.ai-choice-card span {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.ai-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 16px;
+}
+
+.ai-chip {
+  border: 1px solid #dbe3ef;
+  background: #fff;
+  color: #0f172a;
+  padding: 10px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: 0 6px 16px rgba(15,23,42,.04);
+  transition: .2s ease;
+}
+
+.ai-chip:hover {
+  background: #0f172a;
+  color: #fff;
+  border-color: #0f172a;
+  transform: translateY(-1px);
+}
+
+.ai-result-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 22px;
+  padding: 16px;
+  margin: 12px 0 16px;
+  box-shadow: 0 12px 30px rgba(15,23,42,.07);
+}
+
+.ai-result-card h4 {
+  margin: 0 0 10px;
+  font-size: 17px;
+  letter-spacing: -.03em;
+  color: #0f172a;
+}
+
+.ai-result-card p {
+  margin: 0 0 10px;
+  color: #475569;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.ai-list {
+  display: grid;
+  gap: 7px;
+  margin: 10px 0;
+  font-size: 13px;
+  color: #334155;
+}
+
+.ai-list div {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  padding: 9px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.ai-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 13px;
+}
+
+.ai-action {
+  border: 0;
+  background: #0f172a;
+  color: #fff;
+  border-radius: 999px;
+  padding: 10px 13px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ai-action.secondary {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.ai-action.green {
+  background: #17bd5b;
+  color: #fff;
+}
+
+.ai-typing {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border-top-left-radius: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .06);
+}
+
+.ai-typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  animation: typingDot 1s infinite ease-in-out;
+}
+
+.ai-typing span:nth-child(2) { animation-delay: .14s; }
+.ai-typing span:nth-child(3) { animation-delay: .28s; }
+
+@keyframes typingDot {
+  0%, 80%, 100% { transform: translateY(0); opacity: .4; }
+  40% { transform: translateY(-4px); opacity: 1; }
+}
+
+.beloura-ai-footer {
+  padding: 12px 14px;
+  background: rgba(255,255,255,.92);
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.beloura-ai-input {
+  flex: 1;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 999px;
+  padding: 12px 14px;
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.beloura-ai-send {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 0;
+  color: #fff;
+  background: #0f172a;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+@media(max-width: 620px) {
+  .beloura-ai-launcher {
+    right: 16px;
+    bottom: 16px;
+    padding: 10px;
+  }
+
+  .beloura-ai-launcher-text {
+    display: none;
+  }
+
+  .beloura-ai-panel {
+    right: 12px;
+    left: 12px;
+    bottom: 86px;
+    width: auto;
+    height: min(680px, calc(100vh - 108px));
+    border-radius: 26px;
+  }
+
+  .wa-float {
+    bottom: 92px;
+  }
 }
   </style>
 </head>
@@ -1281,260 +1630,432 @@ function renderTrackingResponse(data, byCliente, code) {
   </div>
 `;
 }
-<div class="beloura-assistant-toggle" onclick="toggleBelouraAssistant()">
-  💬
-</div>
+  </script>
 
-<div class="beloura-assistant" id="belouraAssistant">
+  <!-- =========================================================
+       BELOURA IA ASSISTANT — V2 PREMIUM
+       ========================================================= -->
 
-  <div class="beloura-topbar">
-    <div>
-      <h3>Asistente BELOURA</h3>
-      <span>Envíos · Compras · Afiliados · IPTV</span>
-    </div>
+  <button class="beloura-ai-launcher" onclick="toggleBelouraAI()" aria-label="Abrir asistente BELOURA IA">
+    <span class="beloura-ai-orb">✦</span>
+    <span class="beloura-ai-launcher-text">
+      <strong>BELOURA IA</strong>
+      <span>Asistente activo</span>
+    </span>
+  </button>
 
-    <button onclick="toggleBelouraAssistant()">×</button>
-  </div>
-
-  <div class="beloura-conversation" id="belouraConversation">
-
-    <div class="bot-bubble">
-      👋 Hola, soy el asistente de <strong>BELOURA</strong>.<br><br>
-      Puedo ayudarte con:
-      <br><br>
-      📦 Envíos<br>
-      🛒 Compras en USA<br>
-      💼 Afiliados<br>
-      📺 IPTV<br>
-      🔎 Tracking
-      <br><br>
-      ¿Qué deseas hacer hoy?
-    </div>
-
-    <div class="option-group">
-      <button onclick="startFlow('enviar')">📦 Quiero enviar</button>
-      <button onclick="startFlow('comprar')">🛒 Comprar en USA</button>
-      <button onclick="startFlow('afiliado')">💼 Quiero afiliarme</button>
-      <button onclick="startFlow('tracking')">🔎 Rastrear paquete</button>
-    </div>
-
-  </div>
-
-</div>
-        <script>
-const WHATSAPP = "19726070561";
-const TRACKING_URL = "https://trk.belourastore.com";
-const PANEL_URL = "https://ingreso.beloura.shop";
-
-function toggleBelouraAssistant(){
-  const assistant = document.getElementById("belouraAssistant");
-
-  assistant.style.display =
-    assistant.style.display === "flex"
-    ? "none"
-    : "flex";
-}
-
-function addBubble(text,type="bot"){
-  const area = document.getElementById("belouraConversation");
-
-  const bubble = document.createElement("div");
-  bubble.className = type === "bot"
-    ? "bot-bubble"
-    : "user-bubble";
-
-  bubble.innerHTML = text;
-
-  area.appendChild(bubble);
-
-  area.scrollTop = area.scrollHeight;
-}
-
-function addHTML(html){
-  const area = document.getElementById("belouraConversation");
-
-  const div = document.createElement("div");
-  div.innerHTML = html;
-
-  area.appendChild(div);
-
-  area.scrollTop = area.scrollHeight;
-}
-
-function startFlow(flow){
-
-  const labels = {
-    enviar:"📦 Quiero enviar",
-    comprar:"🛒 Comprar en USA",
-    afiliado:"💼 Quiero afiliarme",
-    tracking:"🔎 Rastrear paquete"
-  };
-
-  addBubble(labels[flow],"user");
-
-  if(flow==="enviar"){
-
-    addBubble(`
-      Perfecto. ¿Qué deseas enviar?
-    `);
-
-    addHTML(`
-      <div class="option-group">
-        <button onclick="shippingType('paquete')">📦 Paquete</button>
-        <button onclick="shippingType('maleta')">🧳 Maleta</button>
-        <button onclick="shippingType('compras')">🛒 Compras</button>
-        <button onclick="shippingType('electronicos')">💻 Electrónicos</button>
-      </div>
-    `);
-
-  }
-
-  if(flow==="comprar"){
-
-    addBubble(`
-      Excelente. Con BELOURA puedes comprar en tiendas de USA y recibir en Ecuador.
-    `);
-
-    addHTML(`
-      <div class="info-card">
-        <h4>🛒 Compras en USA</h4>
-
-        <p>
-          Compramos productos por ti en:
-          Amazon, Burlington, Ross,
-          Marshalls, Walmart, Costco y más.
-        </p>
-
-        <p>
-          Tú eliges el producto y
-          nosotros nos encargamos de la compra y envío.
-        </p>
-
-        <div class="card-actions">
-          <a target="_blank"
-             href="https://wa.me/${WHATSAPP}?text=Hola%20BELOURA%2C%20quiero%20comprar%20en%20USA">
-             Solicitar compra
-          </a>
+  <aside class="beloura-ai-panel" id="belouraAiPanel" aria-label="Asistente virtual BELOURA">
+    <div class="beloura-ai-top">
+      <div class="beloura-ai-topline">
+        <div class="beloura-ai-brand">
+          <div class="beloura-ai-avatar">✦</div>
+          <div>
+            <h3>BELOURA IA</h3>
+            <p>Envíos · Compras · Afiliados · Tracking</p>
+          </div>
         </div>
-      </div>
-    `);
-
-  }
-
-  if(flow==="afiliado"){
-
-    addBubble(`
-      Excelente decisión. Los afiliados BELOURA pueden generar ingresos revendiendo servicios reales.
-    `);
-
-    addHTML(`
-      <div class="info-card">
-
-        <h4>💼 Afiliado BELOURA</h4>
-
-        <p>
-          Puedes generar ingresos con:
-        </p>
-
-        <p>
-          📦 Envíos<br>
-          🛒 Compras en USA<br>
-          📺 IPTV / Flujotv
-        </p>
-
-        <p>
-          Tú cobras al cliente y conservas tu margen de ganancia.
-        </p>
-
-        <div class="card-actions">
-          <a target="_blank" href="${PANEL_URL}">
-            Registrarme
-          </a>
-
-          <a target="_blank"
-             href="https://wa.me/${WHATSAPP}?text=Hola%20BELOURA%2C%20quiero%20información%20para%20afiliarme">
-            Hablar con asesor
-          </a>
-        </div>
-
-      </div>
-    `);
-
-  }
-
-  if(flow==="tracking"){
-
-    addBubble(`
-      Puedes rastrear tu paquete desde nuestro sistema de tracking.
-    `);
-
-    addHTML(`
-      <div class="info-card">
-
-        <h4>🔎 Tracking BELOURA</h4>
-
-        <p>
-          Ingresa tu código de envío.
-        </p>
-
-        <p>
-          Ejemplo:
-          <strong>NY1001</strong>
-        </p>
-
-        <div class="card-actions">
-          <a target="_blank" href="${TRACKING_URL}">
-            Ir al tracking
-          </a>
-        </div>
-
-      </div>
-    `);
-
-  }
-
-}
-
-function shippingType(type){
-
-  const labels = {
-    paquete:"📦 Paquete",
-    maleta:"🧳 Maleta",
-    compras:"🛒 Compras",
-    electronicos:"💻 Electrónicos"
-  };
-
-  addBubble(labels[type],"user");
-
-  addHTML(`
-    <div class="info-card">
-
-      <h4>${labels[type]}</h4>
-
-      <p>
-        Nuestro equipo puede ayudarte
-        con el envío y asesoría logística.
-      </p>
-
-      <p>
-        Los tiempos y costos pueden variar
-        dependiendo del peso, volumen y destino.
-      </p>
-
-      <div class="card-actions">
-
-        <a target="_blank"
-           href="https://wa.me/${WHATSAPP}?text=Hola%20BELOURA%2C%20quiero%20información%20sobre%20${type}">
-           Solicitar información
-        </a>
-
+        <button class="beloura-ai-close" onclick="toggleBelouraAI()" aria-label="Cerrar">×</button>
       </div>
 
+      <div class="beloura-ai-status">
+        <span class="beloura-ai-dot"></span>
+        Asistente operativo conectado al ecosistema BELOURA
+      </div>
     </div>
-  `);
 
-}
-</script>
-  
+    <div class="beloura-ai-body" id="belouraAiBody"></div>
+
+    <div class="beloura-ai-footer">
+      <input
+        id="belouraAiInput"
+        class="beloura-ai-input"
+        placeholder="Escribe: envío, afiliado, IPTV, tracking..."
+        onkeydown="handleBelouraAIKey(event)"
+      />
+      <button class="beloura-ai-send" onclick="sendBelouraAIMessage()">➜</button>
+    </div>
+  </aside>
+
+  <script>
+    const BELOURA_AI = {
+      whatsapp: "19726070561",
+      trackingUrl: "#tracking",
+      panelAfiliado: "https://trk.belourastore.com/afiliados",
+      phoneLabel: "+1 972 607 0561"
+    };
+
+    let belouraAIStarted = false;
+
+    function toggleBelouraAI() {
+      const panel = document.getElementById("belouraAiPanel");
+      panel.classList.toggle("open");
+
+      if (!belouraAIStarted) {
+        belouraAIStarted = true;
+        startBelouraAI();
+      }
+    }
+
+    function aiScrollBottom() {
+      const body = document.getElementById("belouraAiBody");
+      body.scrollTop = body.scrollHeight;
+    }
+
+    function aiAddBubble(message, type = "bot") {
+      const body = document.getElementById("belouraAiBody");
+      const bubble = document.createElement("div");
+      bubble.className = `ai-bubble ${type}`;
+      bubble.innerHTML = message;
+      body.appendChild(bubble);
+      aiScrollBottom();
+    }
+
+    function aiAddHTML(html) {
+      const body = document.getElementById("belouraAiBody");
+      const wrap = document.createElement("div");
+      wrap.innerHTML = html;
+      body.appendChild(wrap);
+      aiScrollBottom();
+    }
+
+    function aiTyping(callback, delay = 520) {
+      const body = document.getElementById("belouraAiBody");
+      const typing = document.createElement("div");
+      typing.className = "ai-typing";
+      typing.innerHTML = "<span></span><span></span><span></span>";
+      body.appendChild(typing);
+      aiScrollBottom();
+
+      setTimeout(() => {
+        typing.remove();
+        callback();
+        aiScrollBottom();
+      }, delay);
+    }
+
+    function waLink(message) {
+      return `https://wa.me/${BELOURA_AI.whatsapp}?text=${encodeURIComponent(message)}`;
+    }
+
+    function startBelouraAI() {
+      aiAddHTML(`
+        <div class="ai-hero-card">
+          <div class="eyebrow">Asistente digital</div>
+          <h4>Bienvenido a BELOURA</h4>
+          <p>
+            Te ayudo a cotizar envíos, comprar en USA, rastrear paquetes
+            o empezar como afiliado dentro del ecosistema BELOURA.
+          </p>
+        </div>
+      `);
+
+      aiTyping(() => {
+        aiAddBubble("👋 Hola. ¿Qué deseas hacer hoy?");
+        showMainCards();
+      });
+    }
+
+    function showMainCards() {
+      aiAddHTML(`
+        <div class="ai-card-grid">
+          <button class="ai-choice-card" onclick="flowEnviar()">
+            <span class="ai-choice-icon">📦</span>
+            <span>
+              <strong>Enviar a Ecuador</strong>
+              <span>Cotiza paquetes, maletas o compras.</span>
+            </span>
+          </button>
+
+          <button class="ai-choice-card" onclick="flowComprar()">
+            <span class="ai-choice-icon">🛒</span>
+            <span>
+              <strong>Comprar en USA</strong>
+              <span>Personal shopper en tiendas americanas.</span>
+            </span>
+          </button>
+
+          <button class="ai-choice-card" onclick="flowAfiliado()">
+            <span class="ai-choice-icon">💼</span>
+            <span>
+              <strong>Generar ingresos</strong>
+              <span>Afíliate y revende servicios BELOURA.</span>
+            </span>
+          </button>
+
+          <button class="ai-choice-card" onclick="flowTracking()">
+            <span class="ai-choice-icon">🔎</span>
+            <span>
+              <strong>Rastrear paquete</strong>
+              <span>Consulta el estado de tu envío.</span>
+            </span>
+          </button>
+        </div>
+      `);
+    }
+
+    function flowEnviar() {
+      aiAddBubble("📦 Enviar a Ecuador", "user");
+
+      aiTyping(() => {
+        aiAddBubble("Perfecto. ¿Qué deseas enviar?");
+        aiAddHTML(`
+          <div class="ai-chip-row">
+            <button class="ai-chip" onclick="shippingDetail('Paquete de 8 lb')">📦 Paquete 8 lb</button>
+            <button class="ai-chip" onclick="shippingDetail('Maleta de 50 lb')">🧳 Maleta 50 lb</button>
+            <button class="ai-chip" onclick="shippingDetail('Compras de tienda')">🛍️ Compras</button>
+            <button class="ai-chip" onclick="shippingDetail('Electrónicos')">💻 Electrónicos</button>
+          </div>
+        `);
+      });
+    }
+
+    function shippingDetail(type) {
+      aiAddBubble(type, "user");
+
+      const messages = {
+        "Paquete de 8 lb": {
+          title: "📦 Paquete de 8 lb",
+          text: "Ideal para ropa, zapatos, accesorios, productos pequeños y compras personales. La tarifa promocional puede variar según temporada, peso real, volumen y ciudad de destino.",
+          wa: "Hola BELOURA, quiero cotizar un paquete de 8 lb hacia Ecuador."
+        },
+        "Maleta de 50 lb": {
+          title: "🧳 Maleta de 50 lb",
+          text: "Opción útil para mayor volumen. Antes de enviar se valida contenido, peso, restricciones, destino y forma de entrega en Ecuador.",
+          wa: "Hola BELOURA, quiero información sobre envío de maleta de 50 lb a Ecuador."
+        },
+        "Compras de tienda": {
+          title: "🛍️ Compras de tienda",
+          text: "Podemos ayudarte a comprar en tiendas de USA, consolidar tus productos y enviarlos a Ecuador con tracking.",
+          wa: "Hola BELOURA, quiero enviar compras realizadas en tiendas de USA."
+        },
+        "Electrónicos": {
+          title: "💻 Electrónicos",
+          text: "Los electrónicos pueden requerir validación especial por cantidad, valor, factura y restricciones aduaneras. Te recomendamos consultar antes de comprar.",
+          wa: "Hola BELOURA, quiero consultar el envío de electrónicos a Ecuador."
+        }
+      };
+
+      const item = messages[type];
+
+      aiTyping(() => {
+        aiAddHTML(`
+          <div class="ai-result-card">
+            <h4>${item.title}</h4>
+            <p>${item.text}</p>
+            <div class="ai-list">
+              <div>✅ Validamos peso y volumen</div>
+              <div>✅ Coordinamos recepción en NY</div>
+              <div>✅ Activamos tracking BELOURA</div>
+            </div>
+            <div class="ai-actions">
+              <a class="ai-action green" target="_blank" href="${waLink(item.wa)}">Cotizar por WhatsApp</a>
+              <button class="ai-action secondary" onclick="flowTracking()">Rastrear paquete</button>
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    function flowComprar() {
+      aiAddBubble("🛒 Comprar en USA", "user");
+
+      aiTyping(() => {
+        aiAddBubble("Excelente. BELOURA puede ayudarte a comprar en tiendas de Estados Unidos y enviar a Ecuador.");
+        aiAddHTML(`
+          <div class="ai-result-card">
+            <h4>🛒 Personal Shopper BELOURA</h4>
+            <p>
+              Tú eliges el producto o tienda. Nosotros cotizamos, compramos,
+              recibimos, consolidamos y enviamos a Ecuador.
+            </p>
+
+            <div class="ai-list">
+              <div>🛍️ Burlington, Ross, Marshalls, Walmart, Costco</div>
+              <div>📦 Consolidación de productos</div>
+              <div>🔎 Tracking del envío</div>
+              <div>💬 Asesoría directa por WhatsApp</div>
+            </div>
+
+            <div class="ai-actions">
+              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero comprar en tiendas de USA y enviar a Ecuador.')}">Solicitar compra</a>
+              <button class="ai-action secondary" onclick="flowEnviar()">Ver opciones de envío</button>
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    function flowAfiliado() {
+      aiAddBubble("💼 Generar ingresos", "user");
+
+      aiTyping(() => {
+        aiAddBubble("Muy buena decisión. Te explico el modelo de afiliados BELOURA de forma simple.");
+        aiAddHTML(`
+          <div class="ai-result-card">
+            <h4>💼 Afiliado BELOURA</h4>
+            <p>
+              Puedes revender servicios BELOURA, cobrar a tu cliente y conservar
+              tu margen. BELOURA te da estructura, servicios y soporte operativo.
+            </p>
+
+            <div class="ai-list">
+              <div>📦 Revende envíos USA → Ecuador</div>
+              <div>🛒 Ofrece compras en tiendas de USA</div>
+              <div>📺 Revende IPTV / Flujotv</div>
+              <div>🔎 Usa tracking y panel de seguimiento</div>
+            </div>
+
+            <div class="ai-actions">
+              <a class="ai-action" target="_blank" href="${BELOURA_AI.panelAfiliado}">Ir al panel</a>
+              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero registrarme como afiliado y recibir más información.')}">Registrarme por WhatsApp</a>
+            </div>
+          </div>
+        `);
+
+        aiAddBubble("¿Qué te gustaría vender primero?");
+        aiAddHTML(`
+          <div class="ai-chip-row">
+            <button class="ai-chip" onclick="affiliatePath('Envíos')">📦 Envíos</button>
+            <button class="ai-chip" onclick="affiliatePath('Compras en USA')">🛒 Compras</button>
+            <button class="ai-chip" onclick="affiliatePath('IPTV')">📺 IPTV</button>
+            <button class="ai-chip" onclick="affiliatePath('Todo el ecosistema')">🚀 Todo</button>
+          </div>
+        `);
+      });
+    }
+
+    function affiliatePath(product) {
+      aiAddBubble(product, "user");
+
+      aiTyping(() => {
+        aiAddHTML(`
+          <div class="ai-result-card">
+            <h4>🚀 Ruta recomendada: ${product}</h4>
+            <p>
+              Empieza con un producto simple, consigue tus primeros clientes
+              y luego amplías al resto del ecosistema BELOURA.
+            </p>
+            <div class="ai-list">
+              <div>1. Registras tus datos</div>
+              <div>2. Recibes instrucciones y acceso</div>
+              <div>3. Promocionas el servicio</div>
+              <div>4. Cobras a tu cliente y mantienes tu margen</div>
+            </div>
+            <div class="ai-actions">
+              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero iniciar como afiliado vendiendo ' + product + '.')}">Iniciar afiliación</a>
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    function flowTracking() {
+      aiAddBubble("🔎 Rastrear paquete", "user");
+
+      aiTyping(() => {
+        aiAddHTML(`
+          <div class="ai-result-card">
+            <h4>🔎 Tracking BELOURA</h4>
+            <p>
+              Puedes consultar tu envío desde la sección de tracking de esta misma página.
+              Usa tu código de envío, guía o código de cliente.
+            </p>
+
+            <div class="ai-actions">
+              <button class="ai-action" onclick="goToTrackingFromAI()">Ir al tracking</button>
+              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, necesito ayuda para rastrear mi paquete.')}">Ayuda por WhatsApp</a>
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    function goToTrackingFromAI() {
+      toggleBelouraAI();
+      const tracking = document.getElementById("tracking");
+      if (tracking) {
+        tracking.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      setTimeout(() => {
+        const input = document.getElementById("trackingCode");
+        if (input) input.focus();
+      }, 650);
+    }
+
+    function flowIPTV() {
+      aiAddBubble("📺 IPTV / Flujotv", "user");
+
+      aiTyping(() => {
+        aiAddHTML(`
+          <div class="ai-result-card">
+            <h4>📺 IPTV / Flujotv</h4>
+            <p>
+              Puedes comprar una cuenta para uso personal o revender cuentas
+              como afiliado BELOURA.
+            </p>
+            <div class="ai-list">
+              <div>✅ Activación rápida</div>
+              <div>✅ Opción para revendedores</div>
+              <div>✅ Servicio recurrente mensual</div>
+            </div>
+            <div class="ai-actions">
+              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero información sobre IPTV / Flujotv.')}">Consultar IPTV</a>
+              <button class="ai-action secondary" onclick="flowAfiliado()">Revender como afiliado</button>
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    function resetBelouraAI() {
+      document.getElementById("belouraAiBody").innerHTML = "";
+      startBelouraAI();
+    }
+
+    function handleBelouraAIKey(event) {
+      if (event.key === "Enter") {
+        sendBelouraAIMessage();
+      }
+    }
+
+    function sendBelouraAIMessage() {
+      const input = document.getElementById("belouraAiInput");
+      const text = input.value.trim();
+
+      if (!text) return;
+
+      aiAddBubble(text, "user");
+      input.value = "";
+
+      const value = text.toLowerCase();
+
+      aiTyping(() => {
+        if (value.includes("track") || value.includes("rastre") || value.includes("guia") || value.includes("guía") || value.includes("paquete") || value.startsWith("ny") || value.startsWith("cny")) {
+          flowTracking();
+        } else if (value.includes("afili") || value.includes("ganar") || value.includes("vender") || value.includes("ingreso")) {
+          flowAfiliado();
+        } else if (value.includes("iptv") || value.includes("flujo") || value.includes("flujotv")) {
+          flowIPTV();
+        } else if (value.includes("compr") || value.includes("tienda") || value.includes("amazon") || value.includes("burlington") || value.includes("ross")) {
+          flowComprar();
+        } else if (value.includes("enviar") || value.includes("envio") || value.includes("envío") || value.includes("ecuador") || value.includes("maleta")) {
+          flowEnviar();
+        } else if (value.includes("whatsapp") || value.includes("asesor") || value.includes("humano")) {
+          aiAddHTML(`
+            <div class="ai-result-card">
+              <h4>📲 Atención directa</h4>
+              <p>Te conecto con un asesor BELOURA por WhatsApp.</p>
+              <div class="ai-actions">
+                <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, necesito información.')}">Abrir WhatsApp</a>
+              </div>
+            </div>
+          `);
+        } else {
+          aiAddBubble("Puedo ayudarte con envíos, compras en USA, afiliados, IPTV o tracking. Elige una ruta:");
+          showMainCards();
+        }
+      }, 450);
+    }
+  </script>
 </body>
 </html>

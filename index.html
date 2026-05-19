@@ -609,127 +609,156 @@
     padding: 18px;
   }
 }
-    .beloura-chat-button {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
-  background: #111827;
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  padding: 14px 20px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  z-index: 99999;
-  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+.beloura-assistant-toggle{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  width:62px;
+  height:62px;
+  border-radius:50%;
+  background:#111827;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+  cursor:pointer;
+  z-index:99999;
+  box-shadow:0 15px 35px rgba(0,0,0,.28);
 }
 
-.beloura-chat-box {
-  position: fixed;
-  right: 20px;
-  bottom: 85px;
-  width: 360px;
-  max-width: calc(100% - 40px);
-  height: 540px;
-  background: #fff;
-  border-radius: 22px;
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  z-index: 99999;
-  box-shadow: 0 18px 45px rgba(0,0,0,.28);
+.beloura-assistant{
+  position:fixed;
+  right:20px;
+  bottom:95px;
+  width:380px;
+  max-width:calc(100% - 30px);
+  height:620px;
+  background:#fff;
+  border-radius:28px;
+  overflow:hidden;
+  display:none;
+  flex-direction:column;
+  z-index:99999;
+  box-shadow:0 25px 60px rgba(0,0,0,.25);
 }
 
-.beloura-chat-header {
-  background: #111827;
-  color: #fff;
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.beloura-topbar{
+  background:#111827;
+  color:#fff;
+  padding:18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.beloura-chat-header h3 {
-  margin: 0;
-  font-size: 17px;
+.beloura-topbar h3{
+  margin:0;
+  font-size:18px;
 }
 
-.beloura-chat-header p {
-  margin: 4px 0 0;
-  font-size: 12px;
-  opacity: .8;
+.beloura-topbar span{
+  font-size:12px;
+  opacity:.8;
 }
 
-.beloura-chat-header button {
-  background: transparent;
-  border: none;
-  color: #fff;
-  font-size: 26px;
-  cursor: pointer;
+.beloura-topbar button{
+  border:none;
+  background:none;
+  color:#fff;
+  font-size:30px;
+  cursor:pointer;
 }
 
-.beloura-chat-body {
-  flex: 1;
-  padding: 15px;
-  background: #f8fafc;
-  overflow-y: auto;
+.beloura-conversation{
+  flex:1;
+  overflow-y:auto;
+  padding:18px;
+  background:#f4f7fb;
 }
 
-.beloura-message {
-  padding: 12px 14px;
-  border-radius: 16px;
-  margin-bottom: 12px;
-  font-size: 14px;
-  line-height: 1.45;
+.bot-bubble,
+.user-bubble{
+  padding:14px 16px;
+  border-radius:20px;
+  margin-bottom:14px;
+  max-width:88%;
+  line-height:1.5;
+  font-size:14px;
 }
 
-.beloura-message.bot {
-  background: #fff;
-  color: #111827;
-  border: 1px solid #e5e7eb;
+.bot-bubble{
+  background:#fff;
+  color:#111827;
+  border:1px solid #e5e7eb;
 }
 
-.beloura-message.user {
-  background: #111827;
-  color: #fff;
-  margin-left: auto;
-  max-width: 80%;
+.user-bubble{
+  background:#111827;
+  color:#fff;
+  margin-left:auto;
 }
 
-.beloura-chat-options {
-  padding: 12px;
-  background: #fff;
-  border-top: 1px solid #e5e7eb;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+.option-group{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:18px;
 }
 
-.beloura-chat-options button {
-  border: 1px solid #d1d5db;
-  background: #fff;
-  padding: 10px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 13px;
-  text-align: left;
+.option-group button{
+  border:none;
+  background:#fff;
+  border:1px solid #dbe1ea;
+  border-radius:14px;
+  padding:12px 14px;
+  cursor:pointer;
+  font-size:13px;
+  transition:.2s;
 }
 
-.beloura-chat-options button:hover {
-  background: #f3f4f6;
+.option-group button:hover{
+  background:#111827;
+  color:#fff;
 }
 
-.beloura-cta {
-  display: inline-block;
-  margin-top: 9px;
-  background: #111827;
-  color: #fff;
-  text-decoration: none;
-  padding: 9px 12px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 700;
+.info-card{
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  border:1px solid #e5e7eb;
+}
+
+.info-card h4{
+  margin-top:0;
+  margin-bottom:10px;
+  color:#111827;
+}
+
+.info-card p{
+  margin:0 0 10px;
+  font-size:14px;
+  color:#374151;
+}
+
+.card-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.card-actions a,
+.card-actions button{
+  background:#111827;
+  color:#fff;
+  text-decoration:none;
+  border:none;
+  border-radius:12px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-size:13px;
 }
   </style>
 </head>
@@ -1252,119 +1281,260 @@ function renderTrackingResponse(data, byCliente, code) {
   </div>
 `;
 }
-  </script>
-<button class="beloura-chat-button" onclick="toggleBelouraAssistant()">
-  💬 Asistente BELOURA
-</button>
+<div class="beloura-assistant-toggle" onclick="toggleBelouraAssistant()">
+  💬
+</div>
 
-<div class="beloura-chat-box" id="belouraChatBox">
-  <div class="beloura-chat-header">
+<div class="beloura-assistant" id="belouraAssistant">
+
+  <div class="beloura-topbar">
     <div>
       <h3>Asistente BELOURA</h3>
-      <p>Envíos · Compras · Afiliados · IPTV</p>
+      <span>Envíos · Compras · Afiliados · IPTV</span>
     </div>
+
     <button onclick="toggleBelouraAssistant()">×</button>
   </div>
 
-  <div class="beloura-chat-body" id="belouraChatBody">
-    <div class="beloura-message bot">
-      👋 Bienvenido a <strong>BELOURA</strong>.<br><br>
-      Soy tu asistente virtual. ¿Qué deseas hacer?
-    </div>
-  </div>
+  <div class="beloura-conversation" id="belouraConversation">
 
-  <div class="beloura-chat-options">
-    <button onclick="belouraOption('tracking')">📦 Rastrear paquete</button>
-    <button onclick="belouraOption('afiliado')">💼 Ser afiliado</button>
-    <button onclick="belouraOption('compras')">🛒 Comprar en USA</button>
-    <button onclick="belouraOption('iptv')">📺 IPTV</button>
-    <button onclick="belouraOption('ganar')">💰 Generar ingresos</button>
-    <button onclick="belouraOption('whatsapp')">📲 Asesor</button>
-  </div>
-</div>
-<script>
-const BELOURA_WHATSAPP = "19726070561";
-const BELOURA_TRACKING = "https://trk.belourastore.com";
-const BELOURA_PANEL_AFILIADO = "https://trk.belourastore.com/afiliados";
-
-function toggleBelouraAssistant() {
-  const box = document.getElementById("belouraChatBox");
-  box.style.display = box.style.display === "flex" ? "none" : "flex";
-}
-
-function belouraAddMessage(text, sender = "bot") {
-  const body = document.getElementById("belouraChatBody");
-  const msg = document.createElement("div");
-  msg.className = `beloura-message ${sender}`;
-  msg.innerHTML = text;
-  body.appendChild(msg);
-  body.scrollTop = body.scrollHeight;
-}
-
-function belouraOption(option) {
-  const titles = {
-    tracking: "📦 Rastrear paquete",
-    afiliado: "💼 Ser afiliado",
-    compras: "🛒 Comprar en USA",
-    iptv: "📺 IPTV",
-    ganar: "💰 Generar ingresos",
-    whatsapp: "📲 Hablar con asesor"
-  };
-
-  belouraAddMessage(titles[option], "user");
-
-  const respuestas = {
-    tracking: `
-      📦 Puedes rastrear tu paquete ingresando tu código de envío.<br><br>
-      Ejemplo: <strong>NY1001</strong><br>
-      <a class="beloura-cta" href="${BELOURA_TRACKING}" target="_blank">Ir al tracking</a>
-    `,
-
-    afiliado: `
-      💼 Como afiliado BELOURA puedes generar ingresos revendiendo nuestros servicios:<br><br>
-      ✅ Envíos USA → Ecuador<br>
-      ✅ Compras en tiendas de USA<br>
-      ✅ IPTV / Flujotv<br><br>
-      Proceso:<br>
-      1. Te registras<br>
-      2. Recibes acceso al panel<br>
-      3. Promocionas los servicios<br>
-      4. Cobras a tu cliente<br>
-      5. Pagas a BELOURA el valor base<br><br>
-      <a class="beloura-cta" href="${BELOURA_PANEL_AFILIADO}" target="_blank">Acceder / registrarme</a>
-    `,
-
-    compras: `
-      🛒 Con BELOURA puedes comprar en tiendas de USA y recibir en Ecuador.<br><br>
-      Tiendas sugeridas:<br>
-      Burlington, Ross, Marshalls, Walmart, Amazon, Costco y más.<br><br>
-      <a class="beloura-cta" href="https://wa.me/${BELOURA_WHATSAPP}?text=Hola%20BELOURA%2C%20quiero%20comprar%20en%20USA" target="_blank">Solicitar compra</a>
-    `,
-
-    iptv: `
-      📺 Servicio IPTV / Flujotv disponible.<br><br>
-      Puedes comprar para uso personal o revender como afiliado.<br><br>
-      <a class="beloura-cta" href="https://wa.me/${BELOURA_WHATSAPP}?text=Hola%20BELOURA%2C%20quiero%20información%20sobre%20IPTV" target="_blank">Consultar IPTV</a>
-    `,
-
-    ganar: `
-      💰 Puedes generar ingresos con BELOURA ofreciendo:<br><br>
+    <div class="bot-bubble">
+      👋 Hola, soy el asistente de <strong>BELOURA</strong>.<br><br>
+      Puedo ayudarte con:
+      <br><br>
       📦 Envíos<br>
       🛒 Compras en USA<br>
+      💼 Afiliados<br>
       📺 IPTV<br>
-      👥 Referidos y afiliados<br><br>
-      Tú vendes al cliente y conservas tu margen de ganancia.<br><br>
-      <a class="beloura-cta" href="${BELOURA_PANEL_AFILIADO}" target="_blank">Quiero afiliarme</a>
-    `,
+      🔎 Tracking
+      <br><br>
+      ¿Qué deseas hacer hoy?
+    </div>
 
-    whatsapp: `
-      📲 Puedes hablar directamente con BELOURA por WhatsApp.<br><br>
-      <a class="beloura-cta" href="https://wa.me/${BELOURA_WHATSAPP}?text=Hola%20BELOURA%2C%20necesito%20información" target="_blank">Abrir WhatsApp</a>
-    `
+    <div class="option-group">
+      <button onclick="startFlow('enviar')">📦 Quiero enviar</button>
+      <button onclick="startFlow('comprar')">🛒 Comprar en USA</button>
+      <button onclick="startFlow('afiliado')">💼 Quiero afiliarme</button>
+      <button onclick="startFlow('tracking')">🔎 Rastrear paquete</button>
+    </div>
+
+  </div>
+
+</div>
+        <script>
+const WHATSAPP = "19726070561";
+const TRACKING_URL = "https://trk.belourastore.com";
+const PANEL_URL = "https://ingreso.beloura.shop";
+
+function toggleBelouraAssistant(){
+  const assistant = document.getElementById("belouraAssistant");
+
+  assistant.style.display =
+    assistant.style.display === "flex"
+    ? "none"
+    : "flex";
+}
+
+function addBubble(text,type="bot"){
+  const area = document.getElementById("belouraConversation");
+
+  const bubble = document.createElement("div");
+  bubble.className = type === "bot"
+    ? "bot-bubble"
+    : "user-bubble";
+
+  bubble.innerHTML = text;
+
+  area.appendChild(bubble);
+
+  area.scrollTop = area.scrollHeight;
+}
+
+function addHTML(html){
+  const area = document.getElementById("belouraConversation");
+
+  const div = document.createElement("div");
+  div.innerHTML = html;
+
+  area.appendChild(div);
+
+  area.scrollTop = area.scrollHeight;
+}
+
+function startFlow(flow){
+
+  const labels = {
+    enviar:"📦 Quiero enviar",
+    comprar:"🛒 Comprar en USA",
+    afiliado:"💼 Quiero afiliarme",
+    tracking:"🔎 Rastrear paquete"
   };
 
-  belouraAddMessage(respuestas[option]);
+  addBubble(labels[flow],"user");
+
+  if(flow==="enviar"){
+
+    addBubble(`
+      Perfecto. ¿Qué deseas enviar?
+    `);
+
+    addHTML(`
+      <div class="option-group">
+        <button onclick="shippingType('paquete')">📦 Paquete</button>
+        <button onclick="shippingType('maleta')">🧳 Maleta</button>
+        <button onclick="shippingType('compras')">🛒 Compras</button>
+        <button onclick="shippingType('electronicos')">💻 Electrónicos</button>
+      </div>
+    `);
+
+  }
+
+  if(flow==="comprar"){
+
+    addBubble(`
+      Excelente. Con BELOURA puedes comprar en tiendas de USA y recibir en Ecuador.
+    `);
+
+    addHTML(`
+      <div class="info-card">
+        <h4>🛒 Compras en USA</h4>
+
+        <p>
+          Compramos productos por ti en:
+          Amazon, Burlington, Ross,
+          Marshalls, Walmart, Costco y más.
+        </p>
+
+        <p>
+          Tú eliges el producto y
+          nosotros nos encargamos de la compra y envío.
+        </p>
+
+        <div class="card-actions">
+          <a target="_blank"
+             href="https://wa.me/${WHATSAPP}?text=Hola%20BELOURA%2C%20quiero%20comprar%20en%20USA">
+             Solicitar compra
+          </a>
+        </div>
+      </div>
+    `);
+
+  }
+
+  if(flow==="afiliado"){
+
+    addBubble(`
+      Excelente decisión. Los afiliados BELOURA pueden generar ingresos revendiendo servicios reales.
+    `);
+
+    addHTML(`
+      <div class="info-card">
+
+        <h4>💼 Afiliado BELOURA</h4>
+
+        <p>
+          Puedes generar ingresos con:
+        </p>
+
+        <p>
+          📦 Envíos<br>
+          🛒 Compras en USA<br>
+          📺 IPTV / Flujotv
+        </p>
+
+        <p>
+          Tú cobras al cliente y conservas tu margen de ganancia.
+        </p>
+
+        <div class="card-actions">
+          <a target="_blank" href="${PANEL_URL}">
+            Registrarme
+          </a>
+
+          <a target="_blank"
+             href="https://wa.me/${WHATSAPP}?text=Hola%20BELOURA%2C%20quiero%20información%20para%20afiliarme">
+            Hablar con asesor
+          </a>
+        </div>
+
+      </div>
+    `);
+
+  }
+
+  if(flow==="tracking"){
+
+    addBubble(`
+      Puedes rastrear tu paquete desde nuestro sistema de tracking.
+    `);
+
+    addHTML(`
+      <div class="info-card">
+
+        <h4>🔎 Tracking BELOURA</h4>
+
+        <p>
+          Ingresa tu código de envío.
+        </p>
+
+        <p>
+          Ejemplo:
+          <strong>NY1001</strong>
+        </p>
+
+        <div class="card-actions">
+          <a target="_blank" href="${TRACKING_URL}">
+            Ir al tracking
+          </a>
+        </div>
+
+      </div>
+    `);
+
+  }
+
+}
+
+function shippingType(type){
+
+  const labels = {
+    paquete:"📦 Paquete",
+    maleta:"🧳 Maleta",
+    compras:"🛒 Compras",
+    electronicos:"💻 Electrónicos"
+  };
+
+  addBubble(labels[type],"user");
+
+  addHTML(`
+    <div class="info-card">
+
+      <h4>${labels[type]}</h4>
+
+      <p>
+        Nuestro equipo puede ayudarte
+        con el envío y asesoría logística.
+      </p>
+
+      <p>
+        Los tiempos y costos pueden variar
+        dependiendo del peso, volumen y destino.
+      </p>
+
+      <div class="card-actions">
+
+        <a target="_blank"
+           href="https://wa.me/${WHATSAPP}?text=Hola%20BELOURA%2C%20quiero%20información%20sobre%20${type}">
+           Solicitar información
+        </a>
+
+      </div>
+
+    </div>
+  `);
+
 }
 </script>
+  
 </body>
 </html>

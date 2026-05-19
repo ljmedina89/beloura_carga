@@ -775,6 +775,29 @@
   line-height: 1;
 }
 
+.beloura-ai-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.beloura-ai-home {
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+  padding: 0 12px;
+}
+
+.beloura-ai-home:hover,
+.beloura-ai-close:hover {
+  background: rgba(255,255,255,.16);
+}
+
 .beloura-ai-status {
   margin-top: 18px;
   display: flex;
@@ -1023,6 +1046,56 @@
 .ai-action.green {
   background: #17bd5b;
   color: #fff;
+}
+
+.ai-action.ghost {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1px solid #dbe3ef;
+}
+
+.ai-fee-note {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: linear-gradient(135deg, #eff6ff, #ffffff);
+  border: 1px solid #bfdbfe;
+  border-radius: 16px;
+  padding: 12px;
+  margin: 10px 0;
+}
+
+.ai-fee-note strong {
+  display: block;
+  color: #0f172a;
+  font-size: 13px;
+  margin-bottom: 3px;
+}
+
+.ai-fee-note span {
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.ai-small-nav {
+  display: flex;
+  justify-content: flex-end;
+  margin: -6px 0 14px;
+}
+
+.ai-small-nav button {
+  border: 1px solid #dbe3ef;
+  background: #fff;
+  color: #0f172a;
+  border-radius: 999px;
+  padding: 8px 11px;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(15,23,42,.04);
 }
 
 .ai-typing {
@@ -1663,7 +1736,10 @@ function renderTrackingResponse(data, byCliente, code) {
             <p>Envíos · Compras · Afiliados · Tracking</p>
           </div>
         </div>
-        <button class="beloura-ai-close" onclick="toggleBelouraAI()" aria-label="Cerrar">×</button>
+        <div class="beloura-ai-controls">
+          <button class="beloura-ai-home" onclick="aiBackToMainMenu()" aria-label="Volver al menú principal">Inicio</button>
+          <button class="beloura-ai-close" onclick="toggleBelouraAI()" aria-label="Cerrar">×</button>
+        </div>
       </div>
 
       <div class="beloura-ai-status">
@@ -1725,6 +1801,14 @@ function renderTrackingResponse(data, byCliente, code) {
       const wrap = document.createElement("div");
       wrap.innerHTML = html;
       body.appendChild(wrap);
+
+      if (html.includes("ai-result-card") && !html.includes("data-no-menu")) {
+        const nav = document.createElement("div");
+        nav.className = "ai-small-nav";
+        nav.innerHTML = `<button onclick="aiBackToMainMenu()">↩ Menú principal</button>`;
+        body.appendChild(nav);
+      }
+
       aiScrollBottom();
     }
 
@@ -1745,6 +1829,21 @@ function renderTrackingResponse(data, byCliente, code) {
 
     function waLink(message) {
       return `https://wa.me/${BELOURA_AI.whatsapp}?text=${encodeURIComponent(message)}`;
+    }
+
+
+    function aiBackToMainMenu() {
+      const body = document.getElementById("belouraAiBody");
+      body.innerHTML = "";
+      aiAddHTML(`
+        <div class="ai-hero-card">
+          <div class="eyebrow">Menú principal</div>
+          <h4>BELOURA IA</h4>
+          <p>Elige una ruta para continuar: envíos, compras en USA, afiliados o tracking.</p>
+        </div>
+      `);
+      aiAddBubble("Estoy listo. ¿Qué deseas hacer ahora?");
+      showMainCards();
     }
 
     function startBelouraAI() {
@@ -1835,8 +1934,8 @@ function renderTrackingResponse(data, byCliente, code) {
         },
         "Compras de tienda": {
           title: "🛍️ Compras de tienda",
-          text: "Podemos ayudarte a comprar en tiendas de USA, consolidar tus productos y enviarlos a Ecuador con tracking.",
-          wa: "Hola BELOURA, quiero enviar compras realizadas en tiendas de USA."
+          text: "Podemos ayudarte a comprar en tiendas de USA, consolidar tus productos y enviarlos a Ecuador con tracking. La gestión de compra tiene un valor agregado de $2 por producto comprado; el envío se calcula aparte.",
+          wa: "Hola BELOURA, quiero enviar compras realizadas en tiendas de USA. Entiendo que la gestión de compra tiene un valor agregado de $2 por producto."
         },
         "Electrónicos": {
           title: "💻 Electrónicos",
@@ -1879,15 +1978,24 @@ function renderTrackingResponse(data, byCliente, code) {
               recibimos, consolidamos y enviamos a Ecuador.
             </p>
 
+            <div class="ai-fee-note">
+              <div style="font-size:24px;">💵</div>
+              <div>
+                <strong>Valor agregado BELOURA: +$2 por producto comprado</strong>
+                <span>El cliente paga el valor real de la tienda + $2 por producto por la gestión de compra. El envío a Ecuador se calcula aparte según peso, volumen y destino.</span>
+              </div>
+            </div>
+
             <div class="ai-list">
               <div>🛍️ Burlington, Ross, Marshalls, Walmart, Costco</div>
+              <div>💵 Gestión de compra: +$2 por producto</div>
               <div>📦 Consolidación de productos</div>
               <div>🔎 Tracking del envío</div>
               <div>💬 Asesoría directa por WhatsApp</div>
             </div>
 
             <div class="ai-actions">
-              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero comprar en tiendas de USA y enviar a Ecuador.')}">Solicitar compra</a>
+              <a class="ai-action green" target="_blank" href="${waLink('Hola BELOURA, quiero comprar en tiendas de USA y enviar a Ecuador. Entiendo que el servicio de compra tiene un valor agregado de $2 por producto, más el envío según peso y destino.')}">Solicitar compra</a>
               <button class="ai-action secondary" onclick="flowEnviar()">Ver opciones de envío</button>
             </div>
           </div>

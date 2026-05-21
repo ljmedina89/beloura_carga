@@ -147,7 +147,6 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -186,7 +185,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     <section id="envios" class="section">
       <div class="panel">
         <h2>Registro de envíos</h2>
-        <form id="formEnvio">
+        <form id="formEnvio" autocomplete="off">
           <div class="section-title">Operador responsable</div>
           <div class="grid grid-2">
             <div>
@@ -229,7 +228,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     </section>
 
     <section id="clientes" class="section">
-      <div class="panel"><h2>Registro de clientes</h2><form id="formCliente"><div class="section-title">Datos del cliente / persona</div><div class="grid grid-2"><div><label for="cliNombre">Nombre completo</label><input id="cliNombre" name="NombreCompleto" required /></div><div><label for="cliCedula">Cédula</label><input id="cliCedula" name="Cedula" required /></div></div><div class="grid grid-3" style="margin-top:10px;"><div><label for="cliTelefono">Teléfono</label><input id="cliTelefono" name="Telefono" required /></div><div><label for="cliWhatsApp">WhatsApp</label><input id="cliWhatsApp" name="WhatsApp" /></div><div><label for="cliEmail">Email</label><input id="cliEmail" name="Email" /></div></div><div class="grid grid-2" style="margin-top:10px;"><div><label for="cliCiudad">Ciudad residencia</label><input id="cliCiudad" name="CiudadDestino" required placeholder="Babahoyo, Guayaquil, etc." /></div><div><label for="cliDireccion">Dirección</label><input id="cliDireccion" name="Direccion" required /></div></div><div style="margin-top:10px;"><label for="cliNotas">Notas</label><textarea id="cliNotas" name="Notas" placeholder="Cliente recomendado, frecuencia, etc."></textarea></div><div class="section-title">Acciones</div><div class="flex"><button type="submit" class="btn" id="btnGuardarCliente">Guardar cliente</button><button type="button" class="btn secondary" id="btnLimpiarCliente">Limpiar</button></div><div id="alertCliente" class="alert" style="display:none;"></div></form></div>
+      <div class="panel"><h2>Registro de clientes</h2><form id="formCliente" autocomplete="off"><div class="section-title">Datos del cliente / persona</div><div class="grid grid-2"><div><label for="cliNombre">Nombre completo</label><input id="cliNombre" name="NombreCompleto" required /></div><div><label for="cliCedula">Cédula</label><input id="cliCedula" name="Cedula" required /></div></div><div class="grid grid-3" style="margin-top:10px;"><div><label for="cliTelefono">Teléfono</label><input id="cliTelefono" name="Telefono" required /></div><div><label for="cliWhatsApp">WhatsApp</label><input id="cliWhatsApp" name="WhatsApp" /></div><div><label for="cliEmail">Email</label><input id="cliEmail" name="Email" /></div></div><div class="grid grid-2" style="margin-top:10px;"><div><label for="cliCiudad">Ciudad residencia</label><input id="cliCiudad" name="CiudadDestino" required placeholder="Babahoyo, Guayaquil, etc." /></div><div><label for="cliDireccion">Dirección</label><input id="cliDireccion" name="Direccion" required /></div></div><div style="margin-top:10px;"><label for="cliNotas">Notas</label><textarea id="cliNotas" name="Notas" placeholder="Cliente recomendado, frecuencia, etc."></textarea></div><div class="section-title">Acciones</div><div class="flex"><button type="submit" class="btn" id="btnGuardarCliente">Guardar cliente</button><button type="button" class="btn secondary" id="btnLimpiarCliente">Limpiar</button></div><div id="alertCliente" class="alert" style="display:none;"></div></form></div>
     </section>
 
     <section id="afiliados" class="section"><div class="panel"><h2>Resumen por afiliado</h2><div class="table-wrap"><table><thead><tr><th>Afiliado</th><th>Nombre</th><th>Envíos</th><th>Libras</th><th>Total vendido</th><th>Debe BELOURA</th><th>Pagado</th><th>Saldo</th><th>Ganancia afiliado</th></tr></thead><tbody id="tablaAfiliados"></tbody></table></div></div></section>
@@ -292,7 +291,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     <section id="operadores" class="section">
       <div class="panel">
         <h2>Registrar operador</h2>
-        <form id="formOperador">
+        <form id="formOperador" autocomplete="off">
           <div class="grid grid-3">
             <div><label for="opNombre">Nombre</label><input id="opNombre" name="Nombre" required placeholder="Jonathan" /></div>
             <div><label for="opTelefono">Teléfono</label><input id="opTelefono" name="Telefono" /></div>
@@ -520,19 +519,19 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   </main>
 </div>
 
-<div class="modal" id="modalPago"><div class="modal-content"><h2>Registrar pago</h2><input id="monto" type="number" step="0.01" placeholder="Monto pagado"><select id="metodo"><option>Zelle</option><option>Efectivo</option><option>Transferencia</option><option>Cash App</option><option>Otro</option></select><input id="ref" placeholder="Referencia"><button class="btn" onclick="guardarPago()">Guardar pago</button><button class="btn secondary" style="margin-top:10px" onclick="cerrarModal()">Cancelar</button></div></div>
+<div class="modal" id="modalPago"><div class="modal-content"><h2>Registrar pago</h2><input id="monto" aria-label="Monto pagado" autocomplete="off" type="number" step="0.01" placeholder="Monto pagado"><select id="metodo" aria-label="Método de pago"><option>Zelle</option><option>Efectivo</option><option>Transferencia</option><option>Cash App</option><option>Otro</option></select><input id="ref" aria-label="Referencia" autocomplete="off" placeholder="Referencia"><button class="btn" onclick="guardarPago()">Guardar pago</button><button class="btn secondary" style="margin-top:10px" onclick="cerrarModal()">Cancelar</button></div></div>
 <div id="qrcode" style="display:none;"></div>
 <div class="modal" id="modalActivarIPTV">
   <div class="modal-content">
     <h2>Activar cuenta IPTV</h2>
 
-    <input id="iptvCuentaIdActiva" readonly placeholder="CuentaID">
+    <input id="iptvCuentaIdActiva" aria-label="Cuenta IPTV" autocomplete="off" readonly placeholder="CuentaID">
 
     <label>Usuario IPTV</label>
-    <input id="iptvUsuarioActiva" placeholder="Usuario IPTV">
+    <input id="iptvUsuarioActiva" aria-label="Usuario IPTV" autocomplete="username" placeholder="Usuario IPTV">
 
     <label>Clave IPTV</label>
-    <input id="iptvClaveActiva" placeholder="Clave IPTV">
+    <input id="iptvClaveActiva" aria-label="Clave IPTV" autocomplete="current-password" placeholder="Clave IPTV">
 
     <label>Fecha inicio</label>
     <input id="iptvFechaInicioActiva" type="date">
@@ -545,7 +544,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     </select>
 
     <label>Observación</label>
-    <input id="iptvObsActiva" placeholder="Opcional">
+    <input id="iptvObsActiva" aria-label="Observación IPTV" autocomplete="off" placeholder="Opcional">
 
     <button class="btn blue" onclick="guardarActivacionIPTV()">Activar cuenta</button>
     <button class="btn secondary" style="margin-top:10px" onclick="cerrarModalActivarIPTV()">Cancelar</button>
@@ -555,13 +554,13 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   <div class="modal-content">
     <h2>Registrar pago IPTV</h2>
 
-    <input id="iptvPagoCuentaId" readonly placeholder="CuentaID">
+    <input id="iptvPagoCuentaId" aria-label="Cuenta IPTV pago" autocomplete="off" readonly placeholder="CuentaID">
 
     <label>Monto pagado</label>
-    <input id="iptvPagoMonto" type="number" step="0.01" placeholder="Monto pagado">
+    <input id="iptvPagoMonto" aria-label="Monto pago IPTV" autocomplete="off" type="number" step="0.01" placeholder="Monto pagado">
 
     <label>Método de pago</label>
-    <select id="iptvPagoMetodo">
+    <select id="iptvPagoMetodo" aria-label="Método pago IPTV">
       <option>Zelle</option>
       <option>Efectivo</option>
       <option>Transferencia</option>
@@ -570,10 +569,10 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     </select>
 
     <label>Referencia</label>
-    <input id="iptvPagoReferencia" placeholder="Referencia">
+    <input id="iptvPagoReferencia" aria-label="Referencia pago IPTV" autocomplete="off" placeholder="Referencia">
 
     <label>Observación</label>
-    <input id="iptvPagoObservacion" placeholder="Opcional">
+    <input id="iptvPagoObservacion" aria-label="Observación pago IPTV" autocomplete="off" placeholder="Opcional">
 
     <button class="btn blue" onclick="guardarPagoIPTV()">Guardar pago IPTV</button>
     <button class="btn secondary" style="margin-top:10px" onclick="cerrarPagoIPTV()">Cancelar</button>
@@ -687,7 +686,118 @@ const formEnvio=document.getElementById("formEnvio");const btnGuardarEnvio=docum
 btnLimpiarEnvio.addEventListener("click",()=>{formEnvio.reset();hiddenCodigoRemitente.value="";hiddenCodigoDestinatario.value="";hiddenCodigoCliente.value="";selectAfiliado.value="";selectRemitente.value="";selectDestinatario.value="";if(selectOperador)selectOperador.value="";renderOperadorInfo("");renderAfiliadoInfo("");renderPersonaInfo(remitenteInfoDiv,"","remitente");renderPersonaInfo(destinatarioInfoDiv,"","destinatario");clearAlert(alertEnvio)});
 formEnvio.addEventListener("submit",async(e)=>{e.preventDefault();clearAlert(alertEnvio);const formData=new FormData(formEnvio);const codigoOperador=(formData.get("OperadorID")||"").toUpperCase().trim();const codigoAfiliado=(formData.get("AFILIADO_ID")||"").toUpperCase().trim();const codigoRemitente=(formData.get("CodigoRemitente")||"").toUpperCase().trim();const codigoDestinatario=(formData.get("CodigoDestinatario")||"").toUpperCase().trim();if(!codigoOperador){showAlert(alertEnvio,"Debes seleccionar un operador responsable.",false);return}if(!codigoRemitente){showAlert(alertEnvio,"Debes seleccionar un remitente.",false);return}if(!codigoDestinatario){showAlert(alertEnvio,"Debes seleccionar un destinatario.",false);return}const payload={action:"createEnvio",secretKey:SECRET,OperadorID:codigoOperador,OperadorNombre:operadoresCache[codigoOperador]?operadoresCache[codigoOperador].nombre:"",CanalRegistro:"Admin / Operador",AFILIADO_ID:codigoAfiliado,CodigoAfiliado:codigoAfiliado,CodigoCliente:codigoDestinatario,CodigoRemitente:codigoRemitente,CodigoDestinatario:codigoDestinatario,RemitenteNombre:formData.get("RemitenteNombre")||"",RemitenteCedula:formData.get("RemitenteCedula")||"",RemitenteTelefono:formData.get("RemitenteTelefono")||"",RemitenteEmail:formData.get("RemitenteEmail")||"",RemitenteCiudad:formData.get("RemitenteCiudad")||"",RemitenteDireccion:formData.get("RemitenteDireccion")||"",TiendaOrigen:formData.get("TiendaOrigen")||"",Descripcion:formData.get("Descripcion")||"",PesoLb:formData.get("PesoLb")||"",ValorDeclarado:formData.get("ValorDeclarado")||"",Tipo:formData.get("Tipo")||"",EstadoInicial:formData.get("EstadoInicial")||"",TrackingInterno:formData.get("TrackingInterno")||"",DestNombre:formData.get("DestNombre")||"",DestCedula:formData.get("DestCedula")||"",DestTelefono:formData.get("DestTelefono")||"",DestEmail:formData.get("DestEmail")||"",CiudadDestino:formData.get("CiudadDestino")||"",DestDireccion:formData.get("DestDireccion")||"",DestReferencia:formData.get("DestReferencia")||"",Observacion:formData.get("Observacion")||"",Usuario:operadoresCache[codigoOperador]?operadoresCache[codigoOperador].nombre:"Leonardo",CodigoGuia:formData.get("CodigoGuiaSelect")||""};btnGuardarEnvio.disabled=true;btnGuardarEnvio.textContent="Guardando...";try{const data=await postAPI(payload);if(!data.ok){showAlert(alertEnvio,"Error al guardar envío: "+(data.error||"desconocido"),false)}else{const codigoEnvio=data.codigoEnvio||"";const codigoGuia=(data.codigoGuia||"").toString().trim().toUpperCase()||("G"+codigoEnvio);showAlert(alertEnvio,`Envío creado correctamente. Código: ${codigoEnvio} • Guía: ${codigoGuia}`,true);await generarGuiaPDF(codigoEnvio,{...payload,CodigoGuia:codigoGuia});loadGuias();cargarDashboard();const selectedOperador=codigoOperador;const selectedAfiliado=codigoAfiliado;const selectedRemitente=codigoRemitente;const selectedDestinatario=codigoDestinatario;formEnvio.reset();selectOperador.value=selectedOperador;selectAfiliado.value=selectedAfiliado;selectRemitente.value=selectedRemitente;selectDestinatario.value=selectedDestinatario;renderOperadorInfo(selectedOperador);renderAfiliadoInfo(selectedAfiliado);autocompletarRemitente(selectedRemitente);autocompletarDestinatario(selectedDestinatario)}}catch(err){console.error(err);showAlert(alertEnvio,"Error de red al guardar el envío.",false)}finally{btnGuardarEnvio.disabled=false;btnGuardarEnvio.textContent="Guardar envío + PDF guía"}});
 
-async function generarGuiaPDF(codigoEnvio,data){try{const{jsPDF}=window.jspdf;const codigoGuia=(data.CodigoGuia||"").toString().trim().toUpperCase()||codigoEnvio;const doc=new jsPDF({orientation:"portrait",unit:"pt",format:[288,432]});const pesoLb=data.PesoLb||"";const destNombre=data.DestNombre||"";const destCedula=data.DestCedula||"";const destTelefono=data.DestTelefono||"";const ciudadDestino=data.CiudadDestino||"";const destDireccion=data.DestDireccion||"";const tipo=data.Tipo||"";const estadoInicial=data.EstadoInicial||"Recibido en bodega NY";let origenLinea2="BODEGA NY",origenLinea3="NEW YORK, NY";if(estadoInicial==="Recibido en Arlington TX"){origenLinea2="2504 PLAZA ST";origenLinea3="ARLINGTON TX 76010"}doc.setFont("Helvetica","Bold");doc.setFontSize(9);doc.text("BELOURA COURIER",18,20);doc.setFont("Helvetica","Normal");doc.text(origenLinea2,18,32);doc.text(origenLinea3,18,44);doc.setFont("Helvetica","Bold");doc.setFontSize(10);doc.text(`${pesoLb} LBS`,220,20,{align:"right"});doc.setFontSize(8);doc.text("1 OF 1",220,32,{align:"right"});doc.setLineWidth(.8);doc.line(18,54,270,54);doc.setFontSize(9);doc.setFont("Helvetica","Bold");doc.text("SHIP TO:",18,70);doc.setFontSize(11);doc.text(String(destNombre).toUpperCase(),18,86);doc.setFont("Helvetica","Normal");doc.setFontSize(9);doc.text(String(destDireccion).toUpperCase(),18,100);doc.text(String(ciudadDestino).toUpperCase(),18,112);doc.text(`TEL: ${destTelefono}`,18,124);doc.text(`ID: ${destCedula}`,18,136);doc.setLineWidth(1.2);doc.rect(18,150,252,80);doc.setFont("Helvetica","Bold");doc.setFontSize(24);doc.text(codigoGuia.replace("-"," "),144,188,{align:"center"});doc.setFontSize(9);doc.text(String(tipo).toUpperCase(),144,204,{align:"center"});doc.setFontSize(8);doc.setFont("Helvetica","Normal");doc.text(`ENVÍO INTERNO: ${codigoEnvio}`,144,216,{align:"center"});const trackingUrl=`https://ny.beloura.shop/ecuador.html?guia=${encodeURIComponent(codigoGuia)}`;const qrContainer=document.getElementById("qrcode");qrContainer.innerHTML="";new QRCode(qrContainer,{text:trackingUrl,width:120,height:120,correctLevel:QRCode.CorrectLevel.M});await new Promise(resolve=>setTimeout(resolve,300));const canvas=qrContainer.querySelector("canvas");if(canvas){doc.addImage(canvas.toDataURL("image/png"),"PNG",24,242,96,96)}doc.setLineWidth(.6);const baseY=260,barXStart=140;for(let i=0;i<20;i++){const x=barXStart+i*3;const h=i%2===0?70:55;doc.line(x,baseY,x,baseY+h)}doc.setFontSize(8);doc.text(`TRACKING: ${codigoGuia}`,200,340,{align:"center"});doc.line(18,360,270,360);doc.setFont("Helvetica","Bold");doc.text("BELOURA COURIER",18,374);doc.setFont("Helvetica","Normal");doc.text("Guía interna para manejo logístico y entrega en Ecuador.",18,386);doc.text("www.beloura.shop",18,398);doc.save(`Guia_${codigoGuia}.pdf`)}catch(e){console.error("Error generando PDF:",e)}}
+
+async function loadImageAsDataURL(url){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.crossOrigin="anonymous";
+    img.onload=()=>{
+      try{
+        const canvas=document.createElement("canvas");
+        canvas.width=img.naturalWidth||160;
+        canvas.height=img.naturalHeight||160;
+        const ctx=canvas.getContext("2d");
+        ctx.drawImage(img,0,0);
+        resolve(canvas.toDataURL("image/png"));
+      }catch(err){reject(err)}
+    };
+    img.onerror=()=>reject(new Error("No se pudo cargar el QR externo"));
+    img.src=url;
+  });
+}
+
+async function generarGuiaPDF(codigoEnvio,data){
+  try{
+    const{jsPDF}=window.jspdf;
+    const codigoGuia=(data.CodigoGuia||"").toString().trim().toUpperCase()||codigoEnvio;
+    const doc=new jsPDF({orientation:"portrait",unit:"pt",format:[288,432]});
+    const pesoLb=data.PesoLb||"";
+    const destNombre=data.DestNombre||"";
+    const destCedula=data.DestCedula||"";
+    const destTelefono=data.DestTelefono||"";
+    const ciudadDestino=data.CiudadDestino||"";
+    const destDireccion=data.DestDireccion||"";
+    const tipo=data.Tipo||"";
+    const estadoInicial=data.EstadoInicial||"Recibido en bodega NY";
+    let origenLinea2="BODEGA NY",origenLinea3="NEW YORK, NY";
+    if(estadoInicial==="Recibido en Arlington TX"){
+      origenLinea2="2504 PLAZA ST";
+      origenLinea3="ARLINGTON TX 76010";
+    }
+
+    doc.setFont("Helvetica","Bold");
+    doc.setFontSize(9);
+    doc.text("BELOURA COURIER",18,20);
+    doc.setFont("Helvetica","Normal");
+    doc.text(origenLinea2,18,32);
+    doc.text(origenLinea3,18,44);
+    doc.setFont("Helvetica","Bold");
+    doc.setFontSize(10);
+    doc.text(`${pesoLb} LBS`,220,20,{align:"right"});
+    doc.setFontSize(8);
+    doc.text("1 OF 1",220,32,{align:"right"});
+    doc.setLineWidth(.8);
+    doc.line(18,54,270,54);
+
+    doc.setFontSize(9);
+    doc.setFont("Helvetica","Bold");
+    doc.text("SHIP TO:",18,70);
+    doc.setFontSize(11);
+    doc.text(String(destNombre).toUpperCase(),18,86);
+    doc.setFont("Helvetica","Normal");
+    doc.setFontSize(9);
+    doc.text(String(destDireccion).toUpperCase(),18,100);
+    doc.text(String(ciudadDestino).toUpperCase(),18,112);
+    doc.text(`TEL: ${destTelefono}`,18,124);
+    doc.text(`ID: ${destCedula}`,18,136);
+
+    doc.setLineWidth(1.2);
+    doc.rect(18,150,252,80);
+    doc.setFont("Helvetica","Bold");
+    doc.setFontSize(24);
+    doc.text(codigoGuia.replace("-"," "),144,188,{align:"center"});
+    doc.setFontSize(9);
+    doc.text(String(tipo).toUpperCase(),144,204,{align:"center"});
+    doc.setFontSize(8);
+    doc.setFont("Helvetica","Normal");
+    doc.text(`ENVÍO INTERNO: ${codigoEnvio}`,144,216,{align:"center"});
+
+    const trackingUrl=`https://ny.beloura.shop/ecuador.html?guia=${encodeURIComponent(codigoGuia)}`;
+    const qrApi=`https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=10&data=${encodeURIComponent(trackingUrl)}`;
+    try{
+      const qrDataUrl=await loadImageAsDataURL(qrApi);
+      doc.addImage(qrDataUrl,"PNG",24,242,96,96);
+    }catch(qrErr){
+      console.warn("No se pudo insertar QR. Se imprimirá URL de tracking.",qrErr);
+      doc.setFont("Helvetica","Bold");
+      doc.setFontSize(8);
+      doc.text("TRACKING URL:",24,258);
+      doc.setFont("Helvetica","Normal");
+      doc.setFontSize(6);
+      doc.text(trackingUrl,24,270,{maxWidth:95});
+    }
+
+    doc.setLineWidth(.6);
+    const baseY=260,barXStart=140;
+    for(let i=0;i<20;i++){
+      const x=barXStart+i*3;
+      const h=i%2===0?70:55;
+      doc.line(x,baseY,x,baseY+h);
+    }
+    doc.setFontSize(8);
+    doc.text(`TRACKING: ${codigoGuia}`,200,340,{align:"center"});
+    doc.line(18,360,270,360);
+    doc.setFont("Helvetica","Bold");
+    doc.text("BELOURA COURIER",18,374);
+    doc.setFont("Helvetica","Normal");
+    doc.text("Guía interna para manejo logístico y entrega en Ecuador.",18,386);
+    doc.text("www.beloura.shop",18,398);
+    doc.save(`Guia_${codigoGuia}.pdf`);
+  }catch(e){
+    console.error("Error generando PDF:",e);
+    alert("El envío se guardó, pero no se pudo generar el PDF de la guía. Revisa consola.");
+  }
+}
 
 function abrirPago(codigo){envioActual=codigo;document.getElementById("modalPago").style.display="flex"}
 function cerrarModal(){document.getElementById("modalPago").style.display="none";document.getElementById("monto").value="";document.getElementById("ref").value=""}

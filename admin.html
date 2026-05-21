@@ -130,6 +130,20 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   font-size: 13px;
   font-weight: 700;
 }
+
+.fecha-grupo-row td{
+  background:rgba(14,165,233,.13);
+  color:#e0f2fe;
+  font-weight:900;
+  border-top:1px solid rgba(56,189,248,.35);
+  border-bottom:1px solid rgba(56,189,248,.18);
+}
+.fecha-subtotal{
+  float:right;
+  color:#bfdbfe;
+  font-weight:800;
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
@@ -392,8 +406,8 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
           </div>
 
           <div class="flex" style="margin-top:14px;">
-            <button class="btn blue" onclick="registrarEgresoUI()">Guardar egreso</button>
-            <button class="btn secondary" onclick="limpiarFormularioEgreso()">Limpiar</button>
+            <button type="button" class="btn blue" onclick="registrarEgresoUI()">Guardar egreso</button>
+            <button type="button" class="btn secondary" onclick="limpiarFormularioEgreso()">Limpiar</button>
           </div>
 
           <div id="alertContabilidad" class="alert" style="display:none;"></div>
@@ -419,7 +433,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
             <h2 style="margin-bottom:4px;">Historial contable</h2>
             <p class="placeholder" style="margin-top:0;">Libro general basado en la pestaña MOVIMIENTOS.</p>
           </div>
-          <button class="btn secondary" onclick="cargarContabilidad()">Actualizar</button>
+          <button type="button" class="btn secondary" onclick="cargarContabilidad()">Actualizar</button>
         </div>
 
         <div class="panel" style="background:rgba(2,6,23,.38);margin-top:18px;">
@@ -469,8 +483,8 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
             </div>
 
             <div style="display:flex;align-items:end;gap:8px;flex-wrap:wrap;">
-              <button class="btn blue" onclick="aplicarFiltrosContabilidad()">Filtrar</button>
-              <button class="btn secondary" onclick="limpiarFiltrosContabilidad()">Limpiar</button>
+              <button type="button" class="btn blue" onclick="aplicarFiltrosContabilidad()">Filtrar</button>
+              <button type="button" class="btn secondary" onclick="limpiarFiltrosContabilidad()">Limpiar</button>
             </div>
           </div>
         </div>
@@ -618,7 +632,21 @@ function showModule(id, btn = null) {
   }
 }
   function showFinanceTab(id,btn){document.querySelectorAll(".finance-tab").forEach(t=>t.style.display="none");document.getElementById("fin-"+id).style.display="block";document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
-async function postAPI(payload){const res=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});return await res.json()}
+async function postAPI(payload){
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+
+  const text = await res.text();
+
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    console.error("Respuesta no JSON del API:", text);
+    throw new Error("El API no devolvió una respuesta JSON válida. Revisa el Apps Script o la URL publicada.");
+  }
+}
 function showAlert(element,message,ok){element.style.display="block";element.textContent=message;element.className="alert "+(ok?"alert-ok":"alert-error")}
 function clearAlert(element){element.style.display="none";element.textContent=""}
 
@@ -1071,6 +1099,30 @@ async function cargarMovimientosContables() {
   }
 }
 
+function obtenerNumeroMovimiento(value) {
+  if (typeof value === "number") return value;
+  const limpio = String(value || "")
+    .replace("$", "")
+    .replace(",", "")
+    .trim();
+  return Number(limpio || 0);
+}
+
+function fechaClaveMovimiento(value) {
+  const d = normalizarFechaMovimiento(value);
+  if (!d) return "Sin fecha";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function textoFechaGrupo(clave) {
+  if (clave === "Sin fecha") return "Sin fecha";
+  const [y, m, d] = clave.split("-");
+  return `${d}/${m}/${y}`;
+}
+
 function renderMovimientosContables(movimientos) {
   const tbody = document.getElementById("tablaMovimientos");
   if (!tbody) return;
@@ -1084,22 +1136,57 @@ function renderMovimientosContables(movimientos) {
     return;
   }
 
-  tbody.innerHTML = movimientos.map(m => `
-    <tr>
-      <td>${formatoFecha(m.Fecha || m.fecha)}</td>
-      <td>${badgeMovimiento(m.Tipo || m.tipo)}</td>
-      <td>${safe(m.Categoria || "")}</td>
-      <td>${safe(m.Subcategoria || "")}</td>
-      <td>${safe(m.Modulo || "")}</td>
-      <td>${safe(m.Referencia || "")}</td>
-      <td>${safe(m.Cliente || "")}</td>
-      <td>${safe(m.AfiliadoID || "")}</td>
-      <td>${safe(m.Proveedor || "")}</td>
-      <td>${money(m.MontoEntrada || 0)}</td>
-      <td>${money(m.MontoSalida || 0)}</td>
-      <td>${estadoBadge(m.Estado || "")}</td>
-    </tr>
-  `).join("");
+  const ordenados = [...movimientos].sort((a, b) => {
+    const fa = normalizarFechaMovimiento(a.Fecha || a.fecha);
+    const fb = normalizarFechaMovimiento(b.Fecha || b.fecha);
+    const ta = fa ? fa.getTime() : 0;
+    const tb = fb ? fb.getTime() : 0;
+    return tb - ta;
+  });
+
+  const grupos = {};
+  ordenados.forEach(m => {
+    const clave = fechaClaveMovimiento(m.Fecha || m.fecha);
+    if (!grupos[clave]) grupos[clave] = [];
+    grupos[clave].push(m);
+  });
+
+  tbody.innerHTML = Object.keys(grupos).map(clave => {
+    const lista = grupos[clave];
+    const entradasDia = lista.reduce((s, m) => s + obtenerNumeroMovimiento(m.MontoEntrada), 0);
+    const salidasDia = lista.reduce((s, m) => s + obtenerNumeroMovimiento(m.MontoSalida), 0);
+    const utilidadDia = entradasDia - salidasDia;
+
+    const header = `
+      <tr class="fecha-grupo-row">
+        <td colspan="12">
+          📅 ${textoFechaGrupo(clave)}
+          <span class="fecha-subtotal">
+            Entradas: ${money(entradasDia)} · Salidas: ${money(salidasDia)} · Neto: ${money(utilidadDia)}
+          </span>
+        </td>
+      </tr>
+    `;
+
+    const rows = lista.map(m => `
+      <tr>
+        <td>${formatoFecha(m.Fecha || m.fecha)}</td>
+        <td>${badgeMovimiento(m.Tipo || m.tipo)}</td>
+        <td>${safe(m.Categoria || "")}</td>
+        <td>${safe(m.Subcategoria || "")}</td>
+        <td>${safe(m.Modulo || "")}</td>
+        <td>${safe(m.Referencia || "")}</td>
+        <td>${safe(m.Cliente || "")}</td>
+        <td>${safe(m.AfiliadoID || "")}</td>
+        <td>${safe(m.Proveedor || "")}</td>
+        <td>${money(obtenerNumeroMovimiento(m.MontoEntrada))}</td>
+        <td>${money(obtenerNumeroMovimiento(m.MontoSalida))}</td>
+        <td>${estadoBadge(m.Estado || "")}</td>
+      </tr>
+    `).join("");
+
+    return header + rows;
+  }).join("");
 }
 
 function aplicarFiltrosContabilidad() {
@@ -1198,12 +1285,12 @@ function renderResumenContableDesdeLista(lista) {
   lista.forEach(m => {
     const estado = String(m.Estado || "").trim().toLowerCase();
 
-    // Para contabilidad solo calculamos lo pagado.
-    // Si el estado viene vacío por movimientos antiguos, también lo tomamos para no perder registros históricos.
-    if (estado && estado !== "pagado") return;
+    // Para contabilidad se calcula lo realmente pagado/cerrado.
+    // Si el estado viene vacío por movimientos antiguos, también se toma para no perder registros históricos.
+    if (estado && !["pagado", "cerrado", "completado", "activo"].includes(estado)) return;
 
-    ingresos += Number(m.MontoEntrada || 0);
-    egresos += Number(m.MontoSalida || 0);
+    ingresos += obtenerNumeroMovimiento(m.MontoEntrada);
+    egresos += obtenerNumeroMovimiento(m.MontoSalida);
   });
 
   const utilidad = ingresos - egresos;
@@ -1220,13 +1307,17 @@ function normalizarFechaMovimiento(value) {
 
   if (value instanceof Date) return value;
 
+  if (typeof value === "number") {
+    // Google Sheets a veces puede devolver fechas como serial numérico.
+    // 25569 es la diferencia entre 1899-12-30 y 1970-01-01.
+    const serialDate = new Date(Math.round((value - 25569) * 86400 * 1000));
+    if (!isNaN(serialDate)) return serialDate;
+  }
+
   const raw = String(value).trim();
 
-  // Formato ISO o fecha reconocible por navegador
-  const d = new Date(raw);
-  if (!isNaN(d)) return d;
-
-  // Formato dd/mm/yyyy o dd/mm/yyyy hh:mm:ss
+  // Formato dd/mm/yyyy o dd/mm/yyyy hh:mm:ss.
+  // Se procesa antes de new Date() para evitar que el navegador lo interprete como mm/dd/yyyy.
   const matchDMY = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
   if (matchDMY) {
     const [, dia, mes, anio, hh = "0", mm = "0", ss = "0"] = matchDMY;
@@ -1239,6 +1330,10 @@ function normalizarFechaMovimiento(value) {
     const [, anio, mes, dia] = matchYMD;
     return new Date(Number(anio), Number(mes) - 1, Number(dia));
   }
+
+  // Formato ISO o fecha reconocible por navegador.
+  const d = new Date(raw);
+  if (!isNaN(d)) return d;
 
   return null;
 }

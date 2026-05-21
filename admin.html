@@ -422,6 +422,59 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
           <button class="btn secondary" onclick="cargarContabilidad()">Actualizar</button>
         </div>
 
+        <div class="panel" style="background:rgba(2,6,23,.38);margin-top:18px;">
+          <h2 style="font-size:18px;margin-bottom:8px;">Filtrar movimientos</h2>
+          <p class="placeholder" style="margin-top:0;">
+            Usa estos filtros para sacar cuentas por fecha, módulo, tipo, cliente, proveedor o código de envío.
+          </p>
+
+          <div class="grid grid-3">
+            <div>
+              <label>Desde</label>
+              <input id="filtroFechaDesde" type="date">
+            </div>
+
+            <div>
+              <label>Hasta</label>
+              <input id="filtroFechaHasta" type="date">
+            </div>
+
+            <div>
+              <label>Módulo</label>
+              <select id="filtroModulo">
+                <option value="">Todos</option>
+                <option value="Envios">Envíos</option>
+                <option value="Flujotv">Flujotv</option>
+                <option value="Compras">Compras</option>
+                <option value="Afiliados">Afiliados</option>
+                <option value="General">General</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-3" style="margin-top:12px;">
+            <div>
+              <label>Tipo</label>
+              <select id="filtroTipo">
+                <option value="">Todos</option>
+                <option value="Ingreso">Ingreso</option>
+                <option value="Egreso">Egreso</option>
+                <option value="Gasto">Gasto</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Buscar referencia / cliente / proveedor</label>
+              <input id="filtroBusqueda" placeholder="Ej: NY1001, Jimmy Cargo, María">
+            </div>
+
+            <div style="display:flex;align-items:end;gap:8px;flex-wrap:wrap;">
+              <button class="btn blue" onclick="aplicarFiltrosContabilidad()">Filtrar</button>
+              <button class="btn secondary" onclick="limpiarFiltrosContabilidad()">Limpiar</button>
+            </div>
+          </div>
+        </div>
+
         <div class="table-wrap">
           <table>
             <thead>
@@ -520,6 +573,7 @@ let dataGlobal = null;
 const clientesCache = {};
 const afiliadosCache = {};
 const operadoresCache = {};
+let movimientosContablesGlobal = [];
 
 const titles = {inicio:["Resumen General","Vista ejecutiva del ecosistema BELOURA."],envios:["Gestión de Envíos","Registro, control y seguimiento de paquetes."],clientes:["Clientes","Base maestra de remitentes y destinatarios."],afiliados:["Afiliados","Red comercial, saldos y rendimiento."],finanzas:["Finanzas","Cuentas por cobrar, pagadas y flujo financiero."],pagos:["Pagos y Abonos","Historial y registro de pagos."],iptv:["IPTV","Solicitudes, activaciones y control de cuentas digitales."],operadores:["Operadores","Registro de operadores, roles y control de origen."],tracking:["Tracking y Estados","Control logístico de guías y estados."],contabilidad: ["Contabilidad", "Ingresos, egresos, utilidad neta y movimientos generales."],config:["Configuración","Reglas internas del sistema."]};
 function money(v){return "$"+Number(v||0).toFixed(2)}
@@ -942,6 +996,7 @@ async function guardarPagoIPTV() {
     alert("Error de conexión con el sistema.");
   }
 }
+
 async function cargarContabilidad() {
   const alertBox = document.getElementById("alertContabilidad");
   if (alertBox) clearAlert(alertBox);
@@ -956,22 +1011,26 @@ async function cargarContabilidad() {
       throw new Error(data.error);
     }
 
-    const ingresos = Number(data.ingresos || data.Ingresos || 0);
-    const egresos = Number(data.egresos || data.Egresos || 0);
-    const utilidad = Number(data.utilidad || data.Utilidad || ingresos - egresos);
-    const margen = ingresos > 0 ? ((utilidad / ingresos) * 100).toFixed(2) : "0.00";
-
-    const elIngresos = document.getElementById("contIngresos");
-    const elEgresos = document.getElementById("contEgresos");
-    const elUtilidad = document.getElementById("contUtilidad");
-    const elMargen = document.getElementById("contMargen");
-
-    if (elIngresos) elIngresos.textContent = money(ingresos);
-    if (elEgresos) elEgresos.textContent = money(egresos);
-    if (elUtilidad) elUtilidad.textContent = money(utilidad);
-    if (elMargen) elMargen.textContent = `${data.margen || margen}%`;
-
     await cargarMovimientosContables();
+
+    // Si no hay filtros activos, usamos el resumen del backend cuando exista.
+    // Si hay movimientos cargados, el resumen visual se recalcula desde la lista para mantener coherencia.
+    const hayFiltros = filtrosContabilidadActivos();
+    if (!hayFiltros && movimientosContablesGlobal.length) {
+      renderResumenContableDesdeLista(movimientosContablesGlobal);
+    } else if (!hayFiltros) {
+      const ingresos = Number(data.ingresos || data.Ingresos || 0);
+      const egresos = Number(data.egresos || data.Egresos || 0);
+      const utilidad = Number(data.utilidad || data.Utilidad || ingresos - egresos);
+      const margen = ingresos > 0 ? ((utilidad / ingresos) * 100).toFixed(2) : "0.00";
+
+      document.getElementById("contIngresos").textContent = money(ingresos);
+      document.getElementById("contEgresos").textContent = money(egresos);
+      document.getElementById("contUtilidad").textContent = money(utilidad);
+      document.getElementById("contMargen").textContent = `${data.margen || margen}%`;
+    } else {
+      aplicarFiltrosContabilidad();
+    }
 
   } catch (error) {
     console.error(error);
@@ -996,34 +1055,192 @@ async function cargarMovimientosContables() {
       throw new Error(data.error);
     }
 
-    const movimientos = data.movimientos || data.Movimientos || [];
+    movimientosContablesGlobal = data.movimientos || data.Movimientos || [];
 
-    if (!movimientos.length) {
+    if (!movimientosContablesGlobal.length) {
       tbody.innerHTML = `<tr><td colspan="12">No hay movimientos contables registrados.</td></tr>`;
+      renderResumenContableDesdeLista([]);
       return;
     }
 
-    tbody.innerHTML = movimientos.map(m => `
-      <tr>
-        <td>${formatoFecha(m.Fecha || m.fecha)}</td>
-        <td>${badgeMovimiento(m.Tipo || m.tipo)}</td>
-        <td>${safe(m.Categoria || "")}</td>
-        <td>${safe(m.Subcategoria || "")}</td>
-        <td>${safe(m.Modulo || "")}</td>
-        <td>${safe(m.Referencia || "")}</td>
-        <td>${safe(m.Cliente || "")}</td>
-        <td>${safe(m.AfiliadoID || "")}</td>
-        <td>${safe(m.Proveedor || "")}</td>
-        <td>${money(m.MontoEntrada || 0)}</td>
-        <td>${money(m.MontoSalida || 0)}</td>
-        <td>${estadoBadge(m.Estado || "")}</td>
-      </tr>
-    `).join("");
+    renderMovimientosContables(movimientosContablesGlobal);
 
   } catch (error) {
     console.error(error);
     tbody.innerHTML = `<tr><td colspan="12">Error cargando movimientos: ${safe(error.message)}</td></tr>`;
   }
+}
+
+function renderMovimientosContables(movimientos) {
+  const tbody = document.getElementById("tablaMovimientos");
+  if (!tbody) return;
+
+  if (!movimientos.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="12">No hay movimientos para los filtros seleccionados.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = movimientos.map(m => `
+    <tr>
+      <td>${formatoFecha(m.Fecha || m.fecha)}</td>
+      <td>${badgeMovimiento(m.Tipo || m.tipo)}</td>
+      <td>${safe(m.Categoria || "")}</td>
+      <td>${safe(m.Subcategoria || "")}</td>
+      <td>${safe(m.Modulo || "")}</td>
+      <td>${safe(m.Referencia || "")}</td>
+      <td>${safe(m.Cliente || "")}</td>
+      <td>${safe(m.AfiliadoID || "")}</td>
+      <td>${safe(m.Proveedor || "")}</td>
+      <td>${money(m.MontoEntrada || 0)}</td>
+      <td>${money(m.MontoSalida || 0)}</td>
+      <td>${estadoBadge(m.Estado || "")}</td>
+    </tr>
+  `).join("");
+}
+
+function aplicarFiltrosContabilidad() {
+  const desde = document.getElementById("filtroFechaDesde")?.value || "";
+  const hasta = document.getElementById("filtroFechaHasta")?.value || "";
+  const modulo = document.getElementById("filtroModulo")?.value || "";
+  const tipo = document.getElementById("filtroTipo")?.value || "";
+  const busqueda = (document.getElementById("filtroBusqueda")?.value || "").toLowerCase().trim();
+
+  let filtrados = [...movimientosContablesGlobal];
+
+  if (desde) {
+    const fechaDesde = new Date(desde + "T00:00:00");
+    filtrados = filtrados.filter(m => {
+      const fecha = normalizarFechaMovimiento(m.Fecha || m.fecha);
+      return fecha && fecha >= fechaDesde;
+    });
+  }
+
+  if (hasta) {
+    const fechaHasta = new Date(hasta + "T23:59:59");
+    filtrados = filtrados.filter(m => {
+      const fecha = normalizarFechaMovimiento(m.Fecha || m.fecha);
+      return fecha && fecha <= fechaHasta;
+    });
+  }
+
+  if (modulo) {
+    filtrados = filtrados.filter(m => String(m.Modulo || "").trim().toLowerCase() === modulo.toLowerCase());
+  }
+
+  if (tipo) {
+    filtrados = filtrados.filter(m => String(m.Tipo || "").trim().toLowerCase() === tipo.toLowerCase());
+  }
+
+  if (busqueda) {
+    filtrados = filtrados.filter(m => {
+      const texto = [
+        m.ID_MOVIMIENTO,
+        m.Referencia,
+        m.Cliente,
+        m.AfiliadoID,
+        m.OperadorID,
+        m.Proveedor,
+        m.Descripcion,
+        m.Categoria,
+        m.Subcategoria,
+        m.Modulo,
+        m.MetodoPago,
+        m.Usuario
+      ].join(" ").toLowerCase();
+
+      return texto.includes(busqueda);
+    });
+  }
+
+  renderMovimientosContables(filtrados);
+  renderResumenContableDesdeLista(filtrados);
+}
+
+function limpiarFiltrosContabilidad() {
+  const ids = [
+    "filtroFechaDesde",
+    "filtroFechaHasta",
+    "filtroModulo",
+    "filtroTipo",
+    "filtroBusqueda"
+  ];
+
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+
+  renderMovimientosContables(movimientosContablesGlobal);
+  renderResumenContableDesdeLista(movimientosContablesGlobal);
+}
+
+function filtrosContabilidadActivos() {
+  return [
+    "filtroFechaDesde",
+    "filtroFechaHasta",
+    "filtroModulo",
+    "filtroTipo",
+    "filtroBusqueda"
+  ].some(id => {
+    const el = document.getElementById(id);
+    return el && String(el.value || "").trim() !== "";
+  });
+}
+
+function renderResumenContableDesdeLista(lista) {
+  let ingresos = 0;
+  let egresos = 0;
+
+  lista.forEach(m => {
+    const estado = String(m.Estado || "").trim().toLowerCase();
+
+    // Para contabilidad solo calculamos lo pagado.
+    // Si el estado viene vacío por movimientos antiguos, también lo tomamos para no perder registros históricos.
+    if (estado && estado !== "pagado") return;
+
+    ingresos += Number(m.MontoEntrada || 0);
+    egresos += Number(m.MontoSalida || 0);
+  });
+
+  const utilidad = ingresos - egresos;
+  const margen = ingresos > 0 ? (utilidad / ingresos) * 100 : 0;
+
+  document.getElementById("contIngresos").textContent = money(ingresos);
+  document.getElementById("contEgresos").textContent = money(egresos);
+  document.getElementById("contUtilidad").textContent = money(utilidad);
+  document.getElementById("contMargen").textContent = margen.toFixed(2) + "%";
+}
+
+function normalizarFechaMovimiento(value) {
+  if (!value) return null;
+
+  if (value instanceof Date) return value;
+
+  const raw = String(value).trim();
+
+  // Formato ISO o fecha reconocible por navegador
+  const d = new Date(raw);
+  if (!isNaN(d)) return d;
+
+  // Formato dd/mm/yyyy o dd/mm/yyyy hh:mm:ss
+  const matchDMY = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+  if (matchDMY) {
+    const [, dia, mes, anio, hh = "0", mm = "0", ss = "0"] = matchDMY;
+    return new Date(Number(anio), Number(mes) - 1, Number(dia), Number(hh), Number(mm), Number(ss));
+  }
+
+  // Formato yyyy-mm-dd o yyyy/mm/dd
+  const matchYMD = raw.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (matchYMD) {
+    const [, anio, mes, dia] = matchYMD;
+    return new Date(Number(anio), Number(mes) - 1, Number(dia));
+  }
+
+  return null;
 }
 
 function badgeMovimiento(tipo) {
@@ -1113,8 +1330,8 @@ function formatoDinero(value) {
 
 function formatoFecha(value) {
   if (!value) return "";
-  const d = new Date(value);
-  if (isNaN(d)) return safe(value);
+  const d = normalizarFechaMovimiento(value);
+  if (!d) return safe(value);
 
   return d.toLocaleDateString("es-EC", {
     year: "numeric",
@@ -1122,6 +1339,7 @@ function formatoFecha(value) {
     day: "2-digit"
   });
 }
+
 </script>
   <button class="beloura-chat-button" onclick="toggleBelouraAssistant()">
   💬 Asistente BELOURA

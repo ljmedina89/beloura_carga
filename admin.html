@@ -150,6 +150,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
       <button onclick="showModule('iptv', this)">📺 IPTV</button>
       <button onclick="showModule('operadores', this)">🧑‍💼 Operadores</button>
       <button onclick="showModule('tracking', this)">🚚 Tracking</button>
+      <button class="nav-btn" onclick="showModule('contabilidad')">🧾 Contabilidad</button>
       <button onclick="showModule('config', this)">⚙️ Configuración</button>
     </div>
   </aside>
@@ -360,7 +361,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   </div>
 </div>
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbx-o2R9RaJP0LZGmLni4wnLSr5UA7Aq2t3YnXiYii0E1_pjV6OSAdugiSio0AywgjJV/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbytcDgMOqjpnMKJVv3jTfh7ugH8wFubBuyE6yuZftEFF8Y44PFb06ec6NphjxwWpnuBpQ/exec";
 const SECRET = "Beloura2025@";
 let envioActual = "";
 let dataGlobal = null;
@@ -381,7 +382,10 @@ function showModule(id, btn){
 
   document.getElementById("pageTitle").textContent = titles[id][0];
   document.getElementById("pageSubtitle").textContent = titles[id][1];
-
+  
+  if (module === "contabilidad") {
+  cargarContabilidad();
+}
   if (id === "iptv") {
     cargarIPTVAdmin();
   }
@@ -763,6 +767,138 @@ async function guardarPagoIPTV() {
     console.error(error);
     alert("Error de conexión con el sistema.");
   }
+}
+async function cargarContabilidad() {
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        action: "obtenerResumenContabilidad"
+      })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("contIngresos").textContent = formatoDinero(data.ingresos || 0);
+    document.getElementById("contEgresos").textContent = formatoDinero(data.egresos || 0);
+    document.getElementById("contUtilidad").textContent = formatoDinero(data.utilidad || 0);
+    document.getElementById("contMargen").textContent = `${data.margen || 0}%`;
+
+    await cargarMovimientosContables();
+
+  } catch (error) {
+    console.error(error);
+    alert("Error cargando contabilidad");
+  }
+}
+
+async function cargarMovimientosContables() {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      action: "listarMovimientosContables"
+    })
+  });
+
+  const data = await res.json();
+  const tbody = document.getElementById("tablaMovimientos");
+
+  tbody.innerHTML = "";
+
+  const movimientos = data.movimientos || [];
+
+  movimientos.forEach(m => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${formatoFecha(m.Fecha)}</td>
+      <td>${m.Tipo || ""}</td>
+      <td>${m.Categoria || ""}</td>
+      <td>${m.Modulo || ""}</td>
+      <td>${m.Referencia || ""}</td>
+      <td>${m.Cliente || ""}</td>
+      <td>${m.AfiliadoID || ""}</td>
+      <td>${m.Proveedor || ""}</td>
+      <td>${formatoDinero(m.MontoEntrada || 0)}</td>
+      <td>${formatoDinero(m.MontoSalida || 0)}</td>
+      <td>${m.Estado || ""}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+async function registrarEgresoUI() {
+  const payload = {
+    action: "registrarEgresoContable",
+    Categoria: document.getElementById("egresoCategoria").value,
+    Subcategoria: document.getElementById("egresoSubcategoria").value,
+    Modulo: document.getElementById("egresoModulo").value,
+    Referencia: document.getElementById("egresoReferencia").value,
+    Proveedor: document.getElementById("egresoProveedor").value,
+    MontoSalida: Number(document.getElementById("egresoMonto").value || 0),
+    MetodoPago: document.getElementById("egresoMetodo").value,
+    ComprobanteURL: document.getElementById("egresoComprobante").value,
+    Descripcion: document.getElementById("egresoDescripcion").value,
+    Estado: "Pagado",
+    Usuario: "Admin"
+  };
+
+  if (!payload.Categoria || !payload.MontoSalida) {
+    alert("Completa categoría y monto del egreso.");
+    return;
+  }
+
+  const res = await fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+
+  if (!data.ok) {
+    alert(data.message || "No se pudo registrar el egreso.");
+    return;
+  }
+
+  alert("Egreso registrado correctamente");
+
+  limpiarFormularioEgreso();
+  cargarContabilidad();
+}
+
+function limpiarFormularioEgreso() {
+  [
+    "egresoCategoria",
+    "egresoSubcategoria",
+    "egresoReferencia",
+    "egresoProveedor",
+    "egresoMonto",
+    "egresoMetodo",
+    "egresoComprobante",
+    "egresoDescripcion"
+  ].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = "";
+  });
+
+  document.getElementById("egresoModulo").value = "General";
+}
+
+function formatoDinero(value) {
+  return "$" + Number(value || 0).toFixed(2);
+}
+
+function formatoFecha(value) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (isNaN(d)) return value;
+
+  return d.toLocaleDateString("es-EC", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
 }
 </script>
   <button class="beloura-chat-button" onclick="toggleBelouraAssistant()">

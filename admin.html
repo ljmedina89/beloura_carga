@@ -587,6 +587,13 @@ const clientesCache = {};
 const afiliadosCache = {};
 const operadoresCache = {};
 let movimientosContablesGlobal = [];
+let llamadaAPIEnCurso = false;
+let contabilidadCargando = false;
+
+// Control estricto: el panel NO consulta Apps Script automáticamente al abrir.
+// Solo consulta cuando el usuario presiona un botón o guarda una acción.
+const AUTO_LOAD_ON_OPEN = false;
+const AUTO_LOAD_MODULES = false;
 
 const titles = {inicio:["Resumen General","Vista ejecutiva del ecosistema BELOURA."],envios:["Gestión de Envíos","Registro, control y seguimiento de paquetes."],clientes:["Clientes","Base maestra de remitentes y destinatarios."],afiliados:["Afiliados","Red comercial, saldos y rendimiento."],finanzas:["Finanzas","Cuentas por cobrar, pagadas y flujo financiero."],pagos:["Pagos y Abonos","Historial y registro de pagos."],iptv:["IPTV","Solicitudes, activaciones y control de cuentas digitales."],operadores:["Operadores","Registro de operadores, roles y control de origen."],tracking:["Tracking y Estados","Control logístico de guías y estados."],contabilidad: ["Contabilidad", "Ingresos, egresos, utilidad neta y movimientos generales."],config:["Configuración","Reglas internas del sistema."]};
 function money(v){return "$"+Number(v||0).toFixed(2)}
@@ -622,14 +629,10 @@ function showModule(id, btn = null) {
     document.getElementById("pageSubtitle").textContent = titles[id][1];
   }
 
-  if (id === "contabilidad") {
-    cargarContabilidad();
-  }
-
-  if (id === "iptv") {
-    cargarIPTVAdmin();
-  }
+  // No cargamos módulos automáticamente para evitar permisos/repeticiones en la vista previa.
+  // Usa los botones internos de cada módulo para actualizar datos.
 }
+
   function showFinanceTab(id,btn){document.querySelectorAll(".finance-tab").forEach(t=>t.style.display="none");document.getElementById("fin-"+id).style.display="block";document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
 async function postAPI(payload){
   const res = await fetch(API_URL, {
@@ -1054,7 +1057,9 @@ function safe(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-document.addEventListener("DOMContentLoaded",()=>{cargarDashboard();loadClientes();loadAfiliados();loadOperadores();loadGuias();listarPagos()});
+document.addEventListener("DOMContentLoaded",()=>{
+  console.log("BELOURA Admin listo. Carga manual activada para evitar llamadas repetidas al API.");
+});
 function abrirPagoIPTV(cuentaId) {
   document.getElementById("iptvPagoCuentaId").value = cuentaId;
   document.getElementById("iptvPagoMonto").value = "";
@@ -1198,29 +1203,29 @@ async function cargarMovimientosContables() {
   const tbody = document.getElementById("tablaMovimientos");
   if (!tbody) return;
 
+  if (contabilidadCargando) {
+    console.warn("Contabilidad ya se está cargando. Se evita llamada duplicada.");
+    return;
+  }
+
+  contabilidadCargando = true;
   tbody.innerHTML = `<tr><td colspan="12">Cargando movimientos...</td></tr>`;
 
-  const accionesListar = [
-    "listarMovimientosContables",
-    "listarMovimientos",
-    "listMovimientos",
-    "getMovimientos",
-    "obtenerMovimientos",
-    "obtenerMovimientosContables"
-  ];
-
   try {
-    const { data, actionUsada } = await probarAccionesAPI(accionesListar);
+    const data = await postAPI({
+      action: "listarMovimientosContables",
+      secretKey: SECRET
+    });
 
-    if (!data.ok && data.error) {
+    if (!data.ok) {
       movimientosContablesGlobal = [];
       renderResumenContableDesdeLista([]);
       tbody.innerHTML = `
         <tr>
           <td colspan="12">
-            No se pudieron cargar movimientos porque el Apps Script todavía no reconoce las acciones de contabilidad.<br>
-            <b>Detalle:</b> ${safe(data.error)}<br>
-            <span style="color:#94a3b8">Acciones probadas: ${accionesListar.join(", ")}</span>
+            No se pudieron cargar movimientos contables.<br>
+            <b>Detalle:</b> ${safe(data.error || data.message || "Error desconocido")}<br>
+            <span style="color:#94a3b8">Acción usada: listarMovimientosContables</span>
           </td>
         </tr>
       `;
@@ -1240,13 +1245,15 @@ async function cargarMovimientosContables() {
     }
 
     renderMovimientosContables(movimientosContablesGlobal);
+    renderResumenContableDesdeLista(movimientosContablesGlobal);
 
-    console.log("Contabilidad cargada con acción:", actionUsada);
   } catch (error) {
     console.error(error);
     movimientosContablesGlobal = [];
     renderResumenContableDesdeLista([]);
     tbody.innerHTML = `<tr><td colspan="12">Error cargando movimientos: ${safe(error.message)}</td></tr>`;
+  } finally {
+    contabilidadCargando = false;
   }
 }
 
@@ -1533,27 +1540,18 @@ async function registrarEgresoUI() {
   }
 
   try {
-    const accionesEgreso = [
-      "registrarEgresoContable",
-      "registrarMovimientoContable",
-      "registrarMovimiento",
-      "crearMovimiento",
-      "createMovimiento"
-    ];
-
-    const { data, actionUsada } = await probarAccionesAPI(accionesEgreso, payload);
+    const data = await postAPI(payload);
 
     if (!data.ok) {
       showAlert(
         alertBox,
         (data.error || data.message || "No se pudo registrar el egreso.") +
-        " Verifica que el Apps Script tenga una acción para guardar en MOVIMIENTOS.",
+        " Verifica que el Apps Script tenga la acción registrarEgresoContable.",
         false
       );
       return;
     }
 
-    console.log("Egreso registrado con acción:", actionUsada);
     showAlert(alertBox, `Egreso registrado correctamente${data.id ? ": " + data.id : ""}.`, true);
 
     limpiarFormularioEgreso();

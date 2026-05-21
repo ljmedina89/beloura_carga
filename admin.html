@@ -150,7 +150,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
       <button onclick="showModule('iptv', this)">📺 IPTV</button>
       <button onclick="showModule('operadores', this)">🧑‍💼 Operadores</button>
       <button onclick="showModule('tracking', this)">🚚 Tracking</button>
-      <button class="nav-btn" onclick="showModule('contabilidad')">🧾 Contabilidad</button>
+      <button onclick="showModule('contabilidad', this)">🧾 Contabilidad</button>
       <button onclick="showModule('config', this)">⚙️ Configuración</button>
     </div>
   </aside>
@@ -296,6 +296,158 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
       </div>
       <div class="panel"><h2>Operadores activos</h2><div class="table-wrap"><table><thead><tr><th>Código</th><th>Nombre</th><th>Rol</th><th>Teléfono</th><th>Email</th><th>Ciudad</th><th>Estado</th></tr></thead><tbody id="tablaOperadores"></tbody></table></div></div>
     </section>
+
+    <section id="contabilidad" class="section">
+      <div class="cards" id="contabilidadCards">
+        <div class="card blue"><h3>Ingresos</h3><p id="contIngresos">$0.00</p></div>
+        <div class="card red"><h3>Egresos</h3><p id="contEgresos">$0.00</p></div>
+        <div class="card green"><h3>Utilidad neta</h3><p id="contUtilidad">$0.00</p></div>
+        <div class="card purple"><h3>Margen</h3><p id="contMargen">0%</p></div>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <h2>Registrar egreso operativo</h2>
+          <p class="placeholder">
+            Usa este formulario para registrar pagos a proveedores, insumos, transporte, gasolina, publicidad o gastos generales.
+            Los ingresos de envíos e IPTV deben venir automáticamente desde el módulo de pagos.
+          </p>
+
+          <div class="grid grid-2">
+            <div>
+              <label>Categoría</label>
+              <select id="egresoCategoria">
+                <option value="">Seleccionar categoría…</option>
+                <option>Proveedor logístico</option>
+                <option>Proveedor IPTV</option>
+                <option>Insumos</option>
+                <option>Combustible</option>
+                <option>Transporte</option>
+                <option>Publicidad</option>
+                <option>Herramientas digitales</option>
+                <option>Comisiones</option>
+                <option>Otro</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Subcategoría</label>
+              <input id="egresoSubcategoria" placeholder="Ej: Jimmy Cargo, Enviworld, bolsas, gasolina">
+            </div>
+          </div>
+
+          <div class="grid grid-2" style="margin-top:10px;">
+            <div>
+              <label>Módulo relacionado</label>
+              <select id="egresoModulo">
+                <option>General</option>
+                <option>Envios</option>
+                <option>Flujotv</option>
+                <option>Compras</option>
+                <option>Afiliados</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Referencia</label>
+              <input id="egresoReferencia" placeholder="Ej: NY1001, IPTV-001, factura #">
+            </div>
+          </div>
+
+          <div class="grid grid-2" style="margin-top:10px;">
+            <div>
+              <label>Proveedor</label>
+              <input id="egresoProveedor" placeholder="Ej: Jimmy Cargo, Enviworld, FlujoTV">
+            </div>
+
+            <div>
+              <label>Monto salida</label>
+              <input id="egresoMonto" type="number" step="0.01" min="0" placeholder="0.00">
+            </div>
+          </div>
+
+          <div class="grid grid-2" style="margin-top:10px;">
+            <div>
+              <label>Método de pago</label>
+              <select id="egresoMetodo">
+                <option value="">Seleccionar método…</option>
+                <option>Zelle</option>
+                <option>Efectivo</option>
+                <option>Transferencia</option>
+                <option>Cash App</option>
+                <option>Tarjeta</option>
+                <option>Otro</option>
+              </select>
+            </div>
+
+            <div>
+              <label>Comprobante URL</label>
+              <input id="egresoComprobante" placeholder="Link opcional del comprobante">
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <label>Descripción</label>
+            <textarea id="egresoDescripcion" placeholder="Detalle del egreso: pago de paquete, compra de insumos, gasolina, etc."></textarea>
+          </div>
+
+          <div class="flex" style="margin-top:14px;">
+            <button class="btn blue" onclick="registrarEgresoUI()">Guardar egreso</button>
+            <button class="btn secondary" onclick="limpiarFormularioEgreso()">Limpiar</button>
+          </div>
+
+          <div id="alertContabilidad" class="alert" style="display:none;"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Lectura financiera</h2>
+          <p class="placeholder">
+            Estructura recomendada:
+          </p>
+          <div class="affiliate-list">
+            <div>✅ Cobros de envíos: se registran en Pagos y entran automáticamente a MOVIMIENTOS.</div>
+            <div>✅ Cobros IPTV: se registran en IPTV/Pagos y entran automáticamente a MOVIMIENTOS.</div>
+            <div>✅ Egresos: se registran aquí manualmente cuando pagas proveedor, insumos o gastos operativos.</div>
+            <div>✅ Utilidad neta = ingresos cobrados - egresos registrados.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="flex" style="justify-content:space-between;">
+          <div>
+            <h2 style="margin-bottom:4px;">Historial contable</h2>
+            <p class="placeholder" style="margin-top:0;">Libro general basado en la pestaña MOVIMIENTOS.</p>
+          </div>
+          <button class="btn secondary" onclick="cargarContabilidad()">Actualizar</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Categoría</th>
+                <th>Subcategoría</th>
+                <th>Módulo</th>
+                <th>Referencia</th>
+                <th>Cliente</th>
+                <th>Afiliado</th>
+                <th>Proveedor</th>
+                <th>Entrada</th>
+                <th>Salida</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaMovimientos">
+              <tr><td colspan="12">Carga el módulo para ver movimientos.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <section id="tracking" class="section"><div class="panel"><h2>Tracking / Estados</h2><p class="placeholder">Futuro módulo para actualizar estados y controlar historial JSON.</p></div></section>
     <section id="config" class="section"><div class="panel"><h2>Configuración</h2><p class="placeholder">Configuración general del sistema, precios, métodos de pago y estados.</p></div></section>
   </main>
@@ -369,22 +521,34 @@ const clientesCache = {};
 const afiliadosCache = {};
 const operadoresCache = {};
 
-const titles = {inicio:["Resumen General","Vista ejecutiva del ecosistema BELOURA."],envios:["Gestión de Envíos","Registro, control y seguimiento de paquetes."],clientes:["Clientes","Base maestra de remitentes y destinatarios."],afiliados:["Afiliados","Red comercial, saldos y rendimiento."],finanzas:["Finanzas","Cuentas por cobrar, pagadas y flujo financiero."],pagos:["Pagos y Abonos","Historial y registro de pagos."],iptv:["IPTV","Solicitudes, activaciones y control de cuentas digitales."],operadores:["Operadores","Registro de operadores, roles y control de origen."],tracking:["Tracking y Estados","Control logístico de guías y estados."],config:["Configuración","Reglas internas del sistema."]};
+const titles = {inicio:["Resumen General","Vista ejecutiva del ecosistema BELOURA."],envios:["Gestión de Envíos","Registro, control y seguimiento de paquetes."],clientes:["Clientes","Base maestra de remitentes y destinatarios."],afiliados:["Afiliados","Red comercial, saldos y rendimiento."],finanzas:["Finanzas","Cuentas por cobrar, pagadas y flujo financiero."],pagos:["Pagos y Abonos","Historial y registro de pagos."],iptv:["IPTV","Solicitudes, activaciones y control de cuentas digitales."],operadores:["Operadores","Registro de operadores, roles y control de origen."],contabilidad:["Contabilidad","Libro general: ingresos automáticos, egresos operativos y utilidad neta real."],tracking:["Tracking y Estados","Control logístico de guías y estados."],config:["Configuración","Reglas internas del sistema."]};
 function money(v){return "$"+Number(v||0).toFixed(2)}
 function num(v){return Number(v||0).toFixed(2)}
 function estadoBadge(estado){if(estado==="Pagado")return`<span class="status ok">Pagado</span>`;if(estado==="Parcial")return`<span class="status warn">Parcial</span>`;if(estado==="Pendiente")return`<span class="status bad">Pendiente</span>`;return`<span class="status info">${estado||"Activo"}</span>`}
 function showModule(id, btn){
+  const section = document.getElementById(id);
+  if (!section) {
+    console.warn("Módulo no encontrado:", id);
+    return;
+  }
+
   document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  section.classList.add("active");
 
   document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
+  if (btn) btn.classList.add("active");
 
-  document.getElementById("pageTitle").textContent = titles[id][0];
-  document.getElementById("pageSubtitle").textContent = titles[id][1];
-  
-  if (module === "contabilidad") {
-  cargarContabilidad();
+  const t = titles[id] || ["BELOURA Admin", "Panel interno."];
+  document.getElementById("pageTitle").textContent = t[0];
+  document.getElementById("pageSubtitle").textContent = t[1];
+
+  if (id === "contabilidad") {
+    cargarContabilidad();
+  }
+
+  if (id === "iptv") {
+    cargarIPTVAdmin();
+  }
 }
   if (id === "iptv") {
     cargarIPTVAdmin();
@@ -436,7 +600,7 @@ async function generarGuiaPDF(codigoEnvio,data){try{const{jsPDF}=window.jspdf;co
 
 function abrirPago(codigo){envioActual=codigo;document.getElementById("modalPago").style.display="flex"}
 function cerrarModal(){document.getElementById("modalPago").style.display="none";document.getElementById("monto").value="";document.getElementById("ref").value=""}
-async function guardarPago(){const monto=Number(document.getElementById("monto").value||0);const metodo=document.getElementById("metodo").value;const ref=document.getElementById("ref").value;if(monto<=0){alert("Ingresa un monto válido");return}const data=await postAPI({action:"registrarPagoEnvio",secretKey:SECRET,CodigoEnvio:envioActual,MontoPago:monto,MetodoPago:metodo,Referencia:ref,RegistradoPor:"Leonardo"});if(!data.ok){alert(data.error||"Error registrando pago");return}cerrarModal();cargarDashboard();listarPagos()}
+async function guardarPago(){const monto=Number(document.getElementById("monto").value||0);const metodo=document.getElementById("metodo").value;const ref=document.getElementById("ref").value;if(monto<=0){alert("Ingresa un monto válido");return}const data=await postAPI({action:"registrarPagoEnvio",secretKey:SECRET,CodigoEnvio:envioActual,MontoPago:monto,MetodoPago:metodo,Referencia:ref,RegistradoPor:"Leonardo"});if(!data.ok){alert(data.error||"Error registrando pago");return}cerrarModal();cargarDashboard();listarPagos();if(document.getElementById("contabilidad")?.classList.contains("active")) cargarContabilidad();}
 let iptvAdminData = [];
 
 async function cargarIPTVAdmin() {
@@ -760,6 +924,7 @@ async function guardarPagoIPTV() {
 
     cerrarPagoIPTV();
     await cargarIPTVAdmin();
+    if(document.getElementById("contabilidad")?.classList.contains("active")) await cargarContabilidad();
 
     alert("Pago IPTV registrado correctamente.");
 
@@ -769,102 +934,149 @@ async function guardarPagoIPTV() {
   }
 }
 async function cargarContabilidad() {
+  const alertBox = document.getElementById("alertContabilidad");
+  if (alertBox) clearAlert(alertBox);
+
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "obtenerResumenContabilidad"
-      })
+    const data = await postAPI({
+      action: "obtenerResumenContabilidad",
+      secretKey: SECRET
     });
 
-    const data = await res.json();
+    if (!data.ok && data.error) {
+      throw new Error(data.error);
+    }
 
-    document.getElementById("contIngresos").textContent = formatoDinero(data.ingresos || 0);
-    document.getElementById("contEgresos").textContent = formatoDinero(data.egresos || 0);
-    document.getElementById("contUtilidad").textContent = formatoDinero(data.utilidad || 0);
-    document.getElementById("contMargen").textContent = `${data.margen || 0}%`;
+    const ingresos = Number(data.ingresos || data.Ingresos || 0);
+    const egresos = Number(data.egresos || data.Egresos || 0);
+    const utilidad = Number(data.utilidad || data.Utilidad || ingresos - egresos);
+    const margen = ingresos > 0 ? ((utilidad / ingresos) * 100).toFixed(2) : "0.00";
+
+    const elIngresos = document.getElementById("contIngresos");
+    const elEgresos = document.getElementById("contEgresos");
+    const elUtilidad = document.getElementById("contUtilidad");
+    const elMargen = document.getElementById("contMargen");
+
+    if (elIngresos) elIngresos.textContent = money(ingresos);
+    if (elEgresos) elEgresos.textContent = money(egresos);
+    if (elUtilidad) elUtilidad.textContent = money(utilidad);
+    if (elMargen) elMargen.textContent = `${data.margen || margen}%`;
 
     await cargarMovimientosContables();
 
   } catch (error) {
     console.error(error);
-    alert("Error cargando contabilidad");
+    if (alertBox) showAlert(alertBox, "Error cargando contabilidad: " + error.message, false);
+    else alert("Error cargando contabilidad: " + error.message);
   }
 }
 
 async function cargarMovimientosContables() {
-  const res = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      action: "listarMovimientosContables"
-    })
-  });
-
-  const data = await res.json();
   const tbody = document.getElementById("tablaMovimientos");
+  if (!tbody) return;
 
-  tbody.innerHTML = "";
+  tbody.innerHTML = `<tr><td colspan="12">Cargando movimientos...</td></tr>`;
 
-  const movimientos = data.movimientos || [];
+  try {
+    const data = await postAPI({
+      action: "listarMovimientosContables",
+      secretKey: SECRET
+    });
 
-  movimientos.forEach(m => {
-    const tr = document.createElement("tr");
+    if (!data.ok && data.error) {
+      throw new Error(data.error);
+    }
 
-    tr.innerHTML = `
-      <td>${formatoFecha(m.Fecha)}</td>
-      <td>${m.Tipo || ""}</td>
-      <td>${m.Categoria || ""}</td>
-      <td>${m.Modulo || ""}</td>
-      <td>${m.Referencia || ""}</td>
-      <td>${m.Cliente || ""}</td>
-      <td>${m.AfiliadoID || ""}</td>
-      <td>${m.Proveedor || ""}</td>
-      <td>${formatoDinero(m.MontoEntrada || 0)}</td>
-      <td>${formatoDinero(m.MontoSalida || 0)}</td>
-      <td>${m.Estado || ""}</td>
-    `;
+    const movimientos = data.movimientos || data.Movimientos || [];
 
-    tbody.appendChild(tr);
-  });
+    if (!movimientos.length) {
+      tbody.innerHTML = `<tr><td colspan="12">No hay movimientos contables registrados.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = movimientos.map(m => `
+      <tr>
+        <td>${formatoFecha(m.Fecha || m.fecha)}</td>
+        <td>${badgeMovimiento(m.Tipo || m.tipo)}</td>
+        <td>${safe(m.Categoria || "")}</td>
+        <td>${safe(m.Subcategoria || "")}</td>
+        <td>${safe(m.Modulo || "")}</td>
+        <td>${safe(m.Referencia || "")}</td>
+        <td>${safe(m.Cliente || "")}</td>
+        <td>${safe(m.AfiliadoID || "")}</td>
+        <td>${safe(m.Proveedor || "")}</td>
+        <td>${money(m.MontoEntrada || 0)}</td>
+        <td>${money(m.MontoSalida || 0)}</td>
+        <td>${estadoBadge(m.Estado || "")}</td>
+      </tr>
+    `).join("");
+
+  } catch (error) {
+    console.error(error);
+    tbody.innerHTML = `<tr><td colspan="12">Error cargando movimientos: ${safe(error.message)}</td></tr>`;
+  }
+}
+
+function badgeMovimiento(tipo) {
+  const t = String(tipo || "").toLowerCase();
+
+  if (t.includes("ingreso")) {
+    return `<span class="status ok">Ingreso</span>`;
+  }
+
+  if (t.includes("egreso") || t.includes("gasto")) {
+    return `<span class="status bad">Egreso</span>`;
+  }
+
+  return `<span class="status info">${safe(tipo || "Movimiento")}</span>`;
 }
 
 async function registrarEgresoUI() {
+  const alertBox = document.getElementById("alertContabilidad");
+
   const payload = {
     action: "registrarEgresoContable",
+    secretKey: SECRET,
     Categoria: document.getElementById("egresoCategoria").value,
     Subcategoria: document.getElementById("egresoSubcategoria").value,
-    Modulo: document.getElementById("egresoModulo").value,
-    Referencia: document.getElementById("egresoReferencia").value,
-    Proveedor: document.getElementById("egresoProveedor").value,
+    Modulo: document.getElementById("egresoModulo").value || "General",
+    Referencia: document.getElementById("egresoReferencia").value.trim(),
+    Proveedor: document.getElementById("egresoProveedor").value.trim(),
     MontoSalida: Number(document.getElementById("egresoMonto").value || 0),
     MetodoPago: document.getElementById("egresoMetodo").value,
-    ComprobanteURL: document.getElementById("egresoComprobante").value,
-    Descripcion: document.getElementById("egresoDescripcion").value,
+    ComprobanteURL: document.getElementById("egresoComprobante").value.trim(),
+    Descripcion: document.getElementById("egresoDescripcion").value.trim(),
     Estado: "Pagado",
-    Usuario: "Admin"
+    Usuario: "Leonardo"
   };
 
-  if (!payload.Categoria || !payload.MontoSalida) {
-    alert("Completa categoría y monto del egreso.");
+  if (!payload.Categoria) {
+    showAlert(alertBox, "Selecciona una categoría.", false);
     return;
   }
 
-  const res = await fetch(API_URL, {
-    method: "POST",
-    body: JSON.stringify(payload)
-  });
-
-  const data = await res.json();
-
-  if (!data.ok) {
-    alert(data.message || "No se pudo registrar el egreso.");
+  if (payload.MontoSalida <= 0) {
+    showAlert(alertBox, "Ingresa un monto de salida válido.", false);
     return;
   }
 
-  alert("Egreso registrado correctamente");
+  try {
+    const data = await postAPI(payload);
 
-  limpiarFormularioEgreso();
-  cargarContabilidad();
+    if (!data.ok) {
+      showAlert(alertBox, data.error || data.message || "No se pudo registrar el egreso.", false);
+      return;
+    }
+
+    showAlert(alertBox, `Egreso registrado correctamente${data.id ? ": " + data.id : ""}.`, true);
+
+    limpiarFormularioEgreso();
+    await cargarContabilidad();
+
+  } catch (error) {
+    console.error(error);
+    showAlert(alertBox, "Error de conexión registrando egreso.", false);
+  }
 }
 
 function limpiarFormularioEgreso() {
@@ -882,17 +1094,18 @@ function limpiarFormularioEgreso() {
     if (el) el.value = "";
   });
 
-  document.getElementById("egresoModulo").value = "General";
+  const modulo = document.getElementById("egresoModulo");
+  if (modulo) modulo.value = "General";
 }
 
 function formatoDinero(value) {
-  return "$" + Number(value || 0).toFixed(2);
+  return money(value);
 }
 
 function formatoFecha(value) {
   if (!value) return "";
   const d = new Date(value);
-  if (isNaN(d)) return value;
+  if (isNaN(d)) return safe(value);
 
   return d.toLocaleDateString("es-EC", {
     year: "numeric",

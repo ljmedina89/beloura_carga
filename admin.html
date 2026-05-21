@@ -579,7 +579,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   </div>
 </div>
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbzt7UTcJAgwXQ5sBk86uoOZWecRuEIwRUeXcorxnm2XjQ1ORSY8cKuj1-oxr_XtmUZO6Q/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz6rrMsuNHb67oCJd2SvKyB1l3aeIMYRn-OFFFRvx5uFefiHozzFuRtteDY-ihecKywXQ/exec";
 const SECRET = "Beloura2025@";
 let envioActual = "";
 let dataGlobal = null;
@@ -590,15 +590,18 @@ let movimientosContablesGlobal = [];
 let llamadaAPIEnCurso = false;
 let contabilidadCargando = false;
 
-// Control estricto: el panel NO consulta Apps Script automáticamente al abrir.
-// Solo consulta cuando el usuario presiona un botón o guarda una acción.
-const AUTO_LOAD_ON_OPEN = false;
-const AUTO_LOAD_MODULES = false;
+// Control de carga: cada módulo consulta Apps Script una sola vez al abrirse.
+// Esto evita bucles/repeticiones sin bloquear el resto del sistema.
+const AUTO_LOAD_ON_OPEN = true;
+const AUTO_LOAD_MODULES = true;
 
 const titles = {inicio:["Resumen General","Vista ejecutiva del ecosistema BELOURA."],envios:["Gestión de Envíos","Registro, control y seguimiento de paquetes."],clientes:["Clientes","Base maestra de remitentes y destinatarios."],afiliados:["Afiliados","Red comercial, saldos y rendimiento."],finanzas:["Finanzas","Cuentas por cobrar, pagadas y flujo financiero."],pagos:["Pagos y Abonos","Historial y registro de pagos."],iptv:["IPTV","Solicitudes, activaciones y control de cuentas digitales."],operadores:["Operadores","Registro de operadores, roles y control de origen."],tracking:["Tracking y Estados","Control logístico de guías y estados."],contabilidad: ["Contabilidad", "Ingresos, egresos, utilidad neta y movimientos generales."],config:["Configuración","Reglas internas del sistema."]};
 function money(v){return "$"+Number(v||0).toFixed(2)}
 function num(v){return Number(v||0).toFixed(2)}
 function estadoBadge(estado){if(estado==="Pagado")return`<span class="status ok">Pagado</span>`;if(estado==="Parcial")return`<span class="status warn">Parcial</span>`;if(estado==="Pendiente")return`<span class="status bad">Pendiente</span>`;return`<span class="status info">${estado||"Activo"}</span>`}
+const MODULOS_CARGADOS = {};
+const MODULOS_CARGANDO = {};
+
 function showModule(id, btn = null) {
   const section = document.getElementById(id);
 
@@ -629,11 +632,70 @@ function showModule(id, btn = null) {
     document.getElementById("pageSubtitle").textContent = titles[id][1];
   }
 
-  // No cargamos módulos automáticamente para evitar permisos/repeticiones en la vista previa.
-  // Usa los botones internos de cada módulo para actualizar datos.
+  cargarModuloUnaVez(id);
 }
 
-  function showFinanceTab(id,btn){document.querySelectorAll(".finance-tab").forEach(t=>t.style.display="none");document.getElementById("fin-"+id).style.display="block";document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
+async function cargarModuloUnaVez(id) {
+  if (MODULOS_CARGADOS[id] || MODULOS_CARGANDO[id]) return;
+
+  MODULOS_CARGANDO[id] = true;
+
+  try {
+    if (id === "inicio") {
+      await cargarDashboard();
+    }
+
+    if (id === "envios") {
+      await loadClientes();
+      await loadAfiliados();
+      await loadOperadores();
+      await loadGuias();
+      await cargarDashboard();
+    }
+
+    if (id === "clientes") {
+      await loadClientes();
+    }
+
+    if (id === "afiliados") {
+      await cargarDashboard();
+    }
+
+    if (id === "finanzas") {
+      await cargarDashboard();
+    }
+
+    if (id === "pagos") {
+      await listarPagos();
+    }
+
+    if (id === "iptv") {
+      await cargarIPTVAdmin();
+    }
+
+    if (id === "operadores") {
+      await loadOperadores();
+    }
+
+    if (id === "contabilidad") {
+      await cargarContabilidad();
+    }
+
+    MODULOS_CARGADOS[id] = true;
+
+  } catch (error) {
+    console.error("Error cargando módulo:", id, error);
+  } finally {
+    MODULOS_CARGANDO[id] = false;
+  }
+}
+
+function recargarModulo(id) {
+  MODULOS_CARGADOS[id] = false;
+  return cargarModuloUnaVez(id);
+}
+
+function showFinanceTab(id,btn){document.querySelectorAll(".finance-tab").forEach(t=>t.style.display="none");document.getElementById("fin-"+id).style.display="block";document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
 async function postAPI(payload){
   const res = await fetch(API_URL, {
     method: "POST",
@@ -1057,8 +1119,9 @@ function safe(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-document.addEventListener("DOMContentLoaded",()=>{
-  console.log("BELOURA Admin listo. Carga manual activada para evitar llamadas repetidas al API.");
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("BELOURA Admin listo. Cargando módulo de inicio una sola vez.");
+  cargarModuloUnaVez("inicio");
 });
 function abrirPagoIPTV(cuentaId) {
   document.getElementById("iptvPagoCuentaId").value = cuentaId;

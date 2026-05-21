@@ -1025,41 +1025,58 @@ async function guardarPagoIPTV() {
   }
 }
 
+async function probarAccionesAPI(actions, payloadBase = {}) {
+  let ultimoError = "";
+
+  for (const action of actions) {
+    try {
+      const data = await postAPI({
+        ...payloadBase,
+        action,
+        secretKey: SECRET
+      });
+
+      const errorTexto = String(data?.error || data?.message || "").toLowerCase();
+      const accionInvalida = !data?.ok && (
+        errorTexto.includes("acción no válida") ||
+        errorTexto.includes("accion no valida") ||
+        errorTexto.includes("invalid action") ||
+        errorTexto.includes("unknown action") ||
+        errorTexto.includes("action not found")
+      );
+
+      if (accionInvalida) {
+        ultimoError = data.error || data.message || `Acción no válida: ${action}`;
+        continue;
+      }
+
+      return { data, actionUsada: action };
+    } catch (error) {
+      ultimoError = error.message;
+    }
+  }
+
+  return {
+    data: {
+      ok: false,
+      error: ultimoError || "Ninguna acción de contabilidad está disponible en el Apps Script."
+    },
+    actionUsada: ""
+  };
+}
+
 async function cargarContabilidad() {
   const alertBox = document.getElementById("alertContabilidad");
   if (alertBox) clearAlert(alertBox);
 
   try {
-    const data = await postAPI({
-      action: "obtenerResumenContabilidad",
-      secretKey: SECRET
-    });
-
-    if (!data.ok && data.error) {
-      throw new Error(data.error);
-    }
-
     await cargarMovimientosContables();
 
-    // Si no hay filtros activos, usamos el resumen del backend cuando exista.
-    // Si hay movimientos cargados, el resumen visual se recalcula desde la lista para mantener coherencia.
-    const hayFiltros = filtrosContabilidadActivos();
-    if (!hayFiltros && movimientosContablesGlobal.length) {
-      renderResumenContableDesdeLista(movimientosContablesGlobal);
-    } else if (!hayFiltros) {
-      const ingresos = Number(data.ingresos || data.Ingresos || 0);
-      const egresos = Number(data.egresos || data.Egresos || 0);
-      const utilidad = Number(data.utilidad || data.Utilidad || ingresos - egresos);
-      const margen = ingresos > 0 ? ((utilidad / ingresos) * 100).toFixed(2) : "0.00";
-
-      document.getElementById("contIngresos").textContent = money(ingresos);
-      document.getElementById("contEgresos").textContent = money(egresos);
-      document.getElementById("contUtilidad").textContent = money(utilidad);
-      document.getElementById("contMargen").textContent = `${data.margen || margen}%`;
-    } else {
+    if (filtrosContabilidadActivos()) {
       aplicarFiltrosContabilidad();
+    } else {
+      renderResumenContableDesdeLista(movimientosContablesGlobal);
     }
-
   } catch (error) {
     console.error(error);
     if (alertBox) showAlert(alertBox, "Error cargando contabilidad: " + error.message, false);
@@ -1073,17 +1090,38 @@ async function cargarMovimientosContables() {
 
   tbody.innerHTML = `<tr><td colspan="12">Cargando movimientos...</td></tr>`;
 
+  const accionesListar = [
+    "listarMovimientosContables",
+    "listarMovimientos",
+    "listMovimientos",
+    "getMovimientos",
+    "obtenerMovimientos",
+    "obtenerMovimientosContables"
+  ];
+
   try {
-    const data = await postAPI({
-      action: "listarMovimientosContables",
-      secretKey: SECRET
-    });
+    const { data, actionUsada } = await probarAccionesAPI(accionesListar);
 
     if (!data.ok && data.error) {
-      throw new Error(data.error);
+      movimientosContablesGlobal = [];
+      renderResumenContableDesdeLista([]);
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="12">
+            No se pudieron cargar movimientos porque el Apps Script todavía no reconoce las acciones de contabilidad.<br>
+            <b>Detalle:</b> ${safe(data.error)}<br>
+            <span style="color:#94a3b8">Acciones probadas: ${accionesListar.join(", ")}</span>
+          </td>
+        </tr>
+      `;
+      return;
     }
 
-    movimientosContablesGlobal = data.movimientos || data.Movimientos || [];
+    movimientosContablesGlobal = data.movimientos || data.Movimientos || data.data || data.rows || [];
+
+    if (!Array.isArray(movimientosContablesGlobal)) {
+      movimientosContablesGlobal = [];
+    }
 
     if (!movimientosContablesGlobal.length) {
       tbody.innerHTML = `<tr><td colspan="12">No hay movimientos contables registrados.</td></tr>`;
@@ -1093,8 +1131,11 @@ async function cargarMovimientosContables() {
 
     renderMovimientosContables(movimientosContablesGlobal);
 
+    console.log("Contabilidad cargada con acción:", actionUsada);
   } catch (error) {
     console.error(error);
+    movimientosContablesGlobal = [];
+    renderResumenContableDesdeLista([]);
     tbody.innerHTML = `<tr><td colspan="12">Error cargando movimientos: ${safe(error.message)}</td></tr>`;
   }
 }
@@ -1382,13 +1423,27 @@ async function registrarEgresoUI() {
   }
 
   try {
-    const data = await postAPI(payload);
+    const accionesEgreso = [
+      "registrarEgresoContable",
+      "registrarMovimientoContable",
+      "registrarMovimiento",
+      "crearMovimiento",
+      "createMovimiento"
+    ];
+
+    const { data, actionUsada } = await probarAccionesAPI(accionesEgreso, payload);
 
     if (!data.ok) {
-      showAlert(alertBox, data.error || data.message || "No se pudo registrar el egreso.", false);
+      showAlert(
+        alertBox,
+        (data.error || data.message || "No se pudo registrar el egreso.") +
+        " Verifica que el Apps Script tenga una acción para guardar en MOVIMIENTOS.",
+        false
+      );
       return;
     }
 
+    console.log("Egreso registrado con acción:", actionUsada);
     showAlert(alertBox, `Egreso registrado correctamente${data.id ? ": " + data.id : ""}.`, true);
 
     limpiarFormularioEgreso();

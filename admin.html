@@ -521,26 +521,39 @@ const clientesCache = {};
 const afiliadosCache = {};
 const operadoresCache = {};
 
-const titles = {inicio:["Resumen General","Vista ejecutiva del ecosistema BELOURA."],envios:["Gestión de Envíos","Registro, control y seguimiento de paquetes."],clientes:["Clientes","Base maestra de remitentes y destinatarios."],afiliados:["Afiliados","Red comercial, saldos y rendimiento."],finanzas:["Finanzas","Cuentas por cobrar, pagadas y flujo financiero."],pagos:["Pagos y Abonos","Historial y registro de pagos."],iptv:["IPTV","Solicitudes, activaciones y control de cuentas digitales."],operadores:["Operadores","Registro de operadores, roles y control de origen."],contabilidad:["Contabilidad","Libro general: ingresos automáticos, egresos operativos y utilidad neta real."],tracking:["Tracking y Estados","Control logístico de guías y estados."],config:["Configuración","Reglas internas del sistema."]};
+const titles = {inicio:["Resumen General","Vista ejecutiva del ecosistema BELOURA."],envios:["Gestión de Envíos","Registro, control y seguimiento de paquetes."],clientes:["Clientes","Base maestra de remitentes y destinatarios."],afiliados:["Afiliados","Red comercial, saldos y rendimiento."],finanzas:["Finanzas","Cuentas por cobrar, pagadas y flujo financiero."],pagos:["Pagos y Abonos","Historial y registro de pagos."],iptv:["IPTV","Solicitudes, activaciones y control de cuentas digitales."],operadores:["Operadores","Registro de operadores, roles y control de origen."],tracking:["Tracking y Estados","Control logístico de guías y estados."],contabilidad: ["Contabilidad", "Ingresos, egresos, utilidad neta y movimientos generales."],config:["Configuración","Reglas internas del sistema."]};
 function money(v){return "$"+Number(v||0).toFixed(2)}
 function num(v){return Number(v||0).toFixed(2)}
 function estadoBadge(estado){if(estado==="Pagado")return`<span class="status ok">Pagado</span>`;if(estado==="Parcial")return`<span class="status warn">Parcial</span>`;if(estado==="Pendiente")return`<span class="status bad">Pendiente</span>`;return`<span class="status info">${estado||"Activo"}</span>`}
-function showModule(id, btn){
+function showModule(id, btn = null) {
   const section = document.getElementById(id);
+
   if (!section) {
-    console.warn("Módulo no encontrado:", id);
+    console.error("No existe el módulo:", id);
     return;
   }
 
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".section").forEach(s => {
+    s.classList.remove("active");
+  });
+
   section.classList.add("active");
 
-  document.querySelectorAll(".menu button").forEach(b=>b.classList.remove("active"));
-  if (btn) btn.classList.add("active");
+  document.querySelectorAll(".menu button").forEach(b => {
+    b.classList.remove("active");
+  });
 
-  const t = titles[id] || ["BELOURA Admin", "Panel interno."];
-  document.getElementById("pageTitle").textContent = t[0];
-  document.getElementById("pageSubtitle").textContent = t[1];
+  if (btn) {
+    btn.classList.add("active");
+  } else {
+    const menuBtn = document.querySelector(`.menu button[onclick*="${id}"]`);
+    if (menuBtn) menuBtn.classList.add("active");
+  }
+
+  if (titles[id]) {
+    document.getElementById("pageTitle").textContent = titles[id][0];
+    document.getElementById("pageSubtitle").textContent = titles[id][1];
+  }
 
   if (id === "contabilidad") {
     cargarContabilidad();
@@ -550,11 +563,7 @@ function showModule(id, btn){
     cargarIPTVAdmin();
   }
 }
-  if (id === "iptv") {
-    cargarIPTVAdmin();
-  }
-}
-function showFinanceTab(id,btn){document.querySelectorAll(".finance-tab").forEach(t=>t.style.display="none");document.getElementById("fin-"+id).style.display="block";document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
+  function showFinanceTab(id,btn){document.querySelectorAll(".finance-tab").forEach(t=>t.style.display="none");document.getElementById("fin-"+id).style.display="block";document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
 async function postAPI(payload){const res=await fetch(API_URL,{method:"POST",body:JSON.stringify(payload)});return await res.json()}
 function showAlert(element,message,ok){element.style.display="block";element.textContent=message;element.className="alert "+(ok?"alert-ok":"alert-error")}
 function clearAlert(element){element.style.display="none";element.textContent=""}

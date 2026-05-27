@@ -539,7 +539,112 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
       </div>
     </section>
 
-    <section id="tracking" class="section"><div class="panel"><h2>Tracking / Estados</h2><p class="placeholder">Futuro módulo para actualizar estados y controlar historial JSON.</p></div></section>
+    <section id="tracking" class="section">
+      <div class="grid-2">
+        <div class="panel">
+          <h2>Actualizar tracking por guía</h2>
+          <p class="placeholder">
+            Selecciona una guía generada o escribe un código manualmente para publicar estados visibles en la página de tracking del cliente.
+          </p>
+
+          <div class="grid grid-2">
+            <div>
+              <label>Guía generada</label>
+              <select id="trackingGuiaSelect" onchange="seleccionarGuiaTracking()">
+                <option value="">Cargar guías...</option>
+              </select>
+            </div>
+            <div>
+              <label>Código de guía / envío</label>
+              <input id="trackingCodigoAdmin" placeholder="Ej: GNY0001 o NY1001">
+            </div>
+          </div>
+
+          <div class="grid grid-2" style="margin-top:10px;">
+            <div>
+              <label>Nuevo estado</label>
+              <select id="trackingEstadoNuevo">
+                <option value="">Seleccionar estado...</option>
+                <option>Recibido en bodega NY</option>
+                <option>Carga Consolidada</option>
+                <option>Enviado a Ecuador</option>
+                <option>Ingresando en Aduana</option>
+                <option>Proceso de Aduana Ecuador</option>
+                <option>Demoras en proceso de aduana</option>
+                <option>En ruta a centro Logistico Beloura</option>
+                <option>En proceso de zonificacion</option>
+                <option>Listo para retiro</option>
+                <option>Entregado</option>
+              </select>
+            </div>
+            <div>
+              <label>Ubicación</label>
+              <input id="trackingUbicacion" placeholder="Ej: New York, Aduana Ecuador, Centro logístico">
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <label>Comentario visible para el cliente</label>
+            <textarea id="trackingComentario" placeholder="Ej: Tu paquete fue consolidado y está listo para salida."></textarea>
+          </div>
+
+          <div class="grid grid-2" style="margin-top:10px;">
+            <div>
+              <label>Fecha / hora</label>
+              <input id="trackingFechaHora" type="datetime-local">
+            </div>
+            <div>
+              <label>Visibilidad</label>
+              <select id="trackingVisibleCliente">
+                <option value="SI">Visible al cliente</option>
+                <option value="NO">Solo interno</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex" style="margin-top:14px;">
+            <button class="btn blue" type="button" onclick="guardarEstadoTracking()">Guardar estado</button>
+            <button class="btn secondary" type="button" onclick="consultarTrackingAdmin()">Consultar historial</button>
+            <button class="btn secondary" type="button" onclick="limpiarTrackingAdmin()">Limpiar</button>
+          </div>
+
+          <div id="trackingAdminAlert" class="alert" style="display:none;"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Guía seleccionada</h2>
+          <div id="trackingResumenAdmin" class="placeholder">
+            Selecciona una guía para ver el estado actual y el historial que verá el cliente.
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="flex" style="justify-content:space-between;">
+          <div>
+            <h2 style="margin-bottom:4px;">Historial de tracking</h2>
+            <p class="placeholder" style="margin-top:0;">Eventos registrados para la guía o envío seleccionado.</p>
+          </div>
+          <button class="btn secondary" type="button" onclick="cargarGuiasTracking()">Actualizar guías</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Ubicación</th>
+                <th>Comentario</th>
+                <th>Visible</th>
+              </tr>
+            </thead>
+            <tbody id="tablaTrackingHistorial">
+              <tr><td colspan="5">Consulta una guía para ver su historial.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
     <section id="config" class="section"><div class="panel"><h2>Configuración</h2><p class="placeholder">Configuración general del sistema, precios, métodos de pago y estados.</p></div></section>
   </main>
 </div>
@@ -702,6 +807,10 @@ async function cargarModuloUnaVez(id) {
       await loadOperadores();
     }
 
+    if (id === "tracking") {
+      await cargarGuiasTracking();
+    }
+
     if (id === "contabilidad") {
       await cargarContabilidad();
     }
@@ -755,6 +864,13 @@ const selectAfiliado=document.getElementById("SelectAfiliado");const afiliadoInf
 async function loadClientes(){const data=await postAPI({action:"listClientes",secretKey:SECRET});if(!data.ok){console.error("Error cargando clientes:",data.error);return}selectRemitente.innerHTML='<option value="">Seleccionar remitente…</option>';selectDestinatario.innerHTML='<option value="">Seleccionar destinatario…</option>';Object.keys(clientesCache).forEach(k=>delete clientesCache[k]);(data.clientes||[]).forEach(c=>{const codigo=c.CodigoCliente||c.codigoCliente||"";if(!codigo)return;const cliente={CodigoCliente:codigo,NombreCompleto:c.NombreCompleto||c.Nombre||c.nombre||"",Cedula:c.Cedula||c.cedula||"",Telefono:c.Telefono||c.telefono||"",WhatsApp:c.WhatsApp||c.whatsapp||"",Email:c.Email||c.Correo||c.email||c.correo||"",CiudadDestino:c.CiudadDestino||c.Ciudad||c.ciudad||"",Direccion:c.Direccion||c.direccion||""};clientesCache[codigo]=cliente;const label=`${codigo} — ${cliente.NombreCompleto}`;const optR=document.createElement("option");optR.value=codigo;optR.textContent=label;selectRemitente.appendChild(optR);const optD=document.createElement("option");optD.value=codigo;optD.textContent=label;selectDestinatario.appendChild(optD)})}
 async function loadAfiliados(){const data=await postAPI({action:"listarAfiliados",secretKey:SECRET});if(!data.ok){console.error("Error cargando afiliados:",data.error);return}selectAfiliado.innerHTML='<option value="">Venta directa BELOURA / Sin afiliado</option>';Object.keys(afiliadosCache).forEach(k=>delete afiliadosCache[k]);(data.afiliados||[]).forEach(a=>{const codigo=a.codigoAfiliado||a.CodigoAfiliado||"";if(!codigo)return;const afiliado={codigoAfiliado:codigo,nombre:a.nombre||a.Nombre||"",telefono:a.telefono||a.Telefono||"",ciudad:a.ciudad||a.Ciudad||""};afiliadosCache[codigo]=afiliado;const opt=document.createElement("option");opt.value=codigo;opt.textContent=`${codigo} — ${afiliado.nombre}`;selectAfiliado.appendChild(opt)})}
 async function loadGuias(){const selectGuia=document.getElementById("CodigoGuiaSelect");if(!selectGuia)return;selectGuia.innerHTML='<option value="">Sin consolidar (guía individual)</option>';const data=await postAPI({action:"listGuias",secretKey:SECRET});if(!data.ok){console.warn("Error cargando guías:",data.error);return}(data.guias||[]).forEach(g=>{const opt=document.createElement("option");opt.value=g;opt.textContent=g;selectGuia.appendChild(opt)})}
+async function cargarGuiasTracking(){const select=document.getElementById("trackingGuiaSelect");if(!select)return;select.innerHTML='<option value="">Seleccionar guía...</option>';try{const data=await postAPI({action:"listGuias",secretKey:SECRET});if(!data.ok){select.innerHTML='<option value="">No se pudieron cargar guías</option>';return}(data.guias||[]).forEach(g=>{const codigo=typeof g==="string"?g:(g.CodigoGuia||g.codigoGuia||g.Guia||g.guia||"");if(!codigo)return;const opt=document.createElement("option");opt.value=codigo;opt.textContent=codigo;select.appendChild(opt)})}catch(error){console.error(error);select.innerHTML='<option value="">Error cargando guías</option>'}}
+function seleccionarGuiaTracking(){const select=document.getElementById("trackingGuiaSelect");const input=document.getElementById("trackingCodigoAdmin");if(select&&input&&select.value){input.value=select.value;consultarTrackingAdmin()}}
+function limpiarTrackingAdmin(){["trackingCodigoAdmin","trackingEstadoNuevo","trackingUbicacion","trackingComentario","trackingFechaHora"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});const visible=document.getElementById("trackingVisibleCliente");if(visible)visible.value="SI";const resumen=document.getElementById("trackingResumenAdmin");if(resumen)resumen.innerHTML="Selecciona una guía para ver el estado actual y el historial que verá el cliente.";const tbody=document.getElementById("tablaTrackingHistorial");if(tbody)tbody.innerHTML='<tr><td colspan="5">Consulta una guía para ver su historial.</td></tr>';const alertBox=document.getElementById("trackingAdminAlert");if(alertBox)clearAlert(alertBox)}
+function normalizarHistorialTracking(data){return data.historial||data.Historial||data.movimientos||data.Movimientos||data.estados||data.Estados||[]}
+function renderTrackingAdmin(data,codigo){const resumen=document.getElementById("trackingResumenAdmin");const tbody=document.getElementById("tablaTrackingHistorial");const envio=data.envio||data.Envio||data.guia||data.Guia||{};const historial=normalizarHistorialTracking(data).slice().sort((a,b)=>new Date(a.FechaHora||a.fechaHora||a.Fecha||a.fecha||0)-new Date(b.FechaHora||b.fechaHora||b.Fecha||b.fecha||0));const ultimo=historial.length?historial[historial.length-1]:null;const estado=envio.EstadoActual||envio.estadoActual||(ultimo&&(ultimo.Estado||ultimo.estado))||"Sin estado registrado";const fecha=envio.UltimaActualizacion||envio.ultimaActualizacion||(ultimo&&(ultimo.FechaHora||ultimo.fechaHora||ultimo.Fecha||ultimo.fecha))||"";if(resumen){resumen.innerHTML=`<strong>${safe(envio.CodigoGuia||envio.codigoGuia||envio.CodigoEnvio||envio.codigoEnvio||codigo)}</strong><br>Estado actual: ${safe(estado)}<br>Última actualización: ${fecha?formatoFecha(fecha):"-"}<br>Destino: ${safe(envio.CiudadDestino||envio.ciudadDestino||"-")}<br>Peso: ${safe(envio.PesoLb||envio.pesoLb||"-")} lb`}if(!tbody)return;if(!historial.length){tbody.innerHTML='<tr><td colspan="5">Aún no hay estados registrados para esta guía.</td></tr>';return}tbody.innerHTML=historial.map(item=>`<tr><td>${formatoFecha(item.FechaHora||item.fechaHora||item.Fecha||item.fecha)}</td><td>${safe(item.Estado||item.estado||"")}</td><td>${safe(item.Ubicacion||item.ubicacion||"")}</td><td>${safe(item.Comentario||item.comentario||item.Descripcion||item.descripcion||"")}</td><td>${safe(item.VisibleCliente||item.visibleCliente||item.Visible||"SI")}</td></tr>`).join("")}
+async function consultarTrackingAdmin(){const alertBox=document.getElementById("trackingAdminAlert");if(alertBox)clearAlert(alertBox);const codigo=document.getElementById("trackingCodigoAdmin")?.value.trim().toUpperCase();if(!codigo){if(alertBox)showAlert(alertBox,"Selecciona o escribe una guía para consultar.",false);return}try{const resultado=await probarAccionesAPI(["trackByCodigoEnvio","adminTrack","consultarTracking"],{codigoEnvio:codigo,CodigoEnvio:codigo,codigoGuia:codigo,CodigoGuia:codigo});const data=resultado.data;if(!data.found&&!data.ok){if(alertBox)showAlert(alertBox,data.error||data.message||"No se encontró la guía o envío.",false);renderTrackingAdmin({historial:[]},codigo);return}renderTrackingAdmin(data,codigo)}catch(error){console.error(error);if(alertBox)showAlert(alertBox,"Error consultando tracking.",false)}}
+async function guardarEstadoTracking(){const alertBox=document.getElementById("trackingAdminAlert");if(alertBox)clearAlert(alertBox);const codigo=document.getElementById("trackingCodigoAdmin")?.value.trim().toUpperCase();const estado=document.getElementById("trackingEstadoNuevo")?.value.trim();const ubicacion=document.getElementById("trackingUbicacion")?.value.trim();const comentario=document.getElementById("trackingComentario")?.value.trim();const fechaInput=document.getElementById("trackingFechaHora")?.value;const visible=document.getElementById("trackingVisibleCliente")?.value||"SI";if(!codigo){if(alertBox)showAlert(alertBox,"Selecciona o escribe la guía que vas a actualizar.",false);return}if(!estado){if(alertBox)showAlert(alertBox,"Selecciona el nuevo estado.",false);return}const fechaHora=fechaInput?new Date(fechaInput).toISOString():new Date().toISOString();const payload={CodigoGuia:codigo,codigoGuia:codigo,CodigoEnvio:codigo,codigoEnvio:codigo,Estado:estado,estado,Ubicacion:ubicacion,ubicacion,Comentario:comentario,comentario,FechaHora:fechaHora,fechaHora,VisibleCliente:visible,visibleCliente:visible,Usuario:"Leonardo",usuario:"Leonardo"};try{const resultado=await probarAccionesAPI(["registrarEstadoTracking","actualizarEstadoTracking","registrarMovimientoTracking","updateTrackingEstado"],payload);const data=resultado.data;if(!data.ok){if(alertBox)showAlert(alertBox,(data.error||data.message||"No se pudo guardar el estado.")+" Verifica que el Apps Script tenga una acción para registrar estados de tracking.",false);return}if(alertBox)showAlert(alertBox,`Estado guardado correctamente${resultado.actionUsada?" ("+resultado.actionUsada+")":""}.`,true);document.getElementById("trackingComentario").value="";await consultarTrackingAdmin()}catch(error){console.error(error);if(alertBox)showAlert(alertBox,"Error de conexión guardando estado.",false)}}
 async function loadOperadores(){if(!selectOperador)return;const data=await postAPI({action:"listarOperadores",secretKey:SECRET});if(!data.ok){console.error("Error cargando operadores:",data.error);return}selectOperador.innerHTML='<option value="">Seleccionar operador…</option>';Object.keys(operadoresCache).forEach(k=>delete operadoresCache[k]);(data.operadores||[]).forEach(o=>{const codigo=o.operadorId||"";if(!codigo)return;operadoresCache[codigo]={operadorId:codigo,nombre:o.nombre||"",telefono:o.telefono||"",email:o.email||"",ciudad:o.ciudad||"",rol:o.rol||"",estado:o.estado||""};const opt=document.createElement("option");opt.value=codigo;opt.textContent=`${codigo} — ${operadoresCache[codigo].nombre}`;selectOperador.appendChild(opt)});renderTablaOperadores(data.operadores||[])}
 function renderTablaOperadores(lista){const tbody=document.getElementById("tablaOperadores");if(!tbody)return;tbody.innerHTML=lista.map(o=>`<tr><td>${o.operadorId||""}</td><td>${o.nombre||""}</td><td>${o.rol||""}</td><td>${o.telefono||""}</td><td>${o.email||""}</td><td>${o.ciudad||""}</td><td>${o.estado||""}</td></tr>`).join("")}
 function renderOperadorInfo(code){const o=operadoresCache[code];if(!o){operadorInfoDiv.textContent="Selecciona un operador para vincular este registro.";return}operadorInfoDiv.innerHTML=`<strong>${o.nombre}</strong><br>Código: ${o.operadorId}<br>Rol: ${o.rol||"-"}<br>Tel: ${o.telefono||"-"}<br>Ciudad: ${o.ciudad||"-"}`}

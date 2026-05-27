@@ -652,7 +652,7 @@
       pinActual = pin;
 
       localStorage.setItem("beloura_afiliado", afiliado);
-      localStorage.setItem("beloura_pin", pin);
+      localStorage.removeItem("beloura_pin");
 
       mostrarDashboard(data);
       cargarIPTVAfiliado();
@@ -909,12 +909,10 @@
 
   window.onload = function() {
     const afiliadoGuardado = localStorage.getItem("beloura_afiliado");
-    const pinGuardado = localStorage.getItem("beloura_pin");
+    localStorage.removeItem("beloura_pin");
 
-    if (afiliadoGuardado && pinGuardado) {
+    if (afiliadoGuardado) {
       document.getElementById("afiliadoInput").value = afiliadoGuardado;
-      document.getElementById("pinInput").value = pinGuardado;
-      cargarDashboard();
     }
   };
 </script>

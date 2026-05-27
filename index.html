@@ -1765,8 +1765,8 @@ function renderTrackingResponse(data, byCliente, code) {
     const BELOURA_AI = {
       whatsapp: "19726070561",
       trackingUrl: "#tracking",
-      panelAfiliado: "https://trk.belourastore.com/afiliados",
-      registroAfiliado: "https://trk.belourastore.com/afiliados",
+      panelAfiliado: "https://trk.belourastore.com/afiliados.html",
+      registroAfiliado: "https://trk.belourastore.com/afiliados.html",
       phoneLabel: "+1 972 607 0561"
     };
 
@@ -2255,6 +2255,122 @@ function renderTrackingResponse(data, byCliente, code) {
       });
     }
 
+    const BELOURA_QUICK_ANSWERS = [
+      {
+        id: "tarifa",
+        keywords: ["precio", "costo", "cuanto", "cuanto cuesta", "libra", "tarifa", "valor"],
+        title: "Costo por libra",
+        text: "El envio cuesta $6 por libra e incluye entrega a domicilio en Ecuador. Si tienes el peso aproximado, te ayudo a calcular el total.",
+        primaryLabel: "Cotizar por WhatsApp",
+        primaryMessage: "Hola BELOURA, quiero cotizar un envio a Ecuador. Tengo el peso aproximado."
+      },
+      {
+        id: "ocho-libras",
+        keywords: ["8 libra", "8 lb", "ocho libra", "paquete de 8", "hasta 8"],
+        title: "Paquete de hasta 8 lb",
+        text: "El envio de hasta 8 libras cuesta $48 e incluye entrega a domicilio en Ecuador.",
+        primaryLabel: "Enviar paquete",
+        primaryMessage: "Hola BELOURA, quiero enviar un paquete de hasta 8 libras a Ecuador."
+      },
+      {
+        id: "direccion",
+        keywords: ["direccion", "direccion beloura", "casillero", "bodega", "donde entrego", "donde envio", "compras online", "east elmhurst", "new york"],
+        title: "Direccion de envio en EE. UU.",
+        text: "Usa estos datos cuando compres en cualquier tienda online: Nombre del destinatario: BELOURA + tu nombre completo. Direccion: 106-08 29th Ave, East Elmhurst, New York 11369. Telefono: +1 972 607 0561. Email: belouraservices@gmail.com.",
+        primaryLabel: "Consultar casillero",
+        primaryMessage: "Hola BELOURA, quiero confirmar la direccion del casillero virtual para mis compras online."
+      },
+      {
+        id: "tracking",
+        keywords: ["rastrear", "rastreo", "tracking", "seguir", "seguimiento", "codigo", "guia", "guía"],
+        title: "Rastreo de paquete",
+        text: "Puedes rastrear tu paquete en tiempo real desde el tracking de Beloura. Ten listo tu codigo de envio o guia.",
+        primaryLabel: "Ir al tracking",
+        action: "tracking"
+      },
+      {
+        id: "tiempo",
+        keywords: ["cuanto tarda", "dias", "llega", "tiempo", "demora", "entrega"],
+        title: "Tiempo estimado",
+        text: "Los envios llegan en un promedio de 12 a 15 dias habiles desde que salen de nuestra bodega en New York.",
+        primaryLabel: "Consultar envio",
+        primaryMessage: "Hola BELOURA, quiero consultar tiempos para enviar a Ecuador."
+      },
+      {
+        id: "compras",
+        keywords: ["amazon", "shein", "temu", "comprar", "compra", "tienda", "personal shopper", "walmart", "ross", "burlington"],
+        title: "Compras en USA",
+        text: "Puedes enviar tus compras directamente a nuestra bodega o pedir ayuda para comprar en tiendas de USA. Solo coloca tu nombre + BELOURA como referencia.",
+        primaryLabel: "Solicitar compra",
+        primaryMessage: "Hola BELOURA, quiero ayuda para comprar en USA y enviar a Ecuador."
+      },
+      {
+        id: "perfumes",
+        keywords: ["perfume", "perfumes", "splash", "colonias", "fragancia"],
+        title: "Perfumes y splash",
+        text: "Si, puedes enviar perfumes o splash dentro de las normativas. Referencia operativa: maximo 4 unidades por paquete.",
+        primaryLabel: "Validar envio",
+        primaryMessage: "Hola BELOURA, quiero validar el envio de perfumes o splash a Ecuador."
+      },
+      {
+        id: "restricciones",
+        keywords: ["celular", "celulares", "laptop", "computadora", "restriccion", "restricciones", "prohibido"],
+        title: "Restricciones",
+        text: "En esta categoria no enviamos celulares ni laptops. Si tienes otro producto, podemos revisar si aplica antes de que lo compres o lo entregues.",
+        primaryLabel: "Consultar producto",
+        primaryMessage: "Hola BELOURA, quiero consultar si puedo enviar un producto a Ecuador."
+      },
+      {
+        id: "afiliado",
+        keywords: ["afiliado", "afiliarme", "vender", "ganar", "ingresos", "revender", "comision"],
+        title: "Afiliados Beloura",
+        text: "Como afiliado puedes ofrecer servicios Beloura, cobrar a tu cliente y conservar tu margen. Beloura respalda la operacion y el seguimiento.",
+        primaryLabel: "Registrarme",
+        action: "afiliado"
+      },
+      {
+        id: "whatsapp",
+        keywords: ["whatsapp", "asesor", "persona", "humano", "ayuda", "atencion"],
+        title: "Atencion directa",
+        text: "Claro. Te conecto con un asesor Beloura para revisar tu caso directamente por WhatsApp.",
+        primaryLabel: "Abrir WhatsApp",
+        primaryMessage: "Hola BELOURA, necesito informacion."
+      }
+    ];
+
+    function normalizeBelouraText(text) {
+      return String(text || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function findBelouraQuickAnswer(text) {
+      const value = normalizeBelouraText(text);
+      return BELOURA_QUICK_ANSWERS.find(answer =>
+        answer.keywords.some(keyword => value.includes(normalizeBelouraText(keyword)))
+      );
+    }
+
+    function renderBelouraQuickAnswer(answer) {
+      const primaryButton = answer.action === "tracking"
+        ? `<button class="ai-action" onclick="goToTrackingFromAI()">Ir al tracking</button>`
+        : answer.action === "afiliado"
+          ? `<button class="ai-action" onclick="flowAfiliado()">Ver afiliacion</button>`
+          : `<a class="ai-action green" target="_blank" href="${waLink(answer.primaryMessage)}">${answer.primaryLabel}</a>`;
+
+      aiAddHTML(`
+        <div class="ai-result-card">
+          <h4>${answer.title}</h4>
+          <p>${answer.text}</p>
+          <div class="ai-actions">
+            ${primaryButton}
+            <a class="ai-action secondary" target="_blank" href="${waLink('Hola BELOURA, necesito ayuda con: ' + answer.title)}">Hablar con asesor</a>
+          </div>
+        </div>
+      `);
+    }
+
     function resetBelouraAI() {
       document.getElementById("belouraAiBody").innerHTML = "";
       startBelouraAI();
@@ -2278,7 +2394,11 @@ function renderTrackingResponse(data, byCliente, code) {
       const value = text.toLowerCase();
 
       aiTyping(() => {
-        if (value.includes("track") || value.includes("rastre") || value.includes("guia") || value.includes("guía") || value.includes("paquete") || value.startsWith("ny") || value.startsWith("cny")) {
+        const quickAnswer = findBelouraQuickAnswer(text);
+
+        if (quickAnswer) {
+          renderBelouraQuickAnswer(quickAnswer);
+        } else if (value.includes("track") || value.includes("rastre") || value.includes("guia") || value.includes("guía") || value.includes("paquete") || value.startsWith("ny") || value.startsWith("cny")) {
           flowTracking();
         } else if (value.includes("panel") || value.includes("acceso") || value.includes("pin") || value.includes("usuario")) {
           flowAfiliado();

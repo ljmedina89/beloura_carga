@@ -218,7 +218,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
 
           <div class="section-title">Paquete</div>
           <div class="grid grid-3"><div><label for="Descripcion">Descripción</label><input id="Descripcion" name="Descripcion" required placeholder="Ropa, zapatos, perfumes..." /></div><div><label for="PesoLb">Peso (lb)</label><input id="PesoLb" name="PesoLb" type="number" step="0.01" min="0" required /></div><div><label for="ValorDeclarado">Valor declarado (USD)</label><input id="ValorDeclarado" name="ValorDeclarado" type="number" step="0.01" min="0" required /></div></div>
-          <div class="grid grid-2" style="margin-top:10px;"><div><label for="Tipo">Tipo de envío</label><select id="Tipo" name="Tipo" required><option value="">Seleccionar…</option><option value="4x4">4x4</option><option value="Ropa">Ropa</option><option value="Zapatos">Zapatos</option><option value="Electronico">Electrónico</option><option value="Mixto">Mixto</option><option value="Otro">Otro</option></select></div><div><label for="EstadoInicial">Estado inicial</label><select id="EstadoInicial" name="EstadoInicial" required><option value="Recibido en bodega NY">Recibido en bodega NY</option><option value="Recibido en Arlington TX">Recibido en Arlington TX</option></select></div></div>
+          <div class="grid grid-2" style="margin-top:10px;"><div><label for="Tipo">Tipo de envío</label><select id="Tipo" name="Tipo" required><option value="">Seleccionar…</option><option value="4x4">4x4</option><option value="Ropa">Ropa</option><option value="Zapatos">Zapatos</option><option value="Electronico">Electrónico</option><option value="Mixto">Mixto</option><option value="Otro">Otro</option></select></div><div><label for="EstadoInicial">Estado inicial</label><select id="EstadoInicial" name="EstadoInicial" required><option value="Recibido en bodega NY">Recibido en bodega NY</option></select></div></div>
           <div class="grid grid-2" style="margin-top:10px;"><div><label for="TrackingInterno">Tracking interno Enviworld</label><input id="TrackingInterno" name="TrackingInterno" placeholder="Tracking Enviworld / guía externa" /></div><div><label for="CodigoGuiaSelect">Consolidar en guía</label><select id="CodigoGuiaSelect" name="CodigoGuiaSelect"><option value="">Sin consolidar (guía individual)</option></select><span class="small muted">Si este envío forma parte de un paquete consolidado, selecciona aquí el código de guía existente.</span></div></div>
           <div class="section-title">Notas internas</div><div><label for="Observacion">Observación</label><textarea id="Observacion" name="Observacion" placeholder="Instrucciones especiales, pago pendiente, etc."></textarea></div>
           <div class="section-title">Acciones</div><div class="flex"><button type="submit" class="btn" id="btnGuardarEnvio">Guardar envío + PDF guía</button><button type="button" class="btn secondary" id="btnLimpiarEnvio">Limpiar</button></div><div id="alertEnvio" class="alert" style="display:none;"></div>
@@ -318,8 +318,47 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
         <div class="card purple"><h3>Margen</h3><p id="contMargen">0%</p></div>
       </div>
 
-      <div class="grid-2">
-        <div class="panel">
+      <div class="panel">
+        <div class="flex" style="justify-content:space-between;">
+          <div>
+            <h2 style="margin-bottom:4px;">Resumen del ecosistema</h2>
+            <p class="placeholder" style="margin-top:0;">
+              Lectura ejecutiva por línea de negocio: ingresos, costos directos, utilidad bruta, gastos operativos y utilidad neta.
+            </p>
+          </div>
+        </div>
+
+        <div class="cards" id="ecosistemaCards">
+          <div class="card blue"><h3>Ingreso bruto</h3><p id="ecoIngresoBruto">$0.00</p></div>
+          <div class="card orange"><h3>Costos directos</h3><p id="ecoCostosDirectos">$0.00</p></div>
+          <div class="card green"><h3>Utilidad bruta</h3><p id="ecoUtilidadBruta">$0.00</p></div>
+          <div class="card red"><h3>Gastos operativos</h3><p id="ecoGastosOperativos">$0.00</p></div>
+          <div class="card purple"><h3>Utilidad neta</h3><p id="ecoUtilidadNeta">$0.00</p></div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Línea</th>
+                <th>Ingresos</th>
+                <th>Costos directos</th>
+                <th>Utilidad bruta</th>
+                <th>Gastos operativos</th>
+                <th>Utilidad neta</th>
+                <th>Margen bruto</th>
+                <th>Margen neto</th>
+                <th>Lectura</th>
+              </tr>
+            </thead>
+            <tbody id="tablaResumenEcosistema">
+              <tr><td colspan="9">Carga el módulo para ver el resumen del ecosistema.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
           <h2>Registrar egreso operativo</h2>
           <p class="placeholder">
             Usa este formulario para registrar pagos a proveedores, insumos, transporte, gasolina, publicidad o gastos generales.
@@ -410,20 +449,6 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
           </div>
 
           <div id="alertContabilidad" class="alert" style="display:none;"></div>
-        </div>
-
-        <div class="panel">
-          <h2>Lectura financiera</h2>
-          <p class="placeholder">
-            Estructura recomendada:
-          </p>
-          <div class="affiliate-list">
-            <div>✅ Cobros de envíos: se registran en Pagos y entran automáticamente a MOVIMIENTOS.</div>
-            <div>✅ Cobros IPTV: se registran en IPTV/Pagos y entran automáticamente a MOVIMIENTOS.</div>
-            <div>✅ Egresos: se registran aquí manualmente cuando pagas proveedor, insumos o gastos operativos.</div>
-            <div>✅ Utilidad neta = ingresos cobrados - egresos registrados.</div>
-          </div>
-        </div>
       </div>
 
       <div class="panel">
@@ -784,11 +809,7 @@ async function generarGuiaPDF(codigoEnvio,data){
     const destDireccion=data.DestDireccion||"";
     const tipo=data.Tipo||"";
     const estadoInicial=data.EstadoInicial||"Recibido en bodega NY";
-    let origenLinea2="BODEGA NY",origenLinea3="NEW YORK, NY";
-    if(estadoInicial==="Recibido en Arlington TX"){
-      origenLinea2="2504 PLAZA ST";
-      origenLinea3="ARLINGTON TX 76010";
-    }
+    let origenLinea2="106-08 29TH AVE",origenLinea3="EAST ELMHURST NY 11369";
 
     doc.setFont("Helvetica","Bold");
     doc.setFontSize(9);
@@ -1521,6 +1542,161 @@ function renderResumenContableDesdeLista(lista) {
   document.getElementById("contEgresos").textContent = money(egresos);
   document.getElementById("contUtilidad").textContent = money(utilidad);
   document.getElementById("contMargen").textContent = margen.toFixed(2) + "%";
+
+  renderResumenEcosistemaDesdeLista(lista);
+}
+
+function normalizarLineaEcosistema(value) {
+  const raw = String(value || "General").trim().toLowerCase();
+
+  if (raw.includes("env")) return "Envios";
+  if (raw.includes("flujo") || raw.includes("iptv")) return "Flujotv/IPTV";
+  if (raw.includes("compr")) return "Compras USA";
+  if (raw.includes("afili")) return "Afiliados";
+
+  return "General";
+}
+
+function esCostoDirectoMovimiento(m) {
+  const categoria = String(m.Categoria || "").toLowerCase();
+  const modulo = String(m.Modulo || "").toLowerCase();
+
+  return (
+    categoria.includes("proveedor log") ||
+    categoria.includes("proveedor iptv") ||
+    categoria.includes("comision") ||
+    categoria.includes("comisi") ||
+    (modulo.includes("env") && categoria.includes("transporte")) ||
+    (modulo.includes("compr") && categoria.includes("proveedor")) ||
+    (modulo.includes("flujo") && categoria.includes("proveedor")) ||
+    (modulo.includes("iptv") && categoria.includes("proveedor"))
+  );
+}
+
+function crearLineaEcosistema(nombre) {
+  return {
+    nombre,
+    ingresos: 0,
+    costosDirectos: 0,
+    gastosOperativos: 0
+  };
+}
+
+function lecturaLineaEcosistema(linea) {
+  const utilidadBruta = linea.ingresos - linea.costosDirectos;
+  const utilidadNeta = utilidadBruta - linea.gastosOperativos;
+  const margenNeto = linea.ingresos > 0 ? (utilidadNeta / linea.ingresos) * 100 : 0;
+
+  if (linea.ingresos <= 0 && (linea.costosDirectos > 0 || linea.gastosOperativos > 0)) {
+    return "Solo registra salidas";
+  }
+
+  if (linea.ingresos <= 0) {
+    return "Sin actividad";
+  }
+
+  if (utilidadNeta < 0) {
+    return "Revisar costos";
+  }
+
+  if (margenNeto >= 25) {
+    return "Línea fuerte";
+  }
+
+  if (margenNeto >= 10) {
+    return "Margen sano";
+  }
+
+  return "Margen bajo";
+}
+
+function renderResumenEcosistemaDesdeLista(lista) {
+  const tbody = document.getElementById("tablaResumenEcosistema");
+  if (!tbody) return;
+
+  const lineas = {
+    "Envios": crearLineaEcosistema("Envios"),
+    "Compras USA": crearLineaEcosistema("Compras USA"),
+    "Flujotv/IPTV": crearLineaEcosistema("Flujotv/IPTV"),
+    "Afiliados": crearLineaEcosistema("Afiliados"),
+    "General": crearLineaEcosistema("General")
+  };
+
+  lista.forEach(m => {
+    const estado = String(m.Estado || "").trim().toLowerCase();
+    if (estado && !["pagado", "cerrado", "completado", "activo"].includes(estado)) return;
+
+    const lineaNombre = normalizarLineaEcosistema(m.Modulo || m.modulo);
+    const linea = lineas[lineaNombre] || lineas.General;
+    const entrada = obtenerNumeroMovimiento(m.MontoEntrada);
+    const salida = obtenerNumeroMovimiento(m.MontoSalida);
+
+    linea.ingresos += entrada;
+
+    if (salida > 0) {
+      if (esCostoDirectoMovimiento(m)) {
+        linea.costosDirectos += salida;
+      } else {
+        linea.gastosOperativos += salida;
+      }
+    }
+  });
+
+  const resumen = Object.values(lineas).map(linea => {
+    const utilidadBruta = linea.ingresos - linea.costosDirectos;
+    const utilidadNeta = utilidadBruta - linea.gastosOperativos;
+    const margenBruto = linea.ingresos > 0 ? (utilidadBruta / linea.ingresos) * 100 : 0;
+    const margenNeto = linea.ingresos > 0 ? (utilidadNeta / linea.ingresos) * 100 : 0;
+
+    return {
+      ...linea,
+      utilidadBruta,
+      utilidadNeta,
+      margenBruto,
+      margenNeto,
+      lectura: lecturaLineaEcosistema(linea)
+    };
+  });
+
+  const totales = resumen.reduce((acc, linea) => {
+    acc.ingresos += linea.ingresos;
+    acc.costosDirectos += linea.costosDirectos;
+    acc.gastosOperativos += linea.gastosOperativos;
+    acc.utilidadBruta += linea.utilidadBruta;
+    acc.utilidadNeta += linea.utilidadNeta;
+    return acc;
+  }, { ingresos: 0, costosDirectos: 0, gastosOperativos: 0, utilidadBruta: 0, utilidadNeta: 0 });
+
+  document.getElementById("ecoIngresoBruto").textContent = money(totales.ingresos);
+  document.getElementById("ecoCostosDirectos").textContent = money(totales.costosDirectos);
+  document.getElementById("ecoUtilidadBruta").textContent = money(totales.utilidadBruta);
+  document.getElementById("ecoGastosOperativos").textContent = money(totales.gastosOperativos);
+  document.getElementById("ecoUtilidadNeta").textContent = money(totales.utilidadNeta);
+
+  const activas = resumen.filter(linea =>
+    linea.ingresos > 0 || linea.costosDirectos > 0 || linea.gastosOperativos > 0
+  );
+
+  if (!activas.length) {
+    tbody.innerHTML = `<tr><td colspan="9">No hay movimientos suficientes para evaluar el ecosistema.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = activas
+    .sort((a, b) => b.utilidadNeta - a.utilidadNeta)
+    .map(linea => `
+      <tr>
+        <td><strong>${linea.nombre}</strong></td>
+        <td>${money(linea.ingresos)}</td>
+        <td>${money(linea.costosDirectos)}</td>
+        <td>${money(linea.utilidadBruta)}</td>
+        <td>${money(linea.gastosOperativos)}</td>
+        <td>${money(linea.utilidadNeta)}</td>
+        <td>${linea.margenBruto.toFixed(2)}%</td>
+        <td>${linea.margenNeto.toFixed(2)}%</td>
+        <td>${safe(linea.lectura)}</td>
+      </tr>
+    `).join("");
 }
 
 function normalizarFechaMovimiento(value) {

@@ -542,21 +542,21 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     <section id="tracking" class="section">
       <div class="grid-2">
         <div class="panel">
-          <h2>Actualizar tracking por guía</h2>
+          <h2>Actualizar tracking por envío</h2>
           <p class="placeholder">
-            Selecciona una guía generada o escribe un código manualmente para publicar estados visibles en la página de tracking del cliente.
+            Selecciona el código individual del envío o escríbelo manualmente para publicar estados visibles en la página de tracking del cliente.
           </p>
 
           <div class="grid grid-2">
             <div>
-              <label>Guía generada</label>
+              <label>Envío individual</label>
               <select id="trackingGuiaSelect" onchange="seleccionarGuiaTracking()">
-                <option value="">Cargar guías...</option>
+                <option value="">Cargar envíos...</option>
               </select>
             </div>
             <div>
-              <label>Código de guía / envío</label>
-              <input id="trackingCodigoAdmin" placeholder="Ej: GNY0001 o NY1001">
+              <label>Código de envío</label>
+              <input id="trackingCodigoAdmin" placeholder="Ej: NY0001">
             </div>
           </div>
 
@@ -612,9 +612,9 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
         </div>
 
         <div class="panel">
-          <h2>Guía seleccionada</h2>
+          <h2>Envío seleccionado</h2>
           <div id="trackingResumenAdmin" class="placeholder">
-            Selecciona una guía para ver el estado actual y el historial que verá el cliente.
+            Selecciona un envío para ver el estado actual y el historial que verá el cliente.
           </div>
         </div>
       </div>
@@ -625,7 +625,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
             <h2 style="margin-bottom:4px;">Historial de tracking</h2>
             <p class="placeholder" style="margin-top:0;">Eventos registrados para la guía o envío seleccionado.</p>
           </div>
-          <button class="btn secondary" type="button" onclick="cargarGuiasTracking()">Actualizar guías</button>
+          <button class="btn secondary" type="button" onclick="cargarGuiasTracking()">Actualizar envíos</button>
         </div>
         <div class="table-wrap">
           <table>
@@ -639,7 +639,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
               </tr>
             </thead>
             <tbody id="tablaTrackingHistorial">
-              <tr><td colspan="5">Consulta una guía para ver su historial.</td></tr>
+              <tr><td colspan="5">Consulta un envío para ver su historial.</td></tr>
             </tbody>
           </table>
         </div>
@@ -864,7 +864,7 @@ const selectAfiliado=document.getElementById("SelectAfiliado");const afiliadoInf
 async function loadClientes(){const data=await postAPI({action:"listClientes",secretKey:SECRET});if(!data.ok){console.error("Error cargando clientes:",data.error);return}selectRemitente.innerHTML='<option value="">Seleccionar remitente…</option>';selectDestinatario.innerHTML='<option value="">Seleccionar destinatario…</option>';Object.keys(clientesCache).forEach(k=>delete clientesCache[k]);(data.clientes||[]).forEach(c=>{const codigo=c.CodigoCliente||c.codigoCliente||"";if(!codigo)return;const cliente={CodigoCliente:codigo,NombreCompleto:c.NombreCompleto||c.Nombre||c.nombre||"",Cedula:c.Cedula||c.cedula||"",Telefono:c.Telefono||c.telefono||"",WhatsApp:c.WhatsApp||c.whatsapp||"",Email:c.Email||c.Correo||c.email||c.correo||"",CiudadDestino:c.CiudadDestino||c.Ciudad||c.ciudad||"",Direccion:c.Direccion||c.direccion||""};clientesCache[codigo]=cliente;const label=`${codigo} — ${cliente.NombreCompleto}`;const optR=document.createElement("option");optR.value=codigo;optR.textContent=label;selectRemitente.appendChild(optR);const optD=document.createElement("option");optD.value=codigo;optD.textContent=label;selectDestinatario.appendChild(optD)})}
 async function loadAfiliados(){const data=await postAPI({action:"listarAfiliados",secretKey:SECRET});if(!data.ok){console.error("Error cargando afiliados:",data.error);return}selectAfiliado.innerHTML='<option value="">Venta directa BELOURA / Sin afiliado</option>';Object.keys(afiliadosCache).forEach(k=>delete afiliadosCache[k]);(data.afiliados||[]).forEach(a=>{const codigo=a.codigoAfiliado||a.CodigoAfiliado||"";if(!codigo)return;const afiliado={codigoAfiliado:codigo,nombre:a.nombre||a.Nombre||"",telefono:a.telefono||a.Telefono||"",ciudad:a.ciudad||a.Ciudad||""};afiliadosCache[codigo]=afiliado;const opt=document.createElement("option");opt.value=codigo;opt.textContent=`${codigo} — ${afiliado.nombre}`;selectAfiliado.appendChild(opt)})}
 async function loadGuias(){const selectGuia=document.getElementById("CodigoGuiaSelect");if(!selectGuia)return;selectGuia.innerHTML='<option value="">Sin consolidar (guía individual)</option>';const data=await postAPI({action:"listGuias",secretKey:SECRET});if(!data.ok){console.warn("Error cargando guías:",data.error);return}(data.guias||[]).forEach(g=>{const opt=document.createElement("option");opt.value=g;opt.textContent=g;selectGuia.appendChild(opt)})}
-async function cargarGuiasTracking(){const select=document.getElementById("trackingGuiaSelect");if(!select)return;select.innerHTML='<option value="">Seleccionar guía...</option>';try{const data=await postAPI({action:"listGuias",secretKey:SECRET});if(!data.ok){select.innerHTML='<option value="">No se pudieron cargar guías</option>';return}(data.guias||[]).forEach(g=>{const codigo=typeof g==="string"?g:(g.CodigoGuia||g.codigoGuia||g.Guia||g.guia||"");if(!codigo)return;const opt=document.createElement("option");opt.value=codigo;opt.textContent=codigo;select.appendChild(opt)})}catch(error){console.error(error);select.innerHTML='<option value="">Error cargando guías</option>'}}
+async function cargarGuiasTracking(){const select=document.getElementById("trackingGuiaSelect");if(!select)return;select.innerHTML='<option value="">Seleccionar envío...</option>';try{const data=await postAPI({action:"listTrackingEnvios",secretKey:SECRET});if(!data.ok){select.innerHTML='<option value="">No se pudieron cargar envíos</option>';return}(data.envios||[]).forEach(e=>{const codigo=e.CodigoEnvio||e.codigoEnvio||"";if(!codigo)return;const opt=document.createElement("option");opt.value=codigo;opt.textContent=`${codigo}${e.DestNombre?" — "+e.DestNombre:""}`;select.appendChild(opt)})}catch(error){console.error(error);select.innerHTML='<option value="">Error cargando envíos</option>'}}
 function seleccionarGuiaTracking(){const select=document.getElementById("trackingGuiaSelect");const input=document.getElementById("trackingCodigoAdmin");if(select&&input&&select.value){input.value=select.value;consultarTrackingAdmin()}}
 function limpiarTrackingAdmin(){["trackingCodigoAdmin","trackingEstadoNuevo","trackingUbicacion","trackingComentario","trackingFechaHora"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});const visible=document.getElementById("trackingVisibleCliente");if(visible)visible.value="SI";const resumen=document.getElementById("trackingResumenAdmin");if(resumen)resumen.innerHTML="Selecciona una guía para ver el estado actual y el historial que verá el cliente.";const tbody=document.getElementById("tablaTrackingHistorial");if(tbody)tbody.innerHTML='<tr><td colspan="5">Consulta una guía para ver su historial.</td></tr>';const alertBox=document.getElementById("trackingAdminAlert");if(alertBox)clearAlert(alertBox)}
 function normalizarHistorialTracking(data){return data.historial||data.Historial||data.movimientos||data.Movimientos||data.estados||data.Estados||[]}

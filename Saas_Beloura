@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SaaS Logistico - Panel Maestro</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:#f5f7fa;color:#172033}.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}.side{background:#172033;color:#fff;padding:22px}.side h1{font-size:19px;margin:0 0 8px}.side p{font-size:13px;color:#b7c1d2;line-height:1.5}.main{padding:24px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.top h2{margin:0}.badge{background:#e8f5ee;color:#177245;border:1px solid #bce0ca;padding:6px 10px;border-radius:6px;font-size:12px;font-weight:700}.panel{background:#fff;border:1px solid #dfe5ec;border-radius:8px;padding:18px;margin-bottom:18px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}label{font-size:12px;font-weight:700;color:#526174}input,select,textarea{display:block;width:100%;margin-top:5px;padding:10px;border:1px solid #ccd5df;border-radius:6px;background:#fff}textarea{min-height:70px}.actions{display:flex;gap:8px;margin-top:14px}.btn{border:0;border-radius:6px;padding:9px 12px;background:#1769aa;color:#fff;font-weight:700;cursor:pointer}.btn.secondary{background:#64748b}.table{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1000px}th,td{text-align:left;padding:10px;border-bottom:1px solid #e5eaf0;font-size:12px}th{background:#f7f9fb;color:#526174}.alert{display:none;margin-top:12px;padding:10px;border-radius:6px}.ok{background:#e8f5ee;color:#177245}.error{background:#fdecec;color:#b42318}@media(max-width:900px){.app{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.side{padding:16px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side"><h1>SaaS Logistico</h1><p>Panel maestro de instalaciones independientes.</p></aside>
+  <main class="main">
+    <div class="top"><h2>Empresas</h2><span class="badge">Administracion central</span></div>
+    <section class="panel">
+      <form id="empresaForm">
+        <input id="EmpresaID" type="hidden">
+        <div class="grid">
+          <label>Empresa<input id="Nombre" required></label>
+          <label>Estado<select id="Estado"><option>ACTIVA</option><option>SUSPENDIDA</option><option>VENCIDA</option></select></label>
+          <label>Plan<input id="Plan" value="PILOTO"></label>
+          <label>Vencimiento<input id="FechaVencimiento" type="date"></label>
+          <label>Contacto<input id="ContactoNombre"></label>
+          <label>Telefono<input id="ContactoTelefono"></label>
+          <label>Email<input id="ContactoEmail" type="email"></label>
+          <label>Spreadsheet ID<input id="SpreadsheetID"></label>
+          <label>Web App URL<input id="WebAppURL"></label>
+          <label>Admin URL<input id="AdminURL"></label>
+          <label>Operador URL<input id="OperadorURL"></label>
+          <label>Tracking URL<input id="TrackingURL"></label>
+          <label>Limite operadores<input id="LimiteOperadores" type="number" value="10"></label>
+          <label>Limite guias/mes<input id="LimiteGuiasMes" type="number" value="500"></label>
+        </div>
+        <label>Modulos<textarea id="Modulos">ENVIOS|TRACKING|PAGOS|CONTABILIDAD|IPTV|AFILIADOS</textarea></label>
+        <label>Notas<textarea id="Notas"></textarea></label>
+        <div class="actions"><button class="btn">Guardar empresa</button><button class="btn secondary" type="button" onclick="limpiar()">Nueva</button></div>
+        <div id="alert" class="alert"></div>
+      </form>
+    </section>
+    <section class="panel table">
+      <table><thead><tr><th>ID</th><th>Empresa</th><th>Estado</th><th>Plan</th><th>Vencimiento</th><th>Limites</th><th>URLs</th><th>Accion</th></tr></thead><tbody id="tabla"></tbody></table>
+    </section>
+  </main>
+</div>
+<script>
+const API_URL="https://script.google.com/macros/s/AKfycbw8NByGeeouFuNBpaHXiHfCLR-OLDkJcf09wbA90MkjaRephhhKucjs4WDKsqXCMGkV/exec";
+const MASTER_SECRET="Aprill2405@";
+const campos=["EmpresaID","Nombre","Estado","Plan","FechaVencimiento","ContactoNombre","ContactoTelefono","ContactoEmail","SpreadsheetID","WebAppURL","AdminURL","OperadorURL","TrackingURL","LimiteOperadores","LimiteGuiasMes","Modulos","Notas"];
+let empresas=[];
+async function api(payload){const res=await fetch(API_URL,{method:"POST",body:JSON.stringify({...payload,masterSecret:MASTER_SECRET})});return res.json()}
+function mensaje(texto,ok){const box=document.getElementById("alert");box.style.display="block";box.className="alert "+(ok?"ok":"error");box.textContent=texto}
+function limpiar(){document.getElementById("empresaForm").reset();document.getElementById("EmpresaID").value="";document.getElementById("Plan").value="PILOTO";document.getElementById("LimiteOperadores").value="10";document.getElementById("LimiteGuiasMes").value="500";document.getElementById("Modulos").value="ENVIOS|TRACKING|PAGOS|CONTABILIDAD|IPTV|AFILIADOS"}
+function editar(empresa){campos.forEach(campo=>{const el=document.getElementById(campo);if(el)el.value=empresa[campo]||""});window.scrollTo({top:0,behavior:"smooth"})}
+function escapar(valor){return String(valor??"").replace(/[&<>"']/g,caracter=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[caracter]))}
+async function cargar(){const data=await api({action:"listarEmpresas"});if(!data.ok)return mensaje(data.error||"Error",false);empresas=data.empresas||[];document.getElementById("tabla").innerHTML=empresas.map(e=>`<tr><td>${escapar(e.EmpresaID)}</td><td>${escapar(e.Nombre)}</td><td>${escapar(e.Estado)}</td><td>${escapar(e.Plan)}</td><td>${escapar(e.FechaVencimiento||"-")}</td><td>${escapar(e.LimiteOperadores||0)} operadores<br>${escapar(e.LimiteGuiasMes||0)} guias/mes</td><td>${e.AdminURL?`<a href="${escapar(e.AdminURL)}" target="_blank">Admin</a>`:"-"} ${e.TrackingURL?`<a href="${escapar(e.TrackingURL)}" target="_blank">Tracking</a>`:""}</td><td><button class="btn editar" data-id="${escapar(e.EmpresaID)}">Editar</button></td></tr>`).join("");document.querySelectorAll(".editar").forEach(btn=>btn.addEventListener("click",()=>editar(empresas.find(e=>String(e.EmpresaID)===btn.dataset.id)||{})))}
+document.getElementById("empresaForm").addEventListener("submit",async event=>{event.preventDefault();const payload={action:"guardarEmpresa"};campos.forEach(campo=>payload[campo]=document.getElementById(campo).value);const data=await api(payload);if(!data.ok)return mensaje(data.error||"Error",false);mensaje("Empresa guardada correctamente",true);limpiar();cargar()});
+cargar();
+</script>
+</body>
+</html>

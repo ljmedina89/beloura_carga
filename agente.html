@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Agente | BELOURA</title>
+  <meta name="description" content="Panel simple para agentes BELOURA: clientes, paquetes, cobros y tracking." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#07111f;--blue:#2563eb;--soft:#f4f7fb;--line:#dbe3ef;--muted:#667085;--green:#16a34a;--red:#dc2626;--amber:#d97706}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--soft);color:var(--ink)}button,input,select,textarea{font:inherit}button{border:0;cursor:pointer}a{text-decoration:none;color:inherit}
+    .top{background:var(--blue);color:#fff}.top-inner{width:min(1180px,92%);margin:auto;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-size:26px;font-weight:900;letter-spacing:-.05em;font-style:italic}.brand span{background:#fff;color:#111;padding:0 4px;border-radius:4px}.top nav{display:flex;gap:18px;font-size:14px;font-weight:800}
+    .login{min-height:calc(100vh - 72px);display:grid;place-items:center;padding:24px}.login-card,.panel{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 36px rgba(15,23,42,.08)}.login-card{width:min(430px,100%);padding:24px}.login-card h1{margin:0 0 8px;font-size:28px}.muted{color:var(--muted);line-height:1.5}.field{display:grid;gap:6px;margin-top:12px}label{font-size:12px;font-weight:900;color:var(--muted);text-transform:uppercase}input,select,textarea{width:100%;min-height:46px;border:1px solid #c9d3df;border-radius:8px;padding:0 12px;background:#fff;outline:none}textarea{padding:12px;min-height:76px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .btn{min-height:42px;border-radius:8px;padding:0 14px;background:var(--ink);color:#fff;font-weight:900}.btn.blue{background:var(--blue)}.btn.green{background:var(--green)}.btn.light{background:#eef2f7;color:#182230}.btn:disabled{opacity:.6}.alert{display:none;margin-top:14px;border-radius:8px;padding:11px 12px;background:#f8fafc;border:1px solid var(--line);color:var(--muted)}
+    .app{display:none}.shell{width:min(1180px,92%);margin:24px auto 64px}.hello{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}.hello h1{margin:0;font-size:34px;letter-spacing:-.04em}.quick{display:flex;gap:8px;flex-wrap:wrap}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}.card span{display:block;color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase}.card strong{display:block;margin-top:8px;font-size:24px}
+    .tabs{display:flex;gap:8px;margin:18px 0}.tabs button{min-height:40px;border-radius:8px;padding:0 14px;background:#eef2f7;color:#182230;font-weight:900}.tabs button.active{background:var(--ink);color:#fff}.view{display:none}.view.active{display:block}.panel{padding:18px;margin-bottom:14px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.panel h2{margin:0;font-size:20px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.table{display:grid;gap:8px}.row{display:grid;grid-template-columns:1.2fr .8fr .7fr .7fr auto;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}.row.client{grid-template-columns:1.2fr .8fr .6fr .7fr}.row.pay{grid-template-columns:1.2fr .8fr .7fr auto}.row strong{display:block}.row small{display:block;color:var(--muted);margin-top:4px}.tag{display:inline-flex;align-items:center;justify-content:center;min-height:26px;border-radius:999px;background:#eff6ff;color:#1d4ed8;padding:0 9px;font-size:12px;font-weight:900}.tag.warn{background:#fff7ed;color:#9a3412}.tag.ok{background:#ecfdf3;color:#067647}.empty{border:1px solid var(--line);background:#fff;border-radius:10px;padding:18px;color:var(--muted)}
+    .tracking{grid-column:1/-1;border-top:1px solid var(--line);padding-top:10px;display:none}.timeline{display:grid;gap:8px}.move{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px}.move strong{font-size:14px}.move span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+    @media(max-width:820px){.cards,.grid,.row,.row.client,.row.pay{grid-template-columns:1fr}.hello{align-items:flex-start;flex-direction:column}.top-inner{align-items:flex-start;flex-direction:column;padding:16px 0}.top nav{flex-wrap:wrap}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="index.html"><span>BE</span>LOURA</a>
+      <nav><a href="index.html#tracking">Tracking</a><a href="cliente.html">Mi casillero</a><a href="agente.html">Agentes</a></nav>
+    </div>
+  </header>
+
+  <section class="login" id="loginScreen">
+    <div class="login-card">
+      <h1>Panel Agente</h1>
+      <p class="muted">Clientes, paquetes y cobros en una vista sencilla para trabajar todos los dias.</p>
+      <div class="field"><label for="agenteId">Codigo de agente</label><input id="agenteId" placeholder="Ej: BLR1234" autocomplete="username"></div>
+      <div class="field"><label for="agentePin">PIN</label><input id="agentePin" type="password" autocomplete="current-password"></div>
+      <div style="margin-top:14px"><button class="btn blue" id="btnLogin" onclick="loginAgente()">Entrar</button></div>
+      <div class="alert" id="loginAlert"></div>
+    </div>
+  </section>
+
+  <main class="app" id="app">
+    <div class="shell">
+      <div class="hello">
+        <div><h1 id="helloTitle">Hola</h1><div class="muted">Tu operacion del dia, sin vueltas.</div></div>
+        <div class="quick">
+          <button class="btn blue" onclick="showView('clientes')">Crear cliente</button>
+          <button class="btn green" onclick="showView('paquetes')">Nuevo paquete</button>
+          <button class="btn light" onclick="showView('cobros')">Cobros</button>
+          <button class="btn light" onclick="logout()">Salir</button>
+        </div>
+      </div>
+
+      <section class="cards" id="cards"></section>
+
+      <div class="tabs">
+        <button class="active" data-view="inicio" onclick="showView('inicio')">Inicio</button>
+        <button data-view="clientes" onclick="showView('clientes')">Clientes</button>
+        <button data-view="paquetes" onclick="showView('paquetes')">Paquetes</button>
+        <button data-view="cobros" onclick="showView('cobros')">Cobros</button>
+      </div>
+
+      <section class="view active" id="view-inicio">
+        <div class="panel">
+          <div class="panel-head"><h2>Paquetes recientes</h2><button class="btn light" onclick="refresh()">Actualizar</button></div>
+          <div class="table" id="recentTable"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-clientes">
+        <div class="panel">
+          <div class="panel-head"><h2>Crear cliente</h2></div>
+          <form id="formCliente" class="grid">
+            <div class="field"><label>Nombre</label><input name="NombreCompleto" required></div>
+            <div class="field"><label>Telefono</label><input name="Telefono" required></div>
+            <div class="field"><label>Cedula</label><input name="Cedula"></div>
+            <div class="field"><label>Ciudad</label><input name="CiudadDestino"></div>
+            <div class="field"><label>Correo</label><input name="Email" type="email"></div>
+            <div class="field"><label>Direccion</label><input name="Direccion"></div>
+            <div style="grid-column:1/-1"><button class="btn blue" type="submit">Guardar cliente</button></div>
+          </form>
+          <div class="alert" id="clienteAlert"></div>
+        </div>
+        <div class="panel"><div class="panel-head"><h2>Mis clientes</h2></div><div class="table" id="clientesTable"></div></div>
+      </section>
+
+      <section class="view" id="view-paquetes">
+        <div class="panel">
+          <div class="panel-head"><h2>Nuevo paquete</h2></div>
+          <form id="formPaquete" class="grid">
+            <div class="field"><label>Cliente</label><select name="ClienteFinalID" id="clienteSelect" required></select></div>
+            <div class="field"><label>Libras</label><input name="PesoLb" type="number" min="0" step="0.01" required></div>
+            <div class="field"><label>Valor a cobrar</label><input name="TotalCliente" type="number" min="0" step="0.01"></div>
+            <div class="field"><label>Cobrado ahora</label><input name="MontoCobradoCliente" type="number" min="0" step="0.01"></div>
+            <div class="field" style="grid-column:1/-1"><label>Descripcion</label><textarea name="Descripcion" placeholder="Ej: ropa, zapatos, compra Amazon..."></textarea></div>
+            <div style="grid-column:1/-1"><button class="btn green" type="submit">Guardar paquete</button></div>
+          </form>
+          <div class="alert" id="paqueteAlert"></div>
+        </div>
+        <div class="panel"><div class="panel-head"><h2>Paquetes</h2></div><div class="table" id="paquetesTable"></div></div>
+      </section>
+
+      <section class="view" id="view-cobros">
+        <div class="panel"><div class="panel-head"><h2>Cobros pendientes</h2></div><div class="table" id="cobrosTable"></div></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="beloura-public-config.js"></script>
+  <script>
+    const API_URL = (window.BELOURA_PUBLIC_CONFIG || {}).apiUrl || "";
+    let session = null;
+    let state = { clientes: [], envios: [], resumen: {}, agente: {} };
+
+    document.getElementById("formCliente").addEventListener("submit", e => { e.preventDefault(); createCliente(new FormData(e.target)); });
+    document.getElementById("formPaquete").addEventListener("submit", e => { e.preventDefault(); createPaquete(new FormData(e.target)); });
+
+    function auth() { return { AFILIADO_ID: session.agenteId, pin: session.pin }; }
+    function money(v) { return "$" + Number(v || 0).toFixed(2); }
+    function esc(v) { return String(v || "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])); }
+    function alertBox(id, msg, ok) { const el = document.getElementById(id); el.style.display = "block"; el.style.borderColor = ok ? "#bbf7d0" : "#fecaca"; el.style.background = ok ? "#f0fdf4" : "#fff1f2"; el.style.color = ok ? "#166534" : "#991b1b"; el.innerHTML = msg; }
+    async function post(payload) { const res = await fetch(API_URL, { method:"POST", body:JSON.stringify(payload) }); return res.json(); }
+
+    async function loginAgente() {
+      const agenteId = document.getElementById("agenteId").value.trim().toUpperCase();
+      const pin = document.getElementById("agentePin").value.trim();
+      if (!agenteId || !pin) { alertBox("loginAlert", "Ingresa codigo y PIN.", false); return; }
+      document.getElementById("btnLogin").disabled = true;
+      try {
+        const data = await post({ action:"agenteLogin", AFILIADO_ID:agenteId, pin });
+        if (!data.ok) throw new Error(data.error || "Acceso no autorizado");
+        session = { agenteId, pin };
+        sessionStorage.setItem("belouraAgente", JSON.stringify(session));
+        document.getElementById("loginScreen").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        render(data);
+      } catch (error) {
+        alertBox("loginAlert", error.message || "Error de acceso.", false);
+      } finally {
+        document.getElementById("btnLogin").disabled = false;
+      }
+    }
+
+    async function refresh() {
+      if (!session) return;
+      const data = await post({ action:"agenteDashboard", ...auth() });
+      if (data.ok) render(data);
+    }
+
+    function render(data) {
+      state = data;
+      document.getElementById("helloTitle").textContent = "Hola, " + (data.agente?.nombre || "agente");
+      renderCards(data.resumen || {});
+      renderClientes(data.clientes || []);
+      renderPaquetes(data.envios || []);
+      renderCobros(data.envios || []);
+      fillClientes(data.clientes || []);
+    }
+
+    function renderCards(r) {
+      document.getElementById("cards").innerHTML = [
+        ["Clientes", r.clientes || 0],
+        ["Paquetes activos", r.paquetesActivos || 0],
+        ["Cobros pendientes", money(r.cobrosPendientes)],
+        ["Debe a Beloura", money(r.deudaBeloura)]
+      ].map(([k,v]) => `<div class="card"><span>${k}</span><strong>${v}</strong></div>`).join("");
+    }
+
+    function showView(view) {
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      document.getElementById("view-" + view).classList.add("active");
+      document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+    }
+
+    function fillClientes(clientes) {
+      const html = clientes.length
+        ? clientes.map(c => `<option value="${esc(c.codigoCliente)}">${esc(c.nombre)} - ${esc(c.telefono)}</option>`).join("")
+        : '<option value="">Crea un cliente primero</option>';
+      document.getElementById("clienteSelect").innerHTML = html;
+    }
+
+    function renderClientes(clientes) {
+      document.getElementById("clientesTable").innerHTML = clientes.length ? clientes.map(c => `
+        <div class="row client"><div><strong>${esc(c.nombre)}</strong><small>${esc(c.codigoCliente)} · ${esc(c.telefono)}</small></div><div>${esc(c.ciudad || "-")}</div><div>${c.paquetes || 0} paquetes</div><div>${money(c.pendiente)}</div></div>
+      `).join("") : '<div class="empty">Aun no tienes clientes registrados.</div>';
+    }
+
+    function paqueteRow(e) {
+      const tagClass = Number(e.pendiente || 0) <= 0 ? "ok" : "warn";
+      return `<div class="row">
+        <div><strong>${esc(e.cliente || "Cliente")}</strong><small>${esc(e.CodigoEnvio)} · ${esc(e.descripcion || "Sin descripcion")}</small></div>
+        <div>${Number(e.libras || 0).toFixed(2)} lb</div>
+        <div><span class="tag">${esc(e.estado || "Sin estado")}</span></div>
+        <div><span class="tag ${tagClass}">${money(e.pendiente)} pend.</span></div>
+        <div><button class="btn light" onclick="toggleTracking('${esc(e.CodigoEnvio)}')">Tracking</button></div>
+        <div class="tracking" id="trk-${esc(e.CodigoEnvio)}"></div>
+      </div>`;
+    }
+
+    function renderPaquetes(envios) {
+      const html = envios.length ? envios.map(paqueteRow).join("") : '<div class="empty">Aun no tienes paquetes registrados.</div>';
+      document.getElementById("paquetesTable").innerHTML = html;
+      document.getElementById("recentTable").innerHTML = html;
+    }
+
+    function renderCobros(envios) {
+      const pendientes = envios.filter(e => Number(e.pendiente || 0) > 0);
+      document.getElementById("cobrosTable").innerHTML = pendientes.length ? pendientes.map(e => `
+        <div class="row pay">
+          <div><strong>${esc(e.cliente)}</strong><small>${esc(e.CodigoEnvio)} · ${esc(e.telefono || "")}</small></div>
+          <div>${money(e.totalCliente)} total</div>
+          <div>${money(e.pendiente)} pendiente</div>
+          <div><button class="btn green" onclick="registrarCobro('${esc(e.CodigoEnvio)}', ${Number(e.pendiente || 0)})">Marcar cobro</button></div>
+        </div>
+      `).join("") : '<div class="empty">No tienes cobros pendientes.</div>';
+    }
+
+    async function createCliente(fd) {
+      const payload = Object.fromEntries(fd.entries());
+      const data = await post({ action:"agenteCreateCliente", ...auth(), ...payload });
+      alertBox("clienteAlert", data.ok ? "Cliente creado correctamente." : data.error || "No se pudo crear.", data.ok);
+      if (data.ok) { document.getElementById("formCliente").reset(); await refresh(); }
+    }
+
+    async function createPaquete(fd) {
+      const payload = Object.fromEntries(fd.entries());
+      const data = await post({ action:"agenteCreatePaquete", ...auth(), ...payload });
+      alertBox("paqueteAlert", data.ok ? `Paquete creado: ${esc(data.envio?.codigoEnvio || "")}` : data.error || "No se pudo crear.", data.ok);
+      if (data.ok) { document.getElementById("formPaquete").reset(); await refresh(); }
+    }
+
+    async function registrarCobro(codigoEnvio, sugerido) {
+      const value = prompt("Monto cobrado", Number(sugerido || 0).toFixed(2));
+      if (!value) return;
+      const data = await post({ action:"agenteRegistrarCobro", ...auth(), CodigoEnvio:codigoEnvio, Monto:value });
+      if (!data.ok) alert(data.error || "No se pudo registrar el cobro");
+      await refresh();
+    }
+
+    async function toggleTracking(codigo) {
+      const box = document.getElementById("trk-" + codigo);
+      if (!box) return;
+      if (box.style.display === "block") { box.style.display = "none"; return; }
+      box.style.display = "block";
+      box.innerHTML = '<div class="empty">Cargando tracking...</div>';
+      const data = await post({ action:"trackByCodigoEnvio", codigoEnvio:codigo });
+      const items = data.historial || [];
+      box.innerHTML = items.length ? `<div class="timeline">${items.map(i => `<div class="move"><strong>${esc(i.Estado)}</strong><span>${esc(i.FechaHora || "")}${i.Ubicacion ? " · " + esc(i.Ubicacion) : ""}</span>${i.Comentario ? `<small>${esc(i.Comentario)}</small>` : ""}</div>`).join("")}</div>` : '<div class="empty">Sin movimientos registrados.</div>';
+    }
+
+    function logout() { sessionStorage.removeItem("belouraAgente"); location.reload(); }
+
+    try {
+      const saved = JSON.parse(sessionStorage.getItem("belouraAgente") || "null");
+      if (saved?.agenteId && saved?.pin) { document.getElementById("agenteId").value = saved.agenteId; document.getElementById("agentePin").value = saved.pin; }
+    } catch (error) {}
+  </script>
+</body>
+</html>

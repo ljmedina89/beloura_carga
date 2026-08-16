@@ -14,6 +14,7 @@ trk.belourastore.com
 
 - `index.html`: pagina publica principal.
 - `cliente.html`: casillero privado con registro y login por cliente/casillero + PIN.
+- `agente.html`: panel sencillo para agentes/revendedores con clientes, paquetes, cobros y tracking.
 - `afiliados.html`: registro y recuperacion de PIN para afiliados.
 - `partner.html`: dashboard de afiliados.
 - `operador.html`: dashboard de operadores.
@@ -44,7 +45,10 @@ Luego abre `http://localhost:8000`.
 - El tracking publico y los QR de guias deben consultar por `CodigoEnvio` individual (`NY...`), incluso cuando varios envios compartan una guia consolidada (`GNY...`).
 - La guia consolidada sirve para agrupar paquetes; el tracking individual sirve para que cada cliente vea solo su envio.
 - `cliente.html` usa `clienteLogin`, `clienteEnvios` y `registrarClienteCasillero`. Los envios por cliente requieren PIN; el tracking publico solo debe consultar codigos de envio individuales (`NY...`) o guias.
+- El registro de casillero valida duplicados por `Cedula`, `Email` y `Telefono`. Si el cliente ya existe, debe ingresar o recuperar PIN.
+- La recuperacion de PIN de cliente usa `recuperarPinCliente` y exige al menos dos datos coincidentes entre cedula, correo y telefono.
 - La hoja `CLIENTES` contempla casilleros privados con `NumeroCasillero`, `PIN`, `EstadoCasillero`, `FechaAltaCasillero` y `UltimoAcceso`.
+- El panel de agentes usa afiliados existentes como agentes. Cada cliente creado por agente guarda `AgenteID`; cada paquete guarda `AgenteID`, `ClienteFinalID`, cobros al cliente final y saldo pendiente.
 - La hoja `ENVIOS` ya contempla campos para documentos: `FacturaURL`, `FotoPaqueteURL`, `FacturaEstado`, `FechaFactura` y `ArchivoSubidoPor`.
 - El modulo de configuracion del admin mantiene textos de guia, bodega, sitio web, URL de tracking, precios base, metodos de pago, estados y opciones operativas.
 

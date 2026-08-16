@@ -46,6 +46,16 @@
     .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-content:start}
     .link-btn{display:inline-flex;align-items:center;min-height:34px;border-radius:7px;padding:0 10px;background:#eef2f7;font-size:12px;font-weight:900}
     .link-btn.primary{background:var(--blue);color:#fff}
+    .tracking-detail{grid-column:1/-1;border-top:1px solid var(--line);padding-top:14px;margin-top:2px}
+    .tracking-detail[hidden]{display:none}
+    .tracking-title{font-size:13px;font-weight:900;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+    .timeline{display:grid;gap:10px}
+    .timeline-item{display:grid;grid-template-columns:14px 1fr;gap:10px;align-items:start}
+    .dot{width:12px;height:12px;border-radius:50%;background:var(--blue);margin-top:4px;box-shadow:0 0 0 4px #dbeafe}
+    .timeline-card{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+    .timeline-card strong{display:block;font-size:14px}
+    .timeline-card span{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+    .timeline-card p{margin:6px 0 0;color:#344054;font-size:13px;line-height:1.45}
     .empty{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px;color:var(--muted);line-height:1.55}
     @media(max-width:760px){.hero-inner{grid-template-columns:1fr}.top-inner{align-items:flex-start;flex-direction:column;padding:16px 0}.top nav{flex-wrap:wrap}.search-grid,.shipment{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.actions{justify-content:flex-start}}
   </style>
@@ -91,7 +101,7 @@
   <script src="beloura-public-config.js"></script>
   <script>
     const BELOURA_PUBLIC = window.BELOURA_PUBLIC_CONFIG || {};
-    const API_URL = BELOURA_PUBLIC.apiUrl || "https://script.google.com/macros/s/AKfycbxqqb8J_lskdOci83bRVc62eLjQODphDbfa-8NxKY2ixGlJMg-P7jJS36Ly9XkhA-ONFg/exec";
+    const API_URL = BELOURA_PUBLIC.apiUrl || "";
     const TRACKING_BASE_URL = BELOURA_PUBLIC.trackingBaseUrl || "https://trk.belourastore.com/?codigo=";
 
     const queryInput = document.getElementById("clienteQuery");
@@ -202,8 +212,10 @@
     }
 
     function renderEnvio(e) {
-      const codigo = escapeHtml(e.CodigoEnvio || "");
-      const trackingUrl = TRACKING_BASE_URL + encodeURIComponent(e.CodigoEnvio || "");
+      const rawCodigo = String(e.CodigoEnvio || "");
+      const codigo = escapeHtml(rawCodigo);
+      const encodedCodigo = encodeURIComponent(rawCodigo);
+      const detailId = "tracking-" + rawCodigo.replace(/[^A-Za-z0-9_-]/g, "_");
       const facturaLink = e.FacturaURL ? `<a class="link-btn" href="${escapeHtml(e.FacturaURL)}" target="_blank" rel="noopener">Factura</a>` : "";
       const fotoLink = e.FotoPaqueteURL ? `<a class="link-btn" href="${escapeHtml(e.FotoPaqueteURL)}" target="_blank" rel="noopener">Foto paquete</a>` : "";
 
@@ -218,11 +230,71 @@
             </div>
           </div>
           <div class="actions">
-            <a class="link-btn primary" href="${trackingUrl}" target="_blank" rel="noopener">Ver tracking</a>
+            <button class="link-btn primary" type="button" onclick="mostrarTrackingEnvio('${encodedCodigo}', '${detailId}')">Ver tracking</button>
             ${facturaLink}
             ${fotoLink}
           </div>
+          <div class="tracking-detail" id="${detailId}" hidden></div>
         </article>
+      `;
+    }
+
+    async function mostrarTrackingEnvio(encodedCodigo, detailId) {
+      const codigo = decodeURIComponent(encodedCodigo || "");
+      const detail = document.getElementById(detailId);
+      if (!detail || !codigo) return;
+
+      if (!detail.hidden && detail.dataset.loaded === "true") {
+        detail.hidden = true;
+        return;
+      }
+
+      detail.hidden = false;
+      detail.innerHTML = '<div class="tracking-title">Historial del paquete</div><div class="empty">Cargando tracking...</div>';
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({
+            action: "trackByCodigoEnvio",
+            codigoEnvio: codigo
+          })
+        });
+        const data = await response.json();
+
+        if (!data.found) {
+          detail.innerHTML = '<div class="tracking-title">Historial del paquete</div><div class="empty">No se encontro tracking para este envio.</div>';
+          return;
+        }
+
+        const envio = data.envio || {};
+        const historial = (data.historial || []).slice().sort((a, b) => new Date(a.FechaHora || 0) - new Date(b.FechaHora || 0));
+
+        detail.dataset.loaded = "true";
+        detail.innerHTML = `
+          <div class="tracking-title">Tracking ${escapeHtml(envio.CodigoEnvio || codigo)}</div>
+          ${
+            historial.length
+              ? `<div class="timeline">${historial.map(renderMovimientoTracking).join("")}</div>`
+              : '<div class="empty">Aun no hay movimientos registrados para este envio.</div>'
+          }
+        `;
+      } catch (error) {
+        console.error(error);
+        detail.innerHTML = '<div class="tracking-title">Historial del paquete</div><div class="empty">No pudimos cargar el tracking. Intenta nuevamente.</div>';
+      }
+    }
+
+    function renderMovimientoTracking(item) {
+      return `
+        <div class="timeline-item">
+          <div class="dot"></div>
+          <div class="timeline-card">
+            <strong>${escapeHtml(item.Estado || "Movimiento registrado")}</strong>
+            <span>${formatDate(item.FechaHora)}${item.Ubicacion ? " · " + escapeHtml(item.Ubicacion) : ""}</span>
+            ${item.Comentario ? `<p>${escapeHtml(item.Comentario)}</p>` : ""}
+          </div>
+        </div>
       `;
     }
   </script>

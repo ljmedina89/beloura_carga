@@ -13,7 +13,7 @@ trk.belourastore.com
 ## Paginas principales
 
 - `index.html`: pagina publica principal.
-- `cliente.html`: casillero publico para consultar envios por codigo de cliente, cedula, telefono o nombre.
+- `cliente.html`: casillero privado con registro y login por cliente/casillero + PIN.
 - `afiliados.html`: registro y recuperacion de PIN para afiliados.
 - `partner.html`: dashboard de afiliados.
 - `operador.html`: dashboard de operadores.
@@ -43,7 +43,8 @@ Luego abre `http://localhost:8000`.
 
 - El tracking publico y los QR de guias deben consultar por `CodigoEnvio` individual (`NY...`), incluso cuando varios envios compartan una guia consolidada (`GNY...`).
 - La guia consolidada sirve para agrupar paquetes; el tracking individual sirve para que cada cliente vea solo su envio.
-- `cliente.html` usa la accion publica `clienteEnvios` / `trackByCodigoCliente` para mostrar todos los envios asociados a un cliente y sus libras acumuladas.
+- `cliente.html` usa `clienteLogin`, `clienteEnvios` y `registrarClienteCasillero`. Los envios por cliente requieren PIN; el tracking publico solo debe consultar codigos de envio individuales (`NY...`) o guias.
+- La hoja `CLIENTES` contempla casilleros privados con `NumeroCasillero`, `PIN`, `EstadoCasillero`, `FechaAltaCasillero` y `UltimoAcceso`.
 - La hoja `ENVIOS` ya contempla campos para documentos: `FacturaURL`, `FotoPaqueteURL`, `FacturaEstado`, `FechaFactura` y `ArchivoSubidoPor`.
 - El modulo de configuracion del admin mantiene textos de guia, bodega, sitio web, URL de tracking, precios base, metodos de pago, estados y opciones operativas.
 

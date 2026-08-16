@@ -1491,7 +1491,7 @@
     }
 
     const BELOURA_PUBLIC = window.BELOURA_PUBLIC_CONFIG || {};
-    const API_URL = BELOURA_PUBLIC.apiUrl || "https://script.google.com/macros/s/AKfycbxqqb8J_lskdOci83bRVc62eLjQODphDbfa-8NxKY2ixGlJMg-P7jJS36Ly9XkhA-ONFg/exec";
+    const API_URL = BELOURA_PUBLIC.apiUrl || "https://script.google.com/macros/s/AKfycbx-o2R9RaJP0LZGmLni4wnLSr5UA7Aq2t3YnXiYii0E1_pjV6OSAdugiSio0AywgjJV/exec";
 
 async function trackDemo() {
   const code = document.getElementById('trackingCode').value.trim().toUpperCase();
@@ -1507,19 +1507,15 @@ async function trackDemo() {
   box.innerHTML = 'Buscando información del paquete...';
 
   try {
-    let payload;
-
-    if (code.startsWith('CNY')) {
-      payload = {
-        action: "trackByCodigoCliente",
-        codigoCliente: code
-      };
-    } else {
-      payload = {
-        action: "trackByCodigoEnvio",
-        codigoEnvio: code
-      };
+    if (code.startsWith('CNY') || code.startsWith('BLR')) {
+      box.innerHTML = '<strong>Este codigo pertenece a un casillero privado.</strong><br><br>Para ver todos tus envios, libras y pagos debes ingresar con tu PIN en <a href="cliente.html" style="color:#2563eb;font-weight:800;">Mi casillero</a>.';
+      return;
     }
+
+    const payload = {
+      action: "trackByCodigoEnvio",
+      codigoEnvio: code
+    };
 
     const res = await fetch(API_URL, {
       method: "POST",
@@ -1527,7 +1523,7 @@ async function trackDemo() {
     });
 
     const data = await res.json();
-    renderTrackingResponse(data, code.startsWith('CNY'), code);
+    renderTrackingResponse(data, false, code);
 
   } catch (error) {
     console.error(error);

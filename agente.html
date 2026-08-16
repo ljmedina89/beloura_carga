@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel Agente | BELOURA</title>
-  <meta name="description" content="Panel simple para agentes BELOURA: clientes, paquetes, cobros y tracking." />
+  <meta name="description" content="Panel simple para agentes BELOURA: clientes, registros, cobros y tracking." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
   <section class="login" id="loginScreen">
     <div class="login-card">
       <h1>Panel Agente</h1>
-      <p class="muted">Clientes, paquetes y cobros en una vista sencilla para trabajar todos los dias.</p>
+      <p class="muted">Clientes, registros y cobros en una vista sencilla para trabajar todos los dias.</p>
       <div class="field"><label for="agenteId">Codigo de agente</label><input id="agenteId" placeholder="Ej: BLR1234" autocomplete="username"></div>
       <div class="field"><label for="agentePin">PIN</label><input id="agentePin" type="password" autocomplete="current-password"></div>
       <div style="margin-top:14px"><button class="btn blue" id="btnLogin" onclick="loginAgente()">Entrar</button></div>
@@ -45,7 +45,7 @@
         <div><h1 id="helloTitle">Hola</h1><div class="muted">Tu operacion del dia, sin vueltas.</div></div>
         <div class="quick">
           <button class="btn blue" onclick="showView('clientes')">Crear cliente</button>
-          <button class="btn green" onclick="showView('paquetes')">Nuevo paquete</button>
+          <button class="btn green" onclick="showView('registros')">Nuevo registro</button>
           <button class="btn light" onclick="showView('cobros')">Cobros</button>
           <button class="btn light" onclick="logout()">Salir</button>
         </div>
@@ -56,13 +56,13 @@
       <div class="tabs">
         <button class="active" data-view="inicio" onclick="showView('inicio')">Inicio</button>
         <button data-view="clientes" onclick="showView('clientes')">Clientes</button>
-        <button data-view="paquetes" onclick="showView('paquetes')">Paquetes</button>
+        <button data-view="registros" onclick="showView('registros')">Registros</button>
         <button data-view="cobros" onclick="showView('cobros')">Cobros</button>
       </div>
 
       <section class="view active" id="view-inicio">
         <div class="panel">
-          <div class="panel-head"><h2>Paquetes recientes</h2><button class="btn light" onclick="refresh()">Actualizar</button></div>
+          <div class="panel-head"><h2>Envios Beloura</h2><button class="btn light" onclick="refresh()">Actualizar</button></div>
           <div class="table" id="recentTable"></div>
         </div>
       </section>
@@ -84,20 +84,21 @@
         <div class="panel"><div class="panel-head"><h2>Mis clientes</h2></div><div class="table" id="clientesTable"></div></div>
       </section>
 
-      <section class="view" id="view-paquetes">
+      <section class="view" id="view-registros">
         <div class="panel">
-          <div class="panel-head"><h2>Nuevo paquete</h2></div>
-          <form id="formPaquete" class="grid">
-            <div class="field"><label>Cliente</label><select name="ClienteFinalID" id="clienteSelect" required></select></div>
+          <div class="panel-head"><h2>Nuevo registro</h2></div>
+          <p class="muted">Este registro es interno del agente. No crea guias ni envios oficiales en Beloura.</p>
+          <form id="formRegistro" class="grid">
+            <div class="field"><label>Cliente</label><select name="AgenteClienteID" id="clienteSelect" required></select></div>
             <div class="field"><label>Libras</label><input name="PesoLb" type="number" min="0" step="0.01" required></div>
             <div class="field"><label>Valor a cobrar</label><input name="TotalCliente" type="number" min="0" step="0.01"></div>
             <div class="field"><label>Cobrado ahora</label><input name="MontoCobradoCliente" type="number" min="0" step="0.01"></div>
             <div class="field" style="grid-column:1/-1"><label>Descripcion</label><textarea name="Descripcion" placeholder="Ej: ropa, zapatos, compra Amazon..."></textarea></div>
-            <div style="grid-column:1/-1"><button class="btn green" type="submit">Guardar paquete</button></div>
+            <div style="grid-column:1/-1"><button class="btn green" type="submit">Guardar registro</button></div>
           </form>
-          <div class="alert" id="paqueteAlert"></div>
+          <div class="alert" id="registroAlert"></div>
         </div>
-        <div class="panel"><div class="panel-head"><h2>Paquetes</h2></div><div class="table" id="paquetesTable"></div></div>
+        <div class="panel"><div class="panel-head"><h2>Registros</h2></div><div class="table" id="registrosTable"></div></div>
       </section>
 
       <section class="view" id="view-cobros">
@@ -110,10 +111,10 @@
   <script>
     const API_URL = (window.BELOURA_PUBLIC_CONFIG || {}).apiUrl || "";
     let session = null;
-    let state = { clientes: [], envios: [], resumen: {}, agente: {} };
+    let state = { clientes: [], cuentas: [], enviosBeloura: [], resumen: {}, agente: {} };
 
     document.getElementById("formCliente").addEventListener("submit", e => { e.preventDefault(); createCliente(new FormData(e.target)); });
-    document.getElementById("formPaquete").addEventListener("submit", e => { e.preventDefault(); createPaquete(new FormData(e.target)); });
+    document.getElementById("formRegistro").addEventListener("submit", e => { e.preventDefault(); createRegistro(new FormData(e.target)); });
 
     function auth() { return { AFILIADO_ID: session.agenteId, pin: session.pin }; }
     function money(v) { return "$" + Number(v || 0).toFixed(2); }
@@ -152,15 +153,16 @@
       document.getElementById("helloTitle").textContent = "Hola, " + (data.agente?.nombre || "agente");
       renderCards(data.resumen || {});
       renderClientes(data.clientes || []);
-      renderPaquetes(data.envios || []);
-      renderCobros(data.envios || []);
+      renderBeloura(data.enviosBeloura || []);
+      renderRegistros(data.cuentas || []);
+      renderCobros(data.cuentas || []);
       fillClientes(data.clientes || []);
     }
 
     function renderCards(r) {
       document.getElementById("cards").innerHTML = [
         ["Clientes", r.clientes || 0],
-        ["Paquetes activos", r.paquetesActivos || 0],
+        ["Registros", r.registros || 0],
         ["Cobros pendientes", money(r.cobrosPendientes)],
         ["Debe a Beloura", money(r.deudaBeloura)]
       ].map(([k,v]) => `<div class="card"><span>${k}</span><strong>${v}</strong></div>`).join("");
@@ -174,43 +176,56 @@
 
     function fillClientes(clientes) {
       const html = clientes.length
-        ? clientes.map(c => `<option value="${esc(c.codigoCliente)}">${esc(c.nombre)} - ${esc(c.telefono)}</option>`).join("")
+        ? clientes.map(c => `<option value="${esc(c.agenteClienteId)}">${esc(c.nombre)} - ${esc(c.telefono)}</option>`).join("")
         : '<option value="">Crea un cliente primero</option>';
       document.getElementById("clienteSelect").innerHTML = html;
     }
 
     function renderClientes(clientes) {
       document.getElementById("clientesTable").innerHTML = clientes.length ? clientes.map(c => `
-        <div class="row client"><div><strong>${esc(c.nombre)}</strong><small>${esc(c.codigoCliente)} · ${esc(c.telefono)}</small></div><div>${esc(c.ciudad || "-")}</div><div>${c.paquetes || 0} paquetes</div><div>${money(c.pendiente)}</div></div>
+        <div class="row client"><div><strong>${esc(c.nombre)}</strong><small>${esc(c.agenteClienteId)} · ${esc(c.telefono)}</small></div><div>${esc(c.ciudad || "-")}</div><div>${c.registros || 0} registros</div><div>${money(c.pendiente)}</div></div>
       `).join("") : '<div class="empty">Aun no tienes clientes registrados.</div>';
     }
 
-    function paqueteRow(e) {
+    function registroRow(e) {
       const tagClass = Number(e.pendiente || 0) <= 0 ? "ok" : "warn";
       return `<div class="row">
-        <div><strong>${esc(e.cliente || "Cliente")}</strong><small>${esc(e.CodigoEnvio)} · ${esc(e.descripcion || "Sin descripcion")}</small></div>
+        <div><strong>${esc(e.cliente || "Cliente")}</strong><small>${esc(e.CuentaID)} · ${esc(e.descripcion || "Sin descripcion")}</small></div>
+        <div>${Number(e.libras || 0).toFixed(2)} lb</div>
+        <div><span class="tag">${esc(e.estadoCobro || "Pendiente")}</span></div>
+        <div><span class="tag ${tagClass}">${money(e.pendiente)} pend.</span></div>
+        <div><span class="muted">Interno</span></div>
+      </div>`;
+    }
+
+    function renderRegistros(envios) {
+      const html = envios.length ? envios.map(registroRow).join("") : '<div class="empty">Aun no tienes registros.</div>';
+      document.getElementById("registrosTable").innerHTML = html;
+    }
+
+    function envioBelouraRow(e) {
+      return `<div class="row">
+        <div><strong>${esc(e.CodigoEnvio || "")}</strong><small>${esc(e.cliente || "Beloura")} ? ${esc(e.descripcion || "Sin descripcion")}</small></div>
         <div>${Number(e.libras || 0).toFixed(2)} lb</div>
         <div><span class="tag">${esc(e.estado || "Sin estado")}</span></div>
-        <div><span class="tag ${tagClass}">${money(e.pendiente)} pend.</span></div>
+        <div><span class="tag warn">${money(e.debeBeloura)} debe</span></div>
         <div><button class="btn light" onclick="toggleTracking('${esc(e.CodigoEnvio)}')">Tracking</button></div>
         <div class="tracking" id="trk-${esc(e.CodigoEnvio)}"></div>
       </div>`;
     }
 
-    function renderPaquetes(envios) {
-      const html = envios.length ? envios.map(paqueteRow).join("") : '<div class="empty">Aun no tienes paquetes registrados.</div>';
-      document.getElementById("paquetesTable").innerHTML = html;
-      document.getElementById("recentTable").innerHTML = html;
+    function renderBeloura(envios) {
+      document.getElementById("recentTable").innerHTML = envios.length ? envios.map(envioBelouraRow).join("") : '<div class="empty">Aun no hay envios oficiales de Beloura asociados a tu agente.</div>';
     }
 
     function renderCobros(envios) {
       const pendientes = envios.filter(e => Number(e.pendiente || 0) > 0);
       document.getElementById("cobrosTable").innerHTML = pendientes.length ? pendientes.map(e => `
         <div class="row pay">
-          <div><strong>${esc(e.cliente)}</strong><small>${esc(e.CodigoEnvio)} · ${esc(e.telefono || "")}</small></div>
+          <div><strong>${esc(e.cliente)}</strong><small>${esc(e.CuentaID)} · ${esc(e.telefono || "")}</small></div>
           <div>${money(e.totalCliente)} total</div>
           <div>${money(e.pendiente)} pendiente</div>
-          <div><button class="btn green" onclick="registrarCobro('${esc(e.CodigoEnvio)}', ${Number(e.pendiente || 0)})">Marcar cobro</button></div>
+          <div><button class="btn green" onclick="registrarCobro('${esc(e.CuentaID)}', ${Number(e.pendiente || 0)})">Marcar cobro</button></div>
         </div>
       `).join("") : '<div class="empty">No tienes cobros pendientes.</div>';
     }
@@ -222,17 +237,17 @@
       if (data.ok) { document.getElementById("formCliente").reset(); await refresh(); }
     }
 
-    async function createPaquete(fd) {
+    async function createRegistro(fd) {
       const payload = Object.fromEntries(fd.entries());
       const data = await post({ action:"agenteCreatePaquete", ...auth(), ...payload });
-      alertBox("paqueteAlert", data.ok ? `Paquete creado: ${esc(data.envio?.codigoEnvio || "")}` : data.error || "No se pudo crear.", data.ok);
-      if (data.ok) { document.getElementById("formPaquete").reset(); await refresh(); }
+      alertBox("registroAlert", data.ok ? `Registro creado: ${esc(data.cuenta?.CuentaID || "")}` : data.error || "No se pudo crear.", data.ok);
+      if (data.ok) { document.getElementById("formRegistro").reset(); await refresh(); }
     }
 
     async function registrarCobro(codigoEnvio, sugerido) {
       const value = prompt("Monto cobrado", Number(sugerido || 0).toFixed(2));
       if (!value) return;
-      const data = await post({ action:"agenteRegistrarCobro", ...auth(), CodigoEnvio:codigoEnvio, Monto:value });
+      const data = await post({ action:"agenteRegistrarCobro", ...auth(), CuentaID:codigoEnvio, Monto:value });
       if (!data.ok) alert(data.error || "No se pudo registrar el cobro");
       await refresh();
     }

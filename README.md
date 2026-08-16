@@ -48,7 +48,10 @@ Luego abre `http://localhost:8000`.
 - El registro de casillero valida duplicados por `Cedula`, `Email` y `Telefono`. Si el cliente ya existe, debe ingresar o recuperar PIN.
 - La recuperacion de PIN de cliente usa `recuperarPinCliente` y exige al menos dos datos coincidentes entre cedula, correo y telefono.
 - La hoja `CLIENTES` contempla casilleros privados con `NumeroCasillero`, `PIN`, `EstadoCasillero`, `FechaAltaCasillero` y `UltimoAcceso`.
-- El panel de agentes usa afiliados existentes como agentes. Cada cliente creado por agente guarda `AgenteID`; cada paquete guarda `AgenteID`, `ClienteFinalID`, cobros al cliente final y saldo pendiente.
+- El panel de agentes usa afiliados existentes como agentes para iniciar sesion, pero su operacion diaria queda aislada del sistema principal.
+- Los clientes internos del agente se guardan en `AGENTE_CLIENTES`.
+- Las cuentas, libras, cobros y saldos del agente se guardan en `AGENTE_CUENTAS`.
+- El panel de agentes no crea envios reales en `ENVIOS`; solo lee los envios oficiales asociados al agente para mostrar tracking y deuda con Beloura.
 - La hoja `ENVIOS` ya contempla campos para documentos: `FacturaURL`, `FotoPaqueteURL`, `FacturaEstado`, `FechaFactura` y `ArchivoSubidoPor`.
 - El modulo de configuracion del admin mantiene textos de guia, bodega, sitio web, URL de tracking, precios base, metodos de pago, estados y opciones operativas.
 

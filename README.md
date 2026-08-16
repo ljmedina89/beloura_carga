@@ -37,8 +37,8 @@ Luego abre `http://localhost:8000`.
 - Mantener solo `CNAME`; no crear variantes como `cname`, porque en Windows chocan por mayusculas/minusculas.
 - Las rutas internas publicas deben apuntar a archivos reales (`afiliados.html`, `partner.html`) para evitar 404 en GitHub Pages.
 - No guardar PINs permanentes en `localStorage`; si se necesita mantener sesion, preferir `sessionStorage` o reautenticacion.
-- `beloura-public-config.js` centraliza la URL publica del Apps Script y la URL base de tracking. Si se redepliega el script, se cambia ahi y no pagina por pagina.
-- `beloura-admin-config.js` centraliza la URL administrativa y la clave actual. Es una medida de orden, no de seguridad real: en HTML estatico cualquier visitante puede ver el codigo fuente.
+- `beloura-public-config.js` centraliza la URL del Apps Script para todas las paginas y la URL base de tracking. Si se redepliega el script, se cambia ahi y no pagina por pagina.
+- `beloura-admin-config.js` solo centraliza la clave admin actual. Es una medida de orden, no de seguridad real: en HTML estatico cualquier visitante puede ver el codigo fuente.
 
 ## Estado operativo actual
 

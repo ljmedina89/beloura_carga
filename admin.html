@@ -763,10 +763,12 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     <button class="btn secondary" style="margin-top:10px" onclick="cerrarPagoIPTV()">Cancelar</button>
   </div>
 </div>
+<script src="beloura-public-config.js"></script>
 <script src="beloura-admin-config.js"></script>
 <script>
+const BELOURA_PUBLIC = window.BELOURA_PUBLIC_CONFIG || {};
 const BELOURA_ADMIN = window.BELOURA_ADMIN_CONFIG || {};
-const API_URL = BELOURA_ADMIN.apiUrl || "https://script.google.com/macros/s/AKfycbxjAfaYou9w59tvR-qRHmfVfSQMtmkytU6kAvlk6mKP_2drC64sFlSl19F_e4VTpHan/exec";
+const API_URL = BELOURA_PUBLIC.apiUrl || "";
 const SECRET = BELOURA_ADMIN.adminSecret || "";
 let envioActual = "";
 let dataGlobal = null;

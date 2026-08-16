@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi casillero | BELOURA</title>
+  <meta name="description" content="Consulta tus envios BELOURA por codigo de cliente, cedula, telefono o nombre." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--ink:#07111f;--blue:#2563eb;--soft:#f4f7fb;--line:#dbe3ef;--muted:#667085;--green:#16a34a;--orange:#f59e0b;--red:#dc2626}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;background:var(--soft);color:var(--ink)}
+    a{color:inherit;text-decoration:none}
+    .top{background:var(--blue);color:#fff}
+    .top-inner{width:min(1120px,92%);margin:auto;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{font-size:26px;font-weight:900;letter-spacing:-.05em;font-style:italic}
+    .brand span{background:#fff;color:#111;padding:0 4px;border-radius:4px}
+    .top nav{display:flex;gap:18px;font-size:14px;font-weight:800}
+    .hero{background:#fff;border-bottom:1px solid var(--line)}
+    .hero-inner{width:min(1120px,92%);margin:auto;padding:54px 0 38px;display:grid;grid-template-columns:1.1fr .9fr;gap:34px;align-items:end}
+    h1{margin:0;font-size:clamp(36px,5vw,66px);line-height:.96;letter-spacing:-.055em}
+    .lead{margin:16px 0 0;color:var(--muted);line-height:1.6;font-size:17px;max-width:680px}
+    .locker-note{border:1px solid var(--line);border-radius:10px;padding:18px;background:#f8fafc}
+    .locker-note strong{display:block;margin-bottom:6px}
+    .main{width:min(1120px,92%);margin:28px auto 64px}
+    .search-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;box-shadow:0 14px 32px rgba(15,23,42,.08)}
+    .search-grid{display:grid;grid-template-columns:1fr auto;gap:10px}
+    input,button{font:inherit;min-height:50px;border-radius:8px}
+    input{border:1px solid #c9d3df;padding:0 14px;outline:none}
+    input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    button{border:0;background:var(--ink);color:#fff;font-weight:900;padding:0 18px;cursor:pointer}
+    button:disabled{opacity:.62;cursor:not-allowed}
+    .hint{margin-top:10px;color:var(--muted);font-size:13px}
+    .status{display:none;margin-top:16px;border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#f8fafc;color:var(--muted)}
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+    .metric{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}
+    .metric span{display:block;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase}
+    .metric strong{display:block;margin-top:8px;font-size:24px}
+    .shipments{display:grid;gap:12px}
+    .shipment{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;grid-template-columns:1fr auto;gap:16px}
+    .shipment h3{margin:0;font-size:18px}
+    .meta{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.55}
+    .tag{display:inline-flex;align-items:center;min-height:28px;border-radius:999px;padding:0 10px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:900}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-content:start}
+    .link-btn{display:inline-flex;align-items:center;min-height:34px;border-radius:7px;padding:0 10px;background:#eef2f7;font-size:12px;font-weight:900}
+    .link-btn.primary{background:var(--blue);color:#fff}
+    .empty{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px;color:var(--muted);line-height:1.55}
+    @media(max-width:760px){.hero-inner{grid-template-columns:1fr}.top-inner{align-items:flex-start;flex-direction:column;padding:16px 0}.top nav{flex-wrap:wrap}.search-grid,.shipment{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.actions{justify-content:flex-start}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="index.html"><span>BE</span>LOURA</a>
+      <nav>
+        <a href="index.html#tracking">Tracking</a>
+        <a href="cliente.html">Mi casillero</a>
+        <a href="index.html#contacto">Accesos</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <h1>Mi casillero BELOURA</h1>
+        <p class="lead">Consulta todos tus envios registrados con tu codigo de cliente, cedula, telefono o nombre. Cada paquete mantiene su tracking individual.</p>
+      </div>
+      <div class="locker-note">
+        <strong>Codigo de cliente</strong>
+        Usa tu codigo tipo <b>CNY0001</b> cuando hagas compras o consultes tus paquetes. Tambien puedes buscar con tus datos registrados.
+      </div>
+    </div>
+  </section>
+
+  <main class="main">
+    <section class="search-panel">
+      <div class="search-grid">
+        <input id="clienteQuery" autocomplete="off" placeholder="Ej: CNY0001, cedula, telefono o nombre" />
+        <button id="btnBuscar" onclick="buscarCasillero()">Consultar</button>
+      </div>
+      <div class="hint">Por privacidad, escribe al menos 3 caracteres si buscas por nombre.</div>
+      <div id="estadoBusqueda" class="status"></div>
+    </section>
+
+    <section id="resultadoCasillero"></section>
+  </main>
+
+  <script src="beloura-public-config.js"></script>
+  <script>
+    const BELOURA_PUBLIC = window.BELOURA_PUBLIC_CONFIG || {};
+    const API_URL = BELOURA_PUBLIC.apiUrl || "";
+    const TRACKING_BASE_URL = BELOURA_PUBLIC.trackingBaseUrl || "https://trk.belourastore.com/?codigo=";
+
+    const queryInput = document.getElementById("clienteQuery");
+    const statusBox = document.getElementById("estadoBusqueda");
+    const resultBox = document.getElementById("resultadoCasillero");
+    const btnBuscar = document.getElementById("btnBuscar");
+
+    queryInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") buscarCasillero();
+    });
+
+    function money(value) {
+      const n = Number(value || 0);
+      return "$" + n.toFixed(2);
+    }
+
+    function showStatus(message, isError) {
+      statusBox.style.display = "block";
+      statusBox.style.borderColor = isError ? "#fecaca" : "#dbe3ef";
+      statusBox.style.background = isError ? "#fff1f2" : "#f8fafc";
+      statusBox.style.color = isError ? "#991b1b" : "#667085";
+      statusBox.innerHTML = message;
+    }
+
+    function escapeHtml(value) {
+      return String(value || "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function formatDate(value) {
+      if (!value) return "-";
+      const d = new Date(value);
+      if (isNaN(d.getTime())) return escapeHtml(value);
+      return d.toLocaleDateString("es-EC", { year: "numeric", month: "short", day: "2-digit" });
+    }
+
+    async function buscarCasillero() {
+      const query = queryInput.value.trim();
+      resultBox.innerHTML = "";
+
+      if (!query) {
+        showStatus("Ingresa tu codigo de cliente, cedula, telefono o nombre.", true);
+        return;
+      }
+
+      if (!API_URL) {
+        showStatus("No hay URL de API configurada para BELOURA.", true);
+        return;
+      }
+
+      btnBuscar.disabled = true;
+      showStatus("Consultando tus envios...", false);
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "clienteEnvios", query })
+        });
+        const data = await response.json();
+
+        if (!data.ok && data.error) {
+          showStatus(data.error, true);
+          return;
+        }
+
+        renderCasillero(data, query);
+      } catch (error) {
+        console.error(error);
+        showStatus("No pudimos consultar tus envios. Intenta nuevamente o comunicate por WhatsApp.", true);
+      } finally {
+        btnBuscar.disabled = false;
+      }
+    }
+
+    function renderCasillero(data, query) {
+      if (!data.found) {
+        showStatus("No encontramos envios asociados a <b>" + escapeHtml(query) + "</b>.", true);
+        resultBox.innerHTML = '<div class="empty">Verifica que el dato este escrito correctamente. Si tu paquete fue recibido recientemente, puede tomar un momento aparecer en el sistema.</div>';
+        return;
+      }
+
+      const resumen = data.resumen || {};
+      const cliente = data.cliente || {};
+      const envios = data.envios || [];
+
+      showStatus("Resultados para <b>" + escapeHtml(cliente.Nombre || query) + "</b>" + (cliente.CodigoCliente ? " · Cliente " + escapeHtml(cliente.CodigoCliente) : ""), false);
+
+      resultBox.innerHTML = `
+        <div class="summary">
+          <div class="metric"><span>Envios</span><strong>${resumen.totalEnvios || envios.length}</strong></div>
+          <div class="metric"><span>Libras</span><strong>${Number(resumen.totalLibras || 0).toFixed(2)}</strong></div>
+          <div class="metric"><span>Activos</span><strong>${resumen.activos || 0}</strong></div>
+          <div class="metric"><span>Entregados</span><strong>${resumen.entregados || 0}</strong></div>
+        </div>
+        <div class="shipments">
+          ${envios.map(renderEnvio).join("")}
+        </div>
+      `;
+    }
+
+    function renderEnvio(e) {
+      const codigo = escapeHtml(e.CodigoEnvio || "");
+      const trackingUrl = TRACKING_BASE_URL + encodeURIComponent(e.CodigoEnvio || "");
+      const facturaLink = e.FacturaURL ? `<a class="link-btn" href="${escapeHtml(e.FacturaURL)}" target="_blank" rel="noopener">Factura</a>` : "";
+      const fotoLink = e.FotoPaqueteURL ? `<a class="link-btn" href="${escapeHtml(e.FotoPaqueteURL)}" target="_blank" rel="noopener">Foto paquete</a>` : "";
+
+      return `
+        <article class="shipment">
+          <div>
+            <h3>${codigo || "Envio sin codigo"} <span class="tag">${escapeHtml(e.EstadoActual || "Sin estado")}</span></h3>
+            <div class="meta">
+              Guia: <b>${escapeHtml(e.CodigoGuia || "-")}</b> · Libras: <b>${escapeHtml(e.PesoLb || "-")}</b> · Ciudad: <b>${escapeHtml(e.CiudadDestino || "-")}</b><br>
+              ${escapeHtml(e.Descripcion || "Sin descripcion")}<br>
+              Ingreso: ${formatDate(e.FechaIngresoNY)} · Ultima actualizacion: ${formatDate(e.UltimaActualizacion)}
+            </div>
+          </div>
+          <div class="actions">
+            <a class="link-btn primary" href="${trackingUrl}" target="_blank" rel="noopener">Ver tracking</a>
+            ${facturaLink}
+            ${fotoLink}
+          </div>
+        </article>
+      `;
+    }
+  </script>
+</body>
+</html>

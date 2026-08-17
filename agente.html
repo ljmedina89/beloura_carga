@@ -24,7 +24,7 @@
   <header class="top">
     <div class="top-inner">
       <a class="brand" href="index.html"><span>BE</span>LOURA</a>
-      <nav><a href="index.html#tracking">Tracking</a><a href="cliente.html">Mi casillero</a><a href="agente.html">Agentes</a></nav>
+      <nav><a href="index.html#tracking">Tracking</a><a href="cliente.html">Acceso privado</a><a href="agente.html">Agentes</a></nav>
     </div>
   </header>
 
@@ -205,7 +205,7 @@
 
     function envioBelouraRow(e) {
       return `<div class="row">
-        <div><strong>${esc(e.CodigoEnvio || "")}</strong><small>${esc(e.cliente || "Beloura")} ? ${esc(e.descripcion || "Sin descripcion")}</small></div>
+        <div><strong>${esc(e.CodigoEnvio || "")}</strong><small>${esc(e.cliente || "Beloura")} - ${esc(e.descripcion || "Sin descripcion")}</small></div>
         <div>${Number(e.libras || 0).toFixed(2)} lb</div>
         <div><span class="tag">${esc(e.estado || "Sin estado")}</span></div>
         <div><span class="tag warn">${money(e.debeBeloura)} debe</span></div>
@@ -267,7 +267,11 @@
 
     try {
       const saved = JSON.parse(sessionStorage.getItem("belouraAgente") || "null");
-      if (saved?.agenteId && saved?.pin) { document.getElementById("agenteId").value = saved.agenteId; document.getElementById("agentePin").value = saved.pin; }
+      if (saved?.agenteId && saved?.pin) {
+        document.getElementById("agenteId").value = saved.agenteId;
+        document.getElementById("agentePin").value = saved.pin;
+        if (new URLSearchParams(window.location.search).get("auto") === "1") loginAgente();
+      }
     } catch (error) {}
   </script>
 </body>

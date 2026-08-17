@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mi casillero | BELOURA</title>
-  <meta name="description" content="Accede a tu casillero privado BELOURA con codigo de cliente y PIN." />
+  <title>Acceso privado | BELOURA</title>
+  <meta name="description" content="Accede a tu espacio privado BELOURA con usuario y PIN." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -32,12 +32,12 @@
   <section class="hero">
     <div class="hero-inner">
       <div>
-        <h1>Mi casillero BELOURA</h1>
-        <p class="lead">Accede con tu codigo de cliente, numero de casillero, correo o telefono y tu PIN privado para ver todos tus paquetes, libras y estados.</p>
+        <h1>Acceso privado BELOURA</h1>
+        <p class="lead">Ingresa con tu usuario y PIN. El sistema reconoce si eres cliente final o agente y muestra solo el panel que te corresponde.</p>
       </div>
       <div class="locker-note">
-        <strong>Casillero privado</strong>
-        Tu casillero tiene un codigo tipo <b>BLR-0016</b> y un cliente tipo <b>CNY0016</b>. No compartas tu PIN.
+        <strong>Acceso por rol</strong>
+        Clientes usan codigo tipo <b>CNY0016</b> o casillero <b>BLR-0016</b>. Agentes usan su codigo de afiliado. No compartas tu PIN.
       </div>
     </div>
   </section>
@@ -47,21 +47,22 @@
       <div class="tabs">
         <button id="tabLogin" class="active" onclick="setTab('login')">Entrar</button>
         <button id="tabRegistro" onclick="setTab('registro')">Crear casillero</button>
+        <button id="tabRecuperar" onclick="setTab('recuperar')">Olvide mi PIN</button>
       </div>
 
       <form id="loginForm">
         <div class="grid">
           <div class="field">
-            <label for="loginUsuario">Usuario o casillero</label>
-            <input id="loginUsuario" autocomplete="username" placeholder="CNY0016, BLR-0016, telefono o correo" />
+            <label for="loginUsuario">Usuario</label>
+            <input id="loginUsuario" autocomplete="username" placeholder="Cliente, casillero, telefono, correo o agente" />
           </div>
           <div class="field">
             <label for="loginPin">PIN</label>
             <input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Tu PIN" />
           </div>
         </div>
-        <div class="actions-row"><button id="btnLogin" type="submit">Entrar a mi casillero</button></div>
-        <div class="hint">Si ya eres cliente y no tienes PIN, solicita a BELOURA que active tu casillero.</div>
+        <div class="actions-row"><button id="btnLogin" type="submit">Entrar</button></div>
+        <div class="hint">Si eres agente, entra con tu codigo de afiliado y PIN. Si eres cliente, usa tu casillero o codigo de cliente.</div>
       </form>
 
       <form id="registroForm" hidden>
@@ -78,6 +79,33 @@
         <div class="hint">El sistema generara tu codigo de cliente y numero de casillero.</div>
       </form>
 
+      <form id="recuperarForm" hidden>
+        <div class="grid">
+          <div class="field">
+            <label for="recUsuario">Usuario o casillero</label>
+            <input id="recUsuario" autocomplete="username" placeholder="CNY0016, BLR-0016, telefono o correo" />
+          </div>
+          <div class="field">
+            <label for="recCedula">Cedula registrada</label>
+            <input id="recCedula" />
+          </div>
+          <div class="field">
+            <label for="recEmail">Correo registrado</label>
+            <input id="recEmail" type="email" />
+          </div>
+          <div class="field">
+            <label for="recTelefono">Telefono registrado</label>
+            <input id="recTelefono" />
+          </div>
+          <div class="field">
+            <label for="recPin">Nuevo PIN</label>
+            <input id="recPin" type="password" inputmode="numeric" placeholder="4 a 6 digitos" />
+          </div>
+        </div>
+        <div class="actions-row"><button id="btnRecuperar" type="submit">Actualizar PIN</button></div>
+        <div class="hint">Debes confirmar al menos dos datos: cedula, correo o telefono registrado.</div>
+      </form>
+
       <div id="estadoBusqueda" class="status"></div>
     </section>
 
@@ -92,19 +120,26 @@
     const resultBox = document.getElementById("resultadoCasillero");
     const loginForm = document.getElementById("loginForm");
     const registroForm = document.getElementById("registroForm");
+    const recuperarForm = document.getElementById("recuperarForm");
     const btnLogin = document.getElementById("btnLogin");
     const btnRegistro = document.getElementById("btnRegistro");
+    const btnRecuperar = document.getElementById("btnRecuperar");
     let sesionCliente = null;
 
     loginForm.addEventListener("submit", event => { event.preventDefault(); loginCliente(); });
     registroForm.addEventListener("submit", event => { event.preventDefault(); registrarCliente(); });
+    recuperarForm.addEventListener("submit", event => { event.preventDefault(); recuperarPinCliente(); });
 
     function setTab(tab) {
       const login = tab === "login";
+      const registro = tab === "registro";
+      const recuperar = tab === "recuperar";
       loginForm.hidden = !login;
-      registroForm.hidden = login;
+      registroForm.hidden = !registro;
+      recuperarForm.hidden = !recuperar;
       document.getElementById("tabLogin").classList.toggle("active", login);
-      document.getElementById("tabRegistro").classList.toggle("active", !login);
+      document.getElementById("tabRegistro").classList.toggle("active", registro);
+      document.getElementById("tabRecuperar").classList.toggle("active", recuperar);
       statusBox.style.display = "none";
     }
 
@@ -141,7 +176,7 @@
       const usuario = document.getElementById("loginUsuario").value.trim();
       const pin = document.getElementById("loginPin").value.trim();
       resultBox.innerHTML = "";
-      if (!usuario || !pin) { showStatus("Ingresa tu usuario/casillero y PIN.", true); return; }
+      if (!usuario || !pin) { showStatus("Ingresa tu usuario y PIN.", true); return; }
       btnLogin.disabled = true;
       showStatus("Validando acceso...", false);
       try {
@@ -149,11 +184,31 @@
         if (!data.ok) throw new Error(data.error || "Acceso no autorizado");
         sesionCliente = { usuario, pin, cliente: data.cliente || {} };
         sessionStorage.setItem("belouraCliente", JSON.stringify(sesionCliente));
+        sessionStorage.removeItem("belouraAgente");
         renderCasillero(data);
       } catch (error) {
-        showStatus(error.message || "No pudimos validar tu acceso.", true);
+        const agenteOk = await intentarLoginAgente(usuario, pin);
+        if (!agenteOk) showStatus(error.message || "No pudimos validar tu acceso.", true);
       } finally {
         btnLogin.disabled = false;
+      }
+    }
+
+    async function intentarLoginAgente(usuario, pin) {
+      try {
+        showStatus("Validando acceso de agente...", false);
+        const data = await postAPI({ action:"agenteLogin", AFILIADO_ID:usuario, pin });
+        if (!data.ok) return false;
+        sessionStorage.removeItem("belouraCliente");
+        sessionStorage.setItem("belouraAgente", JSON.stringify({
+          agenteId:String(usuario || "").trim().toUpperCase(),
+          pin
+        }));
+        showStatus("Acceso de agente autorizado. Abriendo panel...", false);
+        window.location.href = "agente.html?auto=1";
+        return true;
+      } catch (error) {
+        return false;
       }
     }
 
@@ -176,11 +231,46 @@
         setTab("login");
         document.getElementById("loginUsuario").value = data.codigoCliente || "";
         document.getElementById("loginPin").value = payload.PIN;
-        showStatus(`Casillero creado. Cliente <b>${escapeHtml(data.codigoCliente)}</b> · Casillero <b>${escapeHtml(data.numeroCasillero)}</b>. Ya puedes entrar.`, false);
+        showStatus(`Casillero creado. Cliente <b>${escapeHtml(data.codigoCliente)}</b> - Casillero <b>${escapeHtml(data.numeroCasillero)}</b>. Ya puedes entrar.`, false);
       } catch (error) {
-        showStatus(error.message || "No se pudo crear el casillero.", true);
+        const message = error.message || "No se pudo crear el casillero.";
+        if (message.toLowerCase().includes("ya existe")) {
+          document.getElementById("recUsuario").value = payload.Email || payload.Telefono || payload.Cedula || "";
+          document.getElementById("recCedula").value = payload.Cedula || "";
+          document.getElementById("recEmail").value = payload.Email || "";
+          document.getElementById("recTelefono").value = payload.Telefono || "";
+          setTab("recuperar");
+          showStatus(message, true);
+        } else {
+          showStatus(message, true);
+        }
       } finally {
         btnRegistro.disabled = false;
+      }
+    }
+
+    async function recuperarPinCliente() {
+      const payload = {
+        action:"recuperarPinCliente",
+        usuario:document.getElementById("recUsuario").value.trim(),
+        Cedula:document.getElementById("recCedula").value.trim(),
+        Email:document.getElementById("recEmail").value.trim(),
+        Telefono:document.getElementById("recTelefono").value.trim(),
+        nuevoPin:document.getElementById("recPin").value.trim()
+      };
+      btnRecuperar.disabled = true;
+      showStatus("Validando datos y actualizando PIN...", false);
+      try {
+        const data = await postAPI(payload);
+        if (!data.ok) throw new Error(data.error || "No se pudo actualizar el PIN");
+        setTab("login");
+        document.getElementById("loginUsuario").value = payload.usuario;
+        document.getElementById("loginPin").value = payload.nuevoPin;
+        showStatus("PIN actualizado correctamente. Ya puedes entrar a tu casillero.", false);
+      } catch (error) {
+        showStatus(error.message || "No se pudo actualizar el PIN.", true);
+      } finally {
+        btnRecuperar.disabled = false;
       }
     }
 
@@ -191,7 +281,7 @@
       showStatus("Acceso autorizado para <b>" + escapeHtml(cliente.Nombre || cliente.CodigoCliente) + "</b>.", false);
       resultBox.innerHTML = `
         <div class="client-card">
-          <div><strong>${escapeHtml(cliente.Nombre || "Cliente BELOURA")}</strong><span>Cliente: ${escapeHtml(cliente.CodigoCliente || "-")} · Casillero: ${escapeHtml(cliente.NumeroCasillero || "-")}</span></div>
+          <div><strong>${escapeHtml(cliente.Nombre || "Cliente BELOURA")}</strong><span>Cliente: ${escapeHtml(cliente.CodigoCliente || "-")} - Casillero: ${escapeHtml(cliente.NumeroCasillero || "-")}</span></div>
           <div><span>${escapeHtml(cliente.Ciudad || "")}</span><span>${escapeHtml(cliente.Email || cliente.Telefono || "")}</span></div>
         </div>
         <div class="summary">
@@ -216,10 +306,10 @@
           <div>
             <h3>${codigo || "Envio sin codigo"} <span class="tag">${escapeHtml(e.EstadoActual || "Sin estado")}</span></h3>
             <div class="meta">
-              Guia: <b>${escapeHtml(e.CodigoGuia || "-")}</b> · Libras: <b>${escapeHtml(e.PesoLb || "-")}</b> · Valor: <b>${money(e.TotalCliente)}</b> · Pago: <b>${escapeHtml(e.EstadoPago || "-")}</b><br>
+              Guia: <b>${escapeHtml(e.CodigoGuia || "-")}</b> - Libras: <b>${escapeHtml(e.PesoLb || "-")}</b> - Valor: <b>${money(e.TotalCliente)}</b> - Pago: <b>${escapeHtml(e.EstadoPago || "-")}</b><br>
               Ciudad: <b>${escapeHtml(e.CiudadDestino || "-")}</b><br>
               ${escapeHtml(e.Descripcion || "Sin descripcion")}<br>
-              Ultima actualizacion: ${formatDate(e.UltimaActualizacion)}
+              Ingreso: ${formatDate(e.FechaIngresoNY)} - Ultima actualizacion: ${formatDate(e.UltimaActualizacion)}
             </div>
           </div>
           <div class="shipment-actions">
@@ -249,7 +339,7 @@
     }
 
     function renderMovimientoTracking(item) {
-      return `<div class="timeline-item"><div class="dot"></div><div class="timeline-card"><strong>${escapeHtml(item.Estado || "Movimiento registrado")}</strong><span>${formatDate(item.FechaHora)}${item.Ubicacion ? " · " + escapeHtml(item.Ubicacion) : ""}</span>${item.Comentario ? `<p>${escapeHtml(item.Comentario)}</p>` : ""}</div></div>`;
+      return `<div class="timeline-item"><div class="dot"></div><div class="timeline-card"><strong>${escapeHtml(item.Estado || "Movimiento registrado")}</strong><span>${formatDate(item.FechaHora)}${item.Ubicacion ? " - " + escapeHtml(item.Ubicacion) : ""}</span>${item.Comentario ? `<p>${escapeHtml(item.Comentario)}</p>` : ""}</div></div>`;
     }
 
     try {

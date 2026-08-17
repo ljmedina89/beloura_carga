@@ -143,6 +143,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   color:#bfdbfe;
   font-weight:800;
 }
+.menu-group{margin-top:18px}.menu-label{display:block;margin:0 0 6px 14px;color:#64748b;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.menu button{display:flex;align-items:center;justify-content:space-between;gap:10px}.menu button .nav-main{display:flex;align-items:center;gap:10px}.menu button .nav-kicker{font-size:11px;color:#94a3b8;font-weight:700}.menu button.active .nav-kicker,.menu button:hover .nav-kicker{color:#dbeafe}.workspace-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.action-card{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.055);border-radius:18px;padding:18px;text-align:left;color:#e5e7eb;cursor:pointer;min-height:132px;transition:.16s ease}.action-card:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.42);background:rgba(15,23,42,.84)}.action-card strong{display:block;font-size:17px;margin-bottom:8px}.action-card span{display:block;color:#94a3b8;font-size:13px;line-height:1.45}.insight-list{display:grid;gap:10px}.insight-item{display:flex;justify-content:space-between;gap:12px;align-items:center;background:rgba(2,6,23,.38);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px}.insight-item strong{display:block;font-size:14px}.insight-item small{display:block;color:#94a3b8;margin-top:4px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.mini-actions{display:flex;gap:8px;flex-wrap:wrap}.mini-actions button{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.07);color:#dbeafe;border-radius:999px;padding:8px 12px;font-weight:800;cursor:pointer}@media(max-width:1050px){.workspace-grid,.action-grid{grid-template-columns:1fr}}@media(max-width:850px){.menu-group{min-width:max-content}.menu-label{margin-left:0}.menu button{min-width:172px;justify-content:flex-start}.menu button .nav-kicker{display:none}}
 
 </style>
 
@@ -154,17 +155,32 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
     <div class="logo">BELOURA <span>Admin</span></div>
     <small>Panel interno de control operativo, comercial y financiero.</small>
     <div class="menu">
-      <button class="active" onclick="showModule('inicio', this)">🏠 Inicio</button>
-      <button onclick="showModule('envios', this)">📦 Envíos</button>
-      <button onclick="showModule('clientes', this)">👥 Clientes</button>
-      <button onclick="showModule('afiliados', this)">🤝 Afiliados</button>
-      <button onclick="showModule('finanzas', this)">💰 Finanzas</button>
-      <button onclick="showModule('pagos', this)">🧾 Pagos</button>
-      <button onclick="showModule('iptv', this)">📺 IPTV</button>
-      <button onclick="showModule('operadores', this)">🧑‍💼 Operadores</button>
-      <button onclick="showModule('tracking', this)">🚚 Tracking</button>
-      <button onclick="showModule('contabilidad', this)">🧾 Contabilidad</button>
-      <button onclick="showModule('config', this)">⚙️ Configuración</button>
+      <div class="menu-group">
+        <span class="menu-label">Hoy</span>
+        <button class="active" onclick="showModule('inicio', this)"><span class="nav-main">Inicio</span><span class="nav-kicker">resumen</span></button>
+      </div>
+      <div class="menu-group">
+        <span class="menu-label">Operación</span>
+        <button onclick="showModule('envios', this)"><span class="nav-main">Envíos</span><span class="nav-kicker">crear y listar</span></button>
+        <button onclick="showModule('tracking', this)"><span class="nav-main">Tracking</span><span class="nav-kicker">estados</span></button>
+        <button onclick="showModule('clientes', this)"><span class="nav-main">Clientes</span><span class="nav-kicker">casilleros</span></button>
+      </div>
+      <div class="menu-group">
+        <span class="menu-label">Red</span>
+        <button onclick="showModule('afiliados', this)"><span class="nav-main">Afiliados</span><span class="nav-kicker">agentes</span></button>
+        <button onclick="showModule('operadores', this)"><span class="nav-main">Operadores</span><span class="nav-kicker">equipo</span></button>
+      </div>
+      <div class="menu-group">
+        <span class="menu-label">Dinero</span>
+        <button onclick="showModule('finanzas', this)"><span class="nav-main">Finanzas</span><span class="nav-kicker">saldos</span></button>
+        <button onclick="showModule('pagos', this)"><span class="nav-main">Pagos</span><span class="nav-kicker">abonos</span></button>
+        <button onclick="showModule('contabilidad', this)"><span class="nav-main">Contabilidad</span><span class="nav-kicker">egresos</span></button>
+      </div>
+      <div class="menu-group">
+        <span class="menu-label">Sistema</span>
+        <button onclick="showModule('iptv', this)"><span class="nav-main">IPTV</span><span class="nav-kicker">servicio</span></button>
+        <button onclick="showModule('config', this)"><span class="nav-main">Configuración</span><span class="nav-kicker">reglas</span></button>
+      </div>
     </div>
   </aside>
 
@@ -176,9 +192,45 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
 
     <section id="inicio" class="section active">
       <div class="cards" id="homeCards"></div>
-      <div class="grid-2">
-        <div class="panel"><h2>Estado operativo</h2><p class="placeholder">Vista rápida de envíos activos, pagos pendientes, afiliados en operación y flujo general.</p></div>
-        <div class="panel"><h2>Alertas internas</h2><p class="placeholder">Aquí mostraremos paquetes sin pago, afiliados con saldo alto, envíos sin tracking interno y guías pendientes.</p></div>
+      <div class="workspace-grid">
+        <div class="panel">
+          <div class="toolbar">
+            <div>
+              <h2>Trabajo diario</h2>
+              <p class="placeholder" style="margin:6px 0 0">Acciones más usadas para operar sin entrar a todos los módulos.</p>
+            </div>
+            <div class="mini-actions"><button type="button" onclick="recargarModulo('inicio')">Actualizar</button></div>
+          </div>
+          <div class="action-grid">
+            <button type="button" class="action-card" onclick="showModule('envios')"><strong>Crear envío</strong><span>Registrar paquete, generar guía PDF y asociar cliente, operador o afiliado.</span></button>
+            <button type="button" class="action-card" onclick="showModule('tracking')"><strong>Actualizar tracking</strong><span>Cambiar estado individual del envío que verá el cliente.</span></button>
+            <button type="button" class="action-card" onclick="showModule('finanzas')"><strong>Cobrar saldos</strong><span>Ver cuentas por cobrar y registrar pagos pendientes.</span></button>
+            <button type="button" class="action-card" onclick="showModule('clientes')"><strong>Crear cliente</strong><span>Dar de alta casillero, remitente o destinatario sin duplicar registros.</span></button>
+            <button type="button" class="action-card" onclick="showModule('afiliados')"><strong>Ver agentes</strong><span>Revisar rendimiento, libras, deuda y ganancia por afiliado.</span></button>
+            <button type="button" class="action-card" onclick="showModule('config')"><strong>Configurar</strong><span>Precios, métodos de pago, estados y reglas generales del sistema.</span></button>
+          </div>
+        </div>
+        <div class="panel">
+          <h2>Alertas internas</h2>
+          <div class="insight-list" id="homeAlerts">
+            <div class="placeholder">Cargando alertas del sistema...</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="toolbar">
+          <div>
+            <h2>Prioridad de cobros</h2>
+            <p class="placeholder" style="margin:6px 0 0">Primeros saldos que conviene revisar hoy.</p>
+          </div>
+          <div class="mini-actions"><button type="button" onclick="showModule('finanzas')">Ver finanzas</button></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Envío</th><th>Afiliado</th><th>Cliente</th><th>Libras</th><th>Saldo</th><th>Acción</th></tr></thead>
+            <tbody id="homeCobros"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -921,8 +973,11 @@ function aplicarModulosHabilitados(cfg){const activos=new Set(listaConfiguracion
 async function cargarConfiguracion(){const alertBox=document.getElementById("alertConfiguracion");if(alertBox)clearAlert(alertBox);try{const data=await postAPI({action:"obtenerConfiguracion",secretKey:SECRET});if(!data.ok)throw new Error(data.error||"No se pudo cargar la configuración");const cfg=data.configuracion||{};document.getElementById("cfgEmpresaNombre").value=cfg.EMPRESA_NOMBRE||"";document.getElementById("cfgEmpresaMarcaGuia").value=cfg.EMPRESA_MARCA_GUIA||"";document.getElementById("cfgBodegaLinea1").value=cfg.EMPRESA_BODEGA_LINEA_1||"";document.getElementById("cfgBodegaLinea2").value=cfg.EMPRESA_BODEGA_LINEA_2||"";document.getElementById("cfgSitioWeb").value=cfg.EMPRESA_SITIO_WEB||"";document.getElementById("cfgTrackingPublicURL").value=cfg.TRACKING_PUBLIC_URL||"";document.getElementById("cfgLicenciaEstado").value=cfg.LICENCIA_ESTADO||"ACTIVA";document.getElementById("cfgLicenciaVence").value=cfg.LICENCIA_VENCE||"";document.getElementById("cfgLimiteOperadores").value=cfg.LIMITE_OPERADORES||"";document.getElementById("cfgLimiteGuiasMes").value=cfg.LIMITE_GUIAS_MES||"";document.getElementById("cfgModulosHabilitados").value=textoConfiguracion(cfg.MODULOS_HABILITADOS);document.getElementById("cfgPrecioBaseEnvio").value=cfg.PRECIO_BASE_ENVIO||"";document.getElementById("cfgPrecioVentaEnvio").value=cfg.PRECIO_VENTA_ENVIO||"";document.getElementById("cfgPrecioBaseIPTV").value=cfg.PRECIO_BASE_IPTV||"";document.getElementById("cfgPrecioVentaIPTV").value=cfg.PRECIO_VENTA_IPTV||"";document.getElementById("cfgMetodosPago").value=textoConfiguracion(cfg.METODOS_PAGO);document.getElementById("cfgEstadosTracking").value=textoConfiguracion(cfg.ESTADOS_TRACKING);document.getElementById("cfgTiposEnvio").value=textoConfiguracion(cfg.TIPOS_ENVIO);document.getElementById("cfgDuracionesIPTV").value=textoConfiguracion(cfg.DURACIONES_IPTV);document.getElementById("cfgEstadoInicialEnvio").value=cfg.ESTADO_INICIAL_ENVIO||"";aplicarConfiguracion(cfg)}catch(error){console.error(error);if(alertBox)showAlert(alertBox,error.message,false)}}
 async function guardarConfiguracion(){const alertBox=document.getElementById("alertConfiguracion");if(alertBox)clearAlert(alertBox);const configuracion={EMPRESA_NOMBRE:document.getElementById("cfgEmpresaNombre").value.trim(),EMPRESA_MARCA_GUIA:document.getElementById("cfgEmpresaMarcaGuia").value.trim(),EMPRESA_BODEGA_LINEA_1:document.getElementById("cfgBodegaLinea1").value.trim(),EMPRESA_BODEGA_LINEA_2:document.getElementById("cfgBodegaLinea2").value.trim(),EMPRESA_SITIO_WEB:document.getElementById("cfgSitioWeb").value.trim(),TRACKING_PUBLIC_URL:document.getElementById("cfgTrackingPublicURL").value.trim(),LICENCIA_ESTADO:document.getElementById("cfgLicenciaEstado").value,LICENCIA_VENCE:document.getElementById("cfgLicenciaVence").value,LIMITE_OPERADORES:document.getElementById("cfgLimiteOperadores").value,LIMITE_GUIAS_MES:document.getElementById("cfgLimiteGuiasMes").value,MODULOS_HABILITADOS:valorListaConfiguracion("cfgModulosHabilitados"),PRECIO_BASE_ENVIO:document.getElementById("cfgPrecioBaseEnvio").value,PRECIO_VENTA_ENVIO:document.getElementById("cfgPrecioVentaEnvio").value,PRECIO_BASE_IPTV:document.getElementById("cfgPrecioBaseIPTV").value,PRECIO_VENTA_IPTV:document.getElementById("cfgPrecioVentaIPTV").value,METODOS_PAGO:valorListaConfiguracion("cfgMetodosPago"),ESTADOS_TRACKING:valorListaConfiguracion("cfgEstadosTracking"),TIPOS_ENVIO:valorListaConfiguracion("cfgTiposEnvio"),DURACIONES_IPTV:valorListaConfiguracion("cfgDuracionesIPTV"),ESTADO_INICIAL_ENVIO:document.getElementById("cfgEstadoInicialEnvio").value.trim()};try{const data=await postAPI({action:"guardarConfiguracion",secretKey:SECRET,configuracion,Usuario:"Leonardo"});if(!data.ok)throw new Error(data.error||"No se pudo guardar la configuración");aplicarConfiguracion(data.configuracion||configuracion);if(alertBox)showAlert(alertBox,"Configuración guardada correctamente.",true)}catch(error){console.error(error);if(alertBox)showAlert(alertBox,error.message,false)}}
 
-async function cargarDashboard(){const data=await postAPI({action:"adminDashboard",secretKey:SECRET});if(!data.ok){alert(data.error||"Error cargando dashboard");return}dataGlobal=data;const paquetes=[...(data.cuentasPorCobrar||[]),...(data.cuentasPagadas||[])];renderHomeCards(data.resumen);renderFinanceCards(data.resumen);renderPaquetes("tablaPaquetesEnvios",paquetes);renderPaquetes("tablaPaquetesFinanzas",paquetes);renderAfiliados(data.porAfiliado||[]);renderCobrar(data.cuentasPorCobrar||[]);renderPagadas(data.cuentasPagadas||[]);}
-function renderHomeCards(r){document.getElementById("homeCards").innerHTML=`<div class="card blue"><h3>Total envíos</h3><p>${r.totalEnvios}</p></div><div class="card green"><h3>Total libras</h3><p>${num(r.totalLibras)} lb</p></div><div class="card purple"><h3>Total vendido</h3><p>${money(r.totalVendidoCliente)}</p></div><div class="card orange"><h3>Saldo pendiente</h3><p>${money(r.saldoPendienteBeloura)}</p></div><div class="card red"><h3>Pagos pendientes</h3><p>${r.enviosPendientes}</p></div>`}
+async function cargarDashboard(){const data=await postAPI({action:"adminDashboard",secretKey:SECRET});if(!data.ok){alert(data.error||"Error cargando dashboard");return}dataGlobal=data;const paquetes=[...(data.cuentasPorCobrar||[]),...(data.cuentasPagadas||[])];renderHomeCards(data.resumen);renderHomeOverview(data);renderFinanceCards(data.resumen);renderPaquetes("tablaPaquetesEnvios",paquetes);renderPaquetes("tablaPaquetesFinanzas",paquetes);renderAfiliados(data.porAfiliado||[]);renderCobrar(data.cuentasPorCobrar||[]);renderPagadas(data.cuentasPagadas||[]);}
+function renderHomeCards(r){document.getElementById("homeCards").innerHTML=`<div class="card blue"><h3>Envíos activos</h3><p>${r.enviosActivos||0}</p></div><div class="card green"><h3>Libras movidas</h3><p>${num(r.totalLibras)} lb</p></div><div class="card purple"><h3>Venta generada</h3><p>${money(r.totalVendidoCliente)}</p></div><div class="card orange"><h3>Por cobrar</h3><p>${money(r.saldoPendienteBeloura)}</p></div><div class="card red"><h3>Pagos pendientes</h3><p>${r.enviosPendientes||0}</p></div>`}
+function renderHomeOverview(data){renderHomeAlerts(data);renderHomeCobros(data.cuentasPorCobrar||[])}
+function renderHomeAlerts(data){const r=data.resumen||{};const afiliados=(data.porAfiliado||[]).slice().sort((a,b)=>Number(b.saldoPendienteBeloura||0)-Number(a.saldoPendienteBeloura||0));const topAfiliado=afiliados[0];const alerts=[];if(Number(r.saldoPendienteBeloura||0)>0)alerts.push({title:"Saldos por cobrar",text:`${money(r.saldoPendienteBeloura)} pendientes en ${r.enviosPendientes||0} envío(s).`,action:"finanzas"});if(topAfiliado&&Number(topAfiliado.saldoPendienteBeloura||0)>0)alerts.push({title:"Afiliado con mayor saldo",text:`${topAfiliado.afiliadoNombre||topAfiliado.afiliadoId||"Afiliado"} debe ${money(topAfiliado.saldoPendienteBeloura)}.`,action:"afiliados"});if(Number(r.enviosParciales||0)>0)alerts.push({title:"Pagos parciales",text:`${r.enviosParciales} envío(s) tienen abonos incompletos.`,action:"finanzas"});if(Number(r.enviosActivos||0)>0)alerts.push({title:"Operación activa",text:`${r.enviosActivos} envío(s) siguen abiertos en el sistema.`,action:"envios"});if(!alerts.length)alerts.push({title:"Sin alertas críticas",text:"No hay saldos o incidencias importantes en este momento.",action:"inicio"});document.getElementById("homeAlerts").innerHTML=alerts.slice(0,4).map(item=>`<button type="button" class="insight-item" onclick="showModule('${item.action}')"><span><strong>${item.title}</strong><small>${item.text}</small></span><span class="status info">Ver</span></button>`).join("")}
+function renderHomeCobros(lista){const tbody=document.getElementById("homeCobros");if(!tbody)return;const pendientes=lista.slice().sort((a,b)=>Number(b.saldo||0)-Number(a.saldo||0)).slice(0,6);tbody.innerHTML=pendientes.length?pendientes.map(e=>`<tr><td>${e.codigoEnvio||""}</td><td>${afiliadoCell(e)}</td><td>${clienteCell(e)}</td><td>${num(e.libras)}</td><td>${money(e.saldo)}</td><td><button class="btn" onclick="abrirPago('${e.codigoEnvio}')">Registrar pago</button></td></tr>`).join(""):'<tr><td colspan="6">No hay cobros pendientes prioritarios.</td></tr>'}
 function renderFinanceCards(r){document.getElementById("financeCards").innerHTML=`<div class="card blue"><h3>Total vendido</h3><p>${money(r.totalVendidoCliente)}</p></div><div class="card green"><h3>Pagado BELOURA</h3><p>${money(r.totalPagadoBeloura)}</p></div><div class="card orange"><h3>Debe BELOURA</h3><p>${money(r.totalDebeBeloura)}</p></div><div class="card red"><h3>Saldo pendiente</h3><p>${money(r.saldoPendienteBeloura)}</p></div><div class="card purple"><h3>Ganancia afiliados</h3><p>${money(r.gananciaAfiliados)}</p></div>`}
 function clienteCell(e){const dest=e.destinatario||e.DestNombre||e.cliente||"-";const rem=e.remitente||e.RemitenteNombre||"-";return `<b>Dest:</b> ${dest}<br><small style="color:#94a3b8">Rem: ${rem}</small>`}
 function operadorCell(e){return e.operadorNombre||e.OperadorNombre||e.operadorId||e.OperadorID||"-"}

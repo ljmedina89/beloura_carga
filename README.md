@@ -46,6 +46,7 @@ Luego abre `http://localhost:8000`.
 - La guia consolidada sirve para agrupar paquetes; el tracking individual sirve para que cada cliente vea solo su envio.
 - `cliente.html` usa `clienteLogin`, `clienteEnvios` y `registrarClienteCasillero`. Los envios por cliente requieren PIN; el tracking publico solo debe consultar codigos de envio individuales (`NY...`) o guias.
 - El acceso privado primero intenta autenticar como cliente final. Si no corresponde, intenta autenticar como agente y abre `agente.html` con la sesion correcta.
+- `admin.html` incluye un modulo de recepcion rapida para paquetes que llegan a bodega NY, por ejemplo Amazon para Mayra. Ese flujo crea un envio individual `NY...` con estado inicial `Recibido en bodega NY`.
 - El registro de casillero valida duplicados por `Cedula`, `Email` y `Telefono`. Si el cliente ya existe, debe ingresar o recuperar PIN.
 - La recuperacion de PIN de cliente usa `recuperarPinCliente` y exige al menos dos datos coincidentes entre cedula, correo y telefono.
 - La hoja `CLIENTES` contempla casilleros privados con `NumeroCasillero`, `PIN`, `EstadoCasillero`, `FechaAltaCasillero` y `UltimoAcceso`.

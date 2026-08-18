@@ -169,10 +169,10 @@
     async function postAPI(payload) {
       if (!API_URL) throw new Error("No hay URL de API configurada para BELOURA.");
       try {
+        return await jsonpAPI(payload);
+      } catch (error) {
         const response = await fetch(API_URL, { method:"POST", body:JSON.stringify(payload) });
         return response.json();
-      } catch (error) {
-        return jsonpAPI(payload);
       }
     }
 
@@ -218,7 +218,8 @@
         sessionStorage.removeItem("belouraAgente");
         renderCasillero(data);
       } catch (error) {
-        const agenteOk = await intentarLoginAgente(usuario, pin);
+        const pareceCliente = /^CNY/i.test(usuario) || /^BLR-/i.test(usuario);
+        const agenteOk = pareceCliente ? false : await intentarLoginAgente(usuario, pin);
         if (!agenteOk) showStatus(error.message || "No pudimos validar tu acceso.", true);
       } finally {
         btnLogin.disabled = false;

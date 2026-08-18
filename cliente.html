@@ -168,8 +168,39 @@
 
     async function postAPI(payload) {
       if (!API_URL) throw new Error("No hay URL de API configurada para BELOURA.");
-      const response = await fetch(API_URL, { method:"POST", body:JSON.stringify(payload) });
-      return response.json();
+      try {
+        const response = await fetch(API_URL, { method:"POST", body:JSON.stringify(payload) });
+        return response.json();
+      } catch (error) {
+        return jsonpAPI(payload);
+      }
+    }
+
+    function jsonpAPI(payload) {
+      return new Promise((resolve, reject) => {
+        const callback = "belouraJsonp_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+        const script = document.createElement("script");
+        const params = new URLSearchParams();
+        Object.keys(payload || {}).forEach(key => {
+          const value = payload[key];
+          if (value !== undefined && value !== null) params.set(key, value);
+        });
+        params.set("callback", callback);
+        window[callback] = data => {
+          cleanup();
+          resolve(data);
+        };
+        function cleanup() {
+          delete window[callback];
+          script.remove();
+        }
+        script.onerror = () => {
+          cleanup();
+          reject(new Error("No pudimos conectar con la API de BELOURA."));
+        };
+        script.src = API_URL + (API_URL.includes("?") ? "&" : "?") + params.toString();
+        document.body.appendChild(script);
+      });
     }
 
     async function loginCliente() {
@@ -278,6 +309,7 @@
       const resumen = data.resumen || {};
       const cliente = data.cliente || {};
       const envios = data.envios || [];
+      const paquetesBodega = data.paquetesBodega || [];
       showStatus("Acceso autorizado para <b>" + escapeHtml(cliente.Nombre || cliente.CodigoCliente) + "</b>.", false);
       resultBox.innerHTML = `
         <div class="client-card">
@@ -286,12 +318,34 @@
         </div>
         <div class="summary">
           <div class="metric"><span>Envios</span><strong>${resumen.totalEnvios || envios.length}</strong></div>
+          <div class="metric"><span>En bodega</span><strong>${resumen.totalPaquetesBodega || paquetesBodega.length}</strong></div>
           <div class="metric"><span>Libras</span><strong>${Number(resumen.totalLibras || 0).toFixed(2)}</strong></div>
+          <div class="metric"><span>Lb bodega</span><strong>${Number(resumen.librasEnBodega || 0).toFixed(2)}</strong></div>
           <div class="metric"><span>Valor</span><strong>${money(resumen.totalCliente)}</strong></div>
           <div class="metric"><span>Pendiente</span><strong>${money(resumen.totalPendiente)}</strong></div>
         </div>
-        <div class="shipments">${envios.length ? envios.map(renderEnvio).join("") : '<div class="empty">Aun no tienes envios registrados en tu casillero.</div>'}</div>
+        <div class="shipments">
+          ${paquetesBodega.length ? '<h2>Paquetes recibidos en bodega</h2>' + paquetesBodega.map(renderPaqueteBodega).join("") : ""}
+          ${envios.length ? '<h2>Envios con tracking</h2>' + envios.map(renderEnvio).join("") : '<div class="empty">Aun no tienes envios registrados en tu casillero.</div>'}
+        </div>
       `;
+    }
+
+    function renderPaqueteBodega(p) {
+      const facturaLink = p.FacturaURL ? `<a class="link-btn" href="${escapeHtml(p.FacturaURL)}" target="_blank" rel="noopener">Factura</a>` : "";
+      const fotoLink = p.FotoPaqueteURL ? `<a class="link-btn" href="${escapeHtml(p.FotoPaqueteURL)}" target="_blank" rel="noopener">Foto paquete</a>` : "";
+      return `
+        <article class="shipment">
+          <div>
+            <h3>${escapeHtml(p.PaqueteID || "Paquete recibido")} <span class="tag">${escapeHtml(p.EstadoPaquete || "Recibido en bodega")}</span></h3>
+            <div class="meta">
+              Tienda: <b>${escapeHtml(p.TiendaOrigen || "-")}</b> - Tracking tienda: <b>${escapeHtml(p.TrackingTienda || "-")}</b> - Libras: <b>${escapeHtml(p.PesoLb || "-")}</b><br>
+              ${escapeHtml(p.Descripcion || "Paquete recibido")}<br>
+              Recibido: ${formatDate(p.FechaRecepcion)} - Ubicacion: ${escapeHtml(p.UbicacionBodega || "Bodega NY")}
+            </div>
+          </div>
+          <div class="shipment-actions">${facturaLink}${fotoLink}</div>
+        </article>`;
     }
 
     function renderEnvio(e) {

@@ -488,9 +488,8 @@
     <section id="mod-envios" class="module-shell">
       <div class="grid">
         <div class="card"><h3>Total libras</h3><p id="totalLibras">0</p></div>
-        <div class="card"><h3>Total vendido</h3><p id="totalVenta">$0</p></div>
-        <div class="card"><h3>Pago a BELOURA</h3><p id="totalBeloura">$0</p></div>
-        <div class="card"><h3>Ganancia afiliado</h3><p id="totalGanancia">$0</p></div>
+        <div class="card"><h3>Total a pagar</h3><p id="totalBeloura">$0</p></div>
+        <div class="card"><h3>Abonado</h3><p id="totalAbonado">$0</p></div>
         <div class="card"><h3>Total envíos</h3><p id="totalEnvios">0</p></div>
         <div class="card"><h3>Envíos activos</h3><p id="enviosActivos">0</p></div>
         <div class="card"><h3>Envíos liquidados</h3><p id="enviosLiquidados">0</p></div>
@@ -509,11 +508,10 @@
                 <th>Estado envío</th>
                 <th>Estado pago</th>
                 <th>Operación</th>
-                <th>Total cliente</th>
-                <th>Pago BELOURA</th>
+                <th>Precio/libra</th>
+                <th>Total a pagar</th>
                 <th>Pagado</th>
                 <th>Saldo</th>
-                <th>Ganancia</th>
               </tr>
             </thead>
             <tbody id="tablaEnvios"></tbody>
@@ -528,10 +526,8 @@
         <div class="card"><h3>Activas</h3><p id="iptvActivas">0</p></div>
         <div class="card"><h3>Por vencer</h3><p id="iptvPorVencer">0</p></div>
         <div class="card"><h3>Vencidas</h3><p id="iptvVencidas">0</p></div>
-        <div class="card"><h3>Total vendido</h3><p id="iptvTotalVendido">$0</p></div>
-        <div class="card"><h3>Debe a BELOURA</h3><p id="iptvDebeBeloura">$0</p></div>
+        <div class="card"><h3>Total a pagar</h3><p id="iptvDebeBeloura">$0</p></div>
         <div class="card"><h3>Saldo pendiente</h3><p id="iptvSaldoPendiente">$0</p></div>
-        <div class="card"><h3>Ganancia afiliado</h3><p id="iptvGanancia">$0</p></div>
       </div>
 
       <div class="panel">
@@ -541,7 +537,7 @@
         </div>
         <p class="muted">
           Registra los datos del cliente. BELOURA activará la cuenta y asignará usuario y clave.
-          Precio base para afiliado: $5. Precio sugerido de venta: $10.
+          BELOURA asignara el valor a pagar segun el plan activo.
         </p>
 
         <div class="grid-3">
@@ -600,9 +596,8 @@
                 <th>Días</th>
                 <th>Estado cuenta</th>
                 <th>Estado pago</th>
-                <th>Pago BELOURA</th>
+                <th>Total a pagar</th>
                 <th>Saldo</th>
-                <th>Ganancia</th>
               </tr>
             </thead>
             <tbody id="tablaIPTV"></tbody>
@@ -672,9 +667,8 @@
     document.getElementById("tituloAfiliado").textContent = `Afiliado: ${data.afiliado}`;
 
     document.getElementById("totalLibras").textContent = (data.resumen.totalLibras || 0) + " lb";
-    document.getElementById("totalVenta").textContent = formatoDinero(data.resumen.totalVenta || 0);
-    document.getElementById("totalBeloura").textContent = formatoDinero(data.resumen.totalBeloura || 0);
-    document.getElementById("totalGanancia").textContent = formatoDinero(data.resumen.totalGanancia || 0);
+    document.getElementById("totalBeloura").textContent = formatoDinero(data.resumen.totalPagar || data.resumen.totalBeloura || 0);
+    document.getElementById("totalAbonado").textContent = formatoDinero(data.resumen.totalAbonado || 0);
     document.getElementById("totalEnvios").textContent = data.resumen.totalEnvios || 0;
     document.getElementById("enviosActivos").textContent = data.resumen.enviosActivos || 0;
     document.getElementById("enviosLiquidados").textContent = data.resumen.enviosLiquidados || 0;
@@ -692,11 +686,10 @@
         <td class="status">${envio.estado || ""}</td>
         <td>${envio.estadoPago || "Pendiente"}</td>
         <td>${envio.estadoOperacion || "Activo"}</td>
-        <td>${formatoDinero(envio.totalCliente || 0)}</td>
+        <td>${formatoDinero(envio.precioLibra || 0)}</td>
         <td>${formatoDinero(envio.pagoBeloura || 0)}</td>
         <td>${formatoDinero(envio.montoPagadoBeloura || 0)}</td>
         <td>${formatoDinero(envio.saldoPendienteBeloura || 0)}</td>
-        <td>${formatoDinero(envio.ganancia || 0)}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -750,10 +743,8 @@
     document.getElementById("iptvActivas").textContent = r.activas || 0;
     document.getElementById("iptvPorVencer").textContent = r.porVencer || 0;
     document.getElementById("iptvVencidas").textContent = r.vencidas || 0;
-    document.getElementById("iptvTotalVendido").textContent = formatoDinero(r.totalVendido || 0);
     document.getElementById("iptvDebeBeloura").textContent = formatoDinero(r.debeBeloura || 0);
     document.getElementById("iptvSaldoPendiente").textContent = formatoDinero(r.saldoPendiente || 0);
-    document.getElementById("iptvGanancia").textContent = formatoDinero(r.gananciaAfiliado || 0);
 
     const tbody = document.getElementById("tablaIPTV");
     tbody.innerHTML = "";
@@ -776,7 +767,6 @@
         <td>${badgeEstadoPago(c.estadoPago)}</td>
         <td>${formatoDinero(c.pagoBeloura || 0)}</td>
         <td>${formatoDinero(c.saldoPendienteBeloura || 0)}</td>
-        <td>${formatoDinero(c.gananciaAfiliado || 0)}</td>
       `;
       tbody.appendChild(tr);
     });
@@ -812,8 +802,6 @@
           ClienteEmail: clienteEmail,
           TipoPlan: tipoPlan,
           DuracionDias: 30,
-          PrecioBase: 5,
-          PrecioVenta: 10,
           Observacion: observacion || "Solicitud desde panel afiliado"
         })
       });

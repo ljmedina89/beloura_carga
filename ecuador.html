@@ -85,7 +85,11 @@
       try{
         const data=await api({action:"ecuadorGuia",OperadorID:operadorId,pin,codigoGuia:codigo,codigoEnvio:codigo});
         if(!data.ok){show(data.error||"No se pudo consultar la guia.",true);return}
-        if(!data.found){show("No encontramos envios para esa guia.",true);return}
+        if(!data.found){
+          const probados=(data.codigosProbados||[]).join(", ");
+          show("No encontramos envios para esa guia."+(probados?" Codigos revisados: "+probados:""),true);
+          return;
+        }
         sessionStorage.setItem("belouraEcuador",JSON.stringify({operadorId,pin}));
         renderResultado(data);
         show("Guia cargada correctamente.",false);

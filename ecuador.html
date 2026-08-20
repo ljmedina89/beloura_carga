@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recepcion Ecuador | BELOURA</title>
+  <meta name="description" content="Panel operativo para identificar paquetes consolidados por cliente en Ecuador." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f3f6fb;--ink:#07111f;--muted:#64748b;--blue:#2563eb;--line:#d9e2ef;--soft:#fff;--green:#16a34a}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink)}button,input{font:inherit}button{border:0;border-radius:8px;min-height:44px;padding:0 16px;background:var(--ink);color:#fff;font-weight:900;cursor:pointer}button.secondary{background:#e8eef7;color:#172033}button:disabled{opacity:.6;cursor:not-allowed}input{width:100%;min-height:44px;border:1px solid #c8d3e1;border-radius:8px;padding:0 12px;outline:none}input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+    .top{background:#0f172a;color:#fff}.top-inner{width:min(1180px,94%);margin:auto;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px}.brand{font-size:24px;font-weight:900;font-style:italic;letter-spacing:-.04em}.brand span{background:#fff;color:#111;border-radius:4px;padding:0 4px}.top small{color:#bfdbfe;font-weight:700}
+    .wrap{width:min(1180px,94%);margin:26px auto 70px}.hero{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end;margin-bottom:18px}.hero h1{margin:0;font-size:clamp(32px,4.5vw,54px);letter-spacing:-.05em;line-height:.96}.hero p{margin:10px 0 0;color:var(--muted);font-size:16px;line-height:1.55;max-width:760px}.panel{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:18px;box-shadow:0 12px 30px rgba(15,23,42,.06)}.login-grid{display:grid;grid-template-columns:1fr 1fr 1.3fr auto;gap:12px;align-items:end}.field label{display:block;margin-bottom:6px;color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase}.status{display:none;margin-top:12px;border-radius:8px;border:1px solid var(--line);background:#f8fafc;color:var(--muted);padding:12px 14px}.status.error{border-color:#fecaca;background:#fff1f2;color:#b91c1c}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.metric{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px}.metric span{display:block;color:var(--muted);font-size:12px;font-weight:900;text-transform:uppercase}.metric strong{display:block;margin-top:8px;font-size:24px}.shipment{background:#fff;border:1px solid var(--line);border-radius:12px;margin-top:14px;overflow:hidden}.ship-head{display:grid;grid-template-columns:1fr auto;gap:14px;padding:16px;background:#f8fafc;border-bottom:1px solid var(--line)}.ship-head h2{margin:0;font-size:20px}.chip{display:inline-flex;align-items:center;min-height:28px;border-radius:999px;background:#dbeafe;color:#1d4ed8;padding:0 10px;font-size:12px;font-weight:900}.details{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px}.info{color:var(--muted);line-height:1.55;font-size:14px}.info b{color:var(--ink)}.pkg-list{padding:0 16px 16px;display:grid;gap:10px}.pkg{border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;grid-template-columns:1fr auto;gap:12px}.pkg h3{margin:0 0 6px;font-size:15px}.pkg p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}.photos{display:none;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}.photos.active{display:grid}.photo-card{border:1px solid var(--line);border-radius:8px;background:#f8fafc;padding:10px}.photo-card strong{display:block;margin-bottom:8px;font-size:13px}.photo-card img{width:100%;max-height:420px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px}.empty{background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px;color:var(--muted);line-height:1.55}.print{background:var(--green)}@media(max-width:850px){.hero,.login-grid,.details,.pkg{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.photos{grid-template-columns:1fr}.top-inner{align-items:flex-start;flex-direction:column;padding:16px 0}}
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <div class="brand"><span>BE</span>LOURA Ecuador</div>
+      <small>Recepcion, separacion y entrega final</small>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <h1>Recepcion Ecuador</h1>
+        <p>Consulta una guia consolidada y separa rapidamente que paquete corresponde a cada cliente, con contenido, direccion, telefono y fotos.</p>
+      </div>
+      <button class="print" type="button" onclick="window.print()">Imprimir</button>
+    </section>
+
+    <section class="panel">
+      <div class="login-grid">
+        <div class="field"><label for="operadorId">Operador</label><input id="operadorId" placeholder="OP002" autocomplete="username"></div>
+        <div class="field"><label for="pin">PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="current-password"></div>
+        <div class="field"><label for="codigo">Guia o envio</label><input id="codigo" placeholder="GNY0018 o NY0018"></div>
+        <button id="btnBuscar" type="button" onclick="buscarGuia()">Consultar</button>
+      </div>
+      <div id="estado" class="status"></div>
+    </section>
+
+    <section id="resultado"></section>
+  </main>
+
+  <script src="beloura-public-config.js"></script>
+  <script>
+    const API_URL=(window.BELOURA_PUBLIC_CONFIG||{}).apiUrl||"";
+    const estado=document.getElementById("estado");
+    const resultado=document.getElementById("resultado");
+    const btnBuscar=document.getElementById("btnBuscar");
+
+    function safe(value){return String(value||"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]))}
+    function num(value){return Number(value||0).toFixed(2)}
+    function show(message,error){estado.style.display="block";estado.className="status"+(error?" error":"");estado.textContent=message}
+    function driveImageSrc(url){const raw=decodeURIComponent(url||"");const idMatch=raw.match(/\/d\/([^/]+)/)||raw.match(/[?&]id=([^&]+)/);return idMatch?"https://drive.google.com/thumbnail?id="+idMatch[1]+"&sz=w1200":raw}
+    function expandUrls(value){return String(value||"").split("|").map(v=>v.trim()).filter(Boolean)}
+
+    function api(payload){
+      return new Promise((resolve,reject)=>{
+        if(!API_URL){reject(new Error("No hay API configurada."));return}
+        const callback="belouraEcuador_"+Date.now()+"_"+Math.floor(Math.random()*100000);
+        const script=document.createElement("script");
+        const params=new URLSearchParams();
+        Object.keys(payload).forEach(key=>params.set(key,payload[key]||""));
+        params.set("callback",callback);
+        window[callback]=data=>{cleanup();resolve(data)};
+        function cleanup(){delete window[callback];script.remove()}
+        script.onerror=()=>{cleanup();reject(new Error("No se pudo conectar con BELOURA."))};
+        script.src=API_URL+(API_URL.includes("?")?"&":"?")+params.toString();
+        document.body.appendChild(script);
+      });
+    }
+
+    async function buscarGuia(){
+      const operadorId=document.getElementById("operadorId").value.trim().toUpperCase();
+      const pin=document.getElementById("pin").value.trim();
+      const codigo=document.getElementById("codigo").value.trim().toUpperCase();
+      resultado.innerHTML="";
+      if(!operadorId||!pin||!codigo){show("Ingresa operador, PIN y guia.",true);return}
+      btnBuscar.disabled=true;
+      show("Consultando guia...",false);
+      try{
+        const data=await api({action:"ecuadorGuia",OperadorID:operadorId,pin,codigoGuia:codigo,codigoEnvio:codigo});
+        if(!data.ok){show(data.error||"No se pudo consultar la guia.",true);return}
+        if(!data.found){show("No encontramos envios para esa guia.",true);return}
+        sessionStorage.setItem("belouraEcuador",JSON.stringify({operadorId,pin}));
+        renderResultado(data);
+        show("Guia cargada correctamente.",false);
+      }catch(error){show(error.message||"Error consultando la guia.",true)}
+      finally{btnBuscar.disabled=false}
+    }
+
+    function renderResultado(data){
+      const r=data.resumen||{};
+      resultado.innerHTML=`
+        <div class="summary">
+          <div class="metric"><span>Guia</span><strong>${safe(data.codigoGuia)}</strong></div>
+          <div class="metric"><span>Clientes</span><strong>${r.totalClientes||0}</strong></div>
+          <div class="metric"><span>Envios</span><strong>${r.totalEnvios||0}</strong></div>
+          <div class="metric"><span>Libras</span><strong>${num(r.totalLibras)}</strong></div>
+        </div>
+        ${(data.envios||[]).map(renderEnvio).join("")}
+      `;
+    }
+
+    function renderEnvio(e){
+      const paquetes=e.paquetes&&e.paquetes.length?e.paquetes:[{paqueteId:e.codigoEnvio,descripcion:e.descripcion,libras:e.libras,fotoLabelUrl:(e.fotosLabel||[]).join("|"),fotoContenidoUrl:(e.fotosContenido||[]).join("|")}];
+      return `<article class="shipment">
+        <div class="ship-head">
+          <div><h2>${safe(e.cliente||"Cliente")}</h2><div class="info">Codigo: <b>${safe(e.clienteCodigo||"-")}</b> · Envio: <b>${safe(e.codigoEnvio||"-")}</b></div></div>
+          <div><span class="chip">${safe(e.estadoActual||"En transito")}</span></div>
+        </div>
+        <div class="details">
+          <div class="info"><b>Entrega</b><br>${safe(e.ciudad||"-")}<br>${safe(e.direccion||"-")}<br>${safe(e.referencia||"")}</div>
+          <div class="info"><b>Contacto</b><br>Tel: ${safe(e.telefono||"-")}<br>Cedula: ${safe(e.cedula||"-")}<br>Email: ${safe(e.email||"-")}</div>
+        </div>
+        <div class="pkg-list">${paquetes.map((pkg,index)=>renderPaquete(pkg,e.codigoEnvio,index)).join("")}</div>
+      </article>`;
+    }
+
+    function renderPaquete(pkg,codigoEnvio,index){
+      const labelUrls=expandUrls(pkg.fotoLabelUrl);
+      const contenidoUrls=expandUrls(pkg.fotoContenidoUrl);
+      const hasPhotos=labelUrls.length||contenidoUrls.length;
+      const photoId=`photos_${safe(codigoEnvio)}_${index}`.replace(/[^A-Za-z0-9_]/g,"_");
+      return `<div class="pkg">
+        <div>
+          <h3>${safe(pkg.paqueteId||"Paquete")} · ${num(pkg.libras)} lb</h3>
+          <p><b>${safe(pkg.tiendaOrigen||"Origen")}</b> ${pkg.trackingTienda?" · "+safe(pkg.trackingTienda):""}</p>
+          <p>${safe(pkg.descripcion||"Sin descripcion registrada")}</p>
+        </div>
+        <div>${hasPhotos?`<button class="secondary" type="button" onclick="togglePhotos('${photoId}')">Fotos</button>`:""}</div>
+        <div class="photos" id="${photoId}">
+          ${labelUrls.map((url,i)=>renderPhoto("Label / tracking"+(i?` ${i+1}`:""),url)).join("")}
+          ${contenidoUrls.map((url,i)=>renderPhoto("Contenido"+(i?` ${i+1}`:""),url)).join("")}
+        </div>
+      </div>`;
+    }
+
+    function renderPhoto(title,url){return `<div class="photo-card"><strong>${safe(title)}</strong><img src="${safe(driveImageSrc(url))}" alt="${safe(title)}"><p><a href="${safe(url)}" target="_blank" rel="noopener">Abrir original</a></p></div>`}
+    function togglePhotos(id){document.getElementById(id)?.classList.toggle("active")}
+
+    try{
+      const saved=JSON.parse(sessionStorage.getItem("belouraEcuador")||"null");
+      if(saved){document.getElementById("operadorId").value=saved.operadorId||"";document.getElementById("pin").value=saved.pin||""}
+    }catch(error){}
+    document.getElementById("codigo").addEventListener("keydown",e=>{if(e.key==="Enter")buscarGuia()});
+  </script>
+</body>
+</html>

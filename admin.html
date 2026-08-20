@@ -447,23 +447,23 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
       <div class="panel">
         <div class="flex" style="justify-content:space-between;align-items:flex-start;">
           <div>
-            <h2 style="margin-bottom:4px;">Consultar / reimprimir guÃ­a</h2>
-            <p class="placeholder" style="margin-top:0;">Busca por guÃ­a consolidada o cÃ³digo individual para volver a generar las etiquetas PDF.</p>
+            <h2 style="margin-bottom:4px;">Consultar / reimprimir guia</h2>
+            <p class="placeholder" style="margin-top:0;">Busca por guia consolidada o codigo individual para volver a generar las etiquetas PDF.</p>
           </div>
           <button class="btn secondary" type="button" onclick="reimprimirGuiaCompleta()">Reimprimir todo</button>
         </div>
         <div class="grid grid-2" style="margin-top:10px;">
           <div>
-            <label>GuÃ­a o envÃ­o</label>
+            <label>Guia o envio</label>
             <input id="reprintCodigoGuia" placeholder="Ej: GNY0250 o NY0250">
           </div>
           <div style="align-self:end;">
-            <button class="btn blue" type="button" onclick="consultarGuiaReimpresion()">Consultar guÃ­a</button>
+            <button class="btn blue" type="button" onclick="consultarGuiaReimpresion()">Consultar guia</button>
           </div>
         </div>
         <div id="reprintAlert" class="alert" style="display:none;"></div>
         <div id="reprintResultado" class="placeholder" style="margin-top:12px;">
-          Consulta una guÃ­a para ver las etiquetas disponibles.
+          Consulta una guia para ver las etiquetas disponibles.
         </div>
       </div>
 
@@ -1115,7 +1115,7 @@ async function cargarGuiasTracking(){const select=document.getElementById("track
 function seleccionarGuiaTracking(){const select=document.getElementById("trackingGuiaSelect");const input=document.getElementById("trackingCodigoAdmin");if(select&&input&&select.value){input.value=select.value;consultarTrackingAdmin()}}
 let guiaReimpresionActual=null;
 function renderGuiaReimpresion(data){const box=document.getElementById("reprintResultado");if(!box)return;if(!data||!data.found){box.innerHTML="No se encontraron etiquetas para esa guía o envío.";return}const envios=data.envios||[];box.innerHTML=`<div style="margin-bottom:10px;"><strong>${safe(data.codigoGuia||data.codigoBuscado||"Guía")}</strong><br>${envios.length} etiqueta(s) disponibles - ${num(data.totalLibras||0)} lb</div><div class="table-wrap"><table><thead><tr><th>Envío</th><th>Cliente</th><th>Ciudad</th><th>Libras</th><th>Contenido</th><th>Acción</th></tr></thead><tbody>${envios.map(e=>`<tr><td><b>${safe(e.CodigoEnvio||"")}</b><br><small style="color:#64748b">${safe(e.CodigoGuia||"")}</small></td><td>${safe(e.DestNombre||"-")}<br><small style="color:#64748b">${safe(e.CodigoCliente||"")}</small></td><td>${safe(e.CiudadDestino||"-")}</td><td>${num(e.PesoLb||0)}</td><td>${safe(e.Descripcion||"-")}</td><td><button class="btn secondary" type="button" onclick="reimprimirEnvioGuia('${safe(e.CodigoEnvio||"")}')">Reimprimir</button></td></tr>`).join("")}</tbody></table></div>`}
-async function consultarGuiaReimpresion(){const alertBox=document.getElementById("reprintAlert");if(alertBox)clearAlert(alertBox);const input=document.getElementById("reprintCodigoGuia");const codigo=(input&&input.value||"").trim().toUpperCase();if(!codigo){if(alertBox)showAlert(alertBox,"Escribe una guía o código de envío.",false);return}try{const data=await postAPI({action:"obtenerGuiaReimpresion",secretKey:SECRET,codigoGuia:codigo,CodigoGuia:codigo,codigoEnvio:codigo,CodigoEnvio:codigo});if(!data.ok){guiaReimpresionActual=null;if(alertBox)showAlert(alertBox,data.error||"No se pudo consultar la guía.",false);renderGuiaReimpresion({found:false});return}guiaReimpresionActual=data;renderGuiaReimpresion(data);if(data.found&&alertBox)showAlert(alertBox,`Guía encontrada: ${(data.envios||[]).length} etiqueta(s).`,true);if(!data.found&&alertBox)showAlert(alertBox,"No se encontraron envíos para esa guía.",false)}catch(error){console.error(error);guiaReimpresionActual=null;if(alertBox)showAlert(alertBox,"Error consultando guía para reimpresión.",false)}}
+async function consultarGuiaReimpresion(){const alertBox=document.getElementById("reprintAlert");if(alertBox)clearAlert(alertBox);const input=document.getElementById("reprintCodigoGuia");const codigo=(input&&input.value||"").trim().toUpperCase();if(!codigo){if(alertBox)showAlert(alertBox,"Escribe una guía o código de envío.",false);return}try{const data=await postAPI({action:"obtenerguiareimpresion",secretKey:SECRET,codigoGuia:codigo,CodigoGuia:codigo,codigoEnvio:codigo,CodigoEnvio:codigo});if(!data.ok){guiaReimpresionActual=null;if(alertBox)showAlert(alertBox,data.error||"No se pudo consultar la guía.",false);renderGuiaReimpresion({found:false});return}guiaReimpresionActual=data;renderGuiaReimpresion(data);if(data.found&&alertBox)showAlert(alertBox,`Guía encontrada: ${(data.envios||[]).length} etiqueta(s).`,true);if(!data.found&&alertBox)showAlert(alertBox,"No se encontraron envíos para esa guía.",false)}catch(error){console.error(error);guiaReimpresionActual=null;if(alertBox)showAlert(alertBox,"Error consultando guía para reimpresión.",false)}}
 async function reimprimirEnvioGuia(codigoEnvio){const alertBox=document.getElementById("reprintAlert");if(!guiaReimpresionActual||!Array.isArray(guiaReimpresionActual.envios)){if(alertBox)showAlert(alertBox,"Consulta una guía antes de reimprimir.",false);return}const envio=guiaReimpresionActual.envios.find(e=>String(e.CodigoEnvio||"").toUpperCase()===String(codigoEnvio||"").toUpperCase());if(!envio){if(alertBox)showAlert(alertBox,"No se encontró ese envío en la consulta actual.",false);return}await generarGuiaPDF(envio.CodigoEnvio,envio);if(alertBox)showAlert(alertBox,`Etiqueta ${envio.CodigoEnvio} generada nuevamente.`,true)}
 async function reimprimirGuiaCompleta(){const alertBox=document.getElementById("reprintAlert");if(!guiaReimpresionActual||!Array.isArray(guiaReimpresionActual.envios)||!guiaReimpresionActual.envios.length){if(alertBox)showAlert(alertBox,"Consulta una guía antes de reimprimir todo.",false);return}for(const envio of guiaReimpresionActual.envios){await generarGuiaPDF(envio.CodigoEnvio,envio)}if(alertBox)showAlert(alertBox,`Se generaron ${guiaReimpresionActual.envios.length} etiqueta(s) PDF.`,true)}
 function limpiarTrackingAdmin(){["trackingCodigoAdmin","trackingEstadoNuevo","trackingUbicacion","trackingComentario","trackingFechaHora"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});const visible=document.getElementById("trackingVisibleCliente");if(visible)visible.value="SI";const resumen=document.getElementById("trackingResumenAdmin");if(resumen)resumen.innerHTML="Selecciona una guía para ver el estado actual y el historial que verá el cliente.";const tbody=document.getElementById("tablaTrackingHistorial");if(tbody)tbody.innerHTML='<tr><td colspan="5">Consulta una guía para ver su historial.</td></tr>';const alertBox=document.getElementById("trackingAdminAlert");if(alertBox)clearAlert(alertBox)}

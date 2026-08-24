@@ -38,7 +38,7 @@ Luego abre `http://localhost:8000`.
 - Las rutas internas publicas deben apuntar a archivos reales (`afiliados.html`, `partner.html`) para evitar 404 en GitHub Pages.
 - No guardar PINs permanentes en `localStorage`; si se necesita mantener sesion, preferir `sessionStorage` o reautenticacion.
 - `beloura-public-config.js` centraliza la URL del Apps Script para todas las paginas y la URL base de tracking. Si se redepliega el script, se cambia ahi y no pagina por pagina.
-- `beloura-admin-config.js` solo centraliza la clave admin actual. Es una medida de orden, no de seguridad real: en HTML estatico cualquier visitante puede ver el codigo fuente.
+- `admin.html` ya no debe publicar clave administrativa en HTML estatico. El acceso admin usa `ADMIN_USERS` en Apps Script y token temporal de sesion.
 
 ## Estado operativo actual
 

@@ -143,13 +143,25 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   color:#bfdbfe;
   font-weight:800;
 }
-.menu-group{margin-top:18px}.menu-label{display:block;margin:0 0 6px 14px;color:#64748b;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.menu button{display:flex;align-items:center;justify-content:space-between;gap:10px}.menu button .nav-main{display:flex;align-items:center;gap:10px}.menu button .nav-kicker{font-size:11px;color:#94a3b8;font-weight:700}.menu button.active .nav-kicker,.menu button:hover .nav-kicker{color:#dbeafe}.workspace-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.action-card{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.055);border-radius:18px;padding:18px;text-align:left;color:#e5e7eb;cursor:pointer;min-height:132px;transition:.16s ease}.action-card:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.42);background:rgba(15,23,42,.84)}.action-card strong{display:block;font-size:17px;margin-bottom:8px}.action-card span{display:block;color:#94a3b8;font-size:13px;line-height:1.45}.insight-list{display:grid;gap:10px}.insight-item{display:flex;justify-content:space-between;gap:12px;align-items:center;background:rgba(2,6,23,.38);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px}.insight-item strong{display:block;font-size:14px}.insight-item small{display:block;color:#94a3b8;margin-top:4px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.mini-actions{display:flex;gap:8px;flex-wrap:wrap}.mini-actions button{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.07);color:#dbeafe;border-radius:999px;padding:8px 12px;font-weight:800;cursor:pointer}@media(max-width:1050px){.workspace-grid,.action-grid{grid-template-columns:1fr}}@media(max-width:850px){.menu-group{min-width:max-content}.menu-label{margin-left:0}.menu button{min-width:172px;justify-content:flex-start}.menu button .nav-kicker{display:none}}
+.menu-group{margin-top:18px}.menu-label{display:block;margin:0 0 6px 14px;color:#64748b;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.menu button{display:flex;align-items:center;justify-content:space-between;gap:10px}.menu button .nav-main{display:flex;align-items:center;gap:10px}.menu button .nav-kicker{font-size:11px;color:#94a3b8;font-weight:700}.menu button.active .nav-kicker,.menu button:hover .nav-kicker{color:#dbeafe}.workspace-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.action-card{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.055);border-radius:18px;padding:18px;text-align:left;color:#e5e7eb;cursor:pointer;min-height:132px;transition:.16s ease}.action-card:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.42);background:rgba(15,23,42,.84)}.action-card strong{display:block;font-size:17px;margin-bottom:8px}.action-card span{display:block;color:#94a3b8;font-size:13px;line-height:1.45}.insight-list{display:grid;gap:10px}.insight-item{display:flex;justify-content:space-between;gap:12px;align-items:center;background:rgba(2,6,23,.38);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:12px}.insight-item strong{display:block;font-size:14px}.insight-item small{display:block;color:#94a3b8;margin-top:4px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.mini-actions{display:flex;gap:8px;flex-wrap:wrap}.mini-actions button{border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.07);color:#dbeafe;border-radius:999px;padding:8px 12px;font-weight:800;cursor:pointer}.admin-auth{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at top right,rgba(37,99,235,.28),transparent 34%),radial-gradient(circle at bottom left,rgba(124,58,237,.26),transparent 36%),#020617}.admin-locked .admin-auth{display:flex}.admin-locked .app,.admin-locked .beloura-chat-button,.admin-locked .beloura-chat-box{display:none}.auth-card{width:min(430px,100%);background:rgba(15,23,42,.92);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:30px;box-shadow:0 28px 80px rgba(0,0,0,.46)}.auth-brand{font-size:30px;font-weight:900;letter-spacing:-.04em;margin-bottom:4px}.auth-brand span{color:#38bdf8}.auth-title{margin:20px 0 16px;font-size:18px;color:#cbd5e1}.auth-card input{background:#020617}.auth-card button{width:100%;min-height:48px;margin-top:16px}.auth-alert{display:none;margin-top:14px;border-radius:12px;padding:11px 13px;background:#450a0a;border:1px solid #b91c1c;color:#fecaca;font-size:13px}.admin-session{display:flex;align-items:center;gap:10px}.logout-btn{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.08);color:#e5e7eb;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer}@media(max-width:1050px){.workspace-grid,.action-grid{grid-template-columns:1fr}}@media(max-width:850px){.menu-group{min-width:max-content}.menu-label{margin-left:0}.menu button{min-width:172px;justify-content:flex-start}.menu button .nav-kicker{display:none}}
 
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 </head>
-<body>
+<body class="admin-locked">
+<div class="admin-auth" id="adminAuth">
+  <form class="auth-card" id="adminLoginForm" autocomplete="off">
+    <div class="auth-brand">BELOURA <span>Admin</span></div>
+    <div class="auth-title">Acceso interno</div>
+    <label for="adminUsuario">Usuario</label>
+    <input id="adminUsuario" autocomplete="username" placeholder="admin" required>
+    <label for="adminPin" style="margin-top:12px">PIN</label>
+    <input id="adminPin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Tu PIN" required>
+    <button class="btn blue" id="btnAdminLogin" type="submit">Entrar</button>
+    <div class="auth-alert" id="adminLoginAlert"></div>
+  </form>
+</div>
 <div class="app">
   <aside class="sidebar">
     <div class="logo">BELOURA <span>Admin</span></div>
@@ -188,7 +200,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   <main class="main">
     <div class="topbar">
       <div><h1 id="pageTitle">Resumen General</h1><p id="pageSubtitle">Vista ejecutiva del ecosistema BELOURA.</p></div>
-      <div class="badge">Modo administrador</div>
+      <div class="admin-session"><div class="badge" id="adminSessionBadge">Modo administrador</div><button class="logout-btn" type="button" onclick="cerrarSesionAdmin()">Salir</button></div>
     </div>
 
     <section id="inicio" class="section active">
@@ -927,12 +939,13 @@ body{margin:0;font-family:Inter,Arial,sans-serif;background:#020617;color:#e5e7e
   </div>
 </div>
 <script src="beloura-public-config.js"></script>
-<script src="beloura-admin-config.js"></script>
 <script>
 const BELOURA_PUBLIC = window.BELOURA_PUBLIC_CONFIG || {};
-const BELOURA_ADMIN = window.BELOURA_ADMIN_CONFIG || {};
 const API_URL = BELOURA_PUBLIC.apiUrl || "";
-const SECRET = BELOURA_ADMIN.adminSecret || "";
+const SECRET = "";
+const ADMIN_SESSION_KEY = "belouraAdminSession";
+let adminSession = null;
+let ADMIN_TOKEN = "";
 let envioActual = "";
 let dataGlobal = null;
 const clientesCache = {};
@@ -1065,17 +1078,112 @@ function recargarModulo(id) {
   return cargarModuloUnaVez(id);
 }
 
+function aplicarSesionAdmin(session) {
+  adminSession = session || null;
+  ADMIN_TOKEN = adminSession && adminSession.token ? adminSession.token : "";
+  if (!ADMIN_TOKEN) {
+    bloquearAdmin();
+    return false;
+  }
+  document.body.classList.remove("admin-locked");
+  const badge = document.getElementById("adminSessionBadge");
+  if (badge) {
+    const name = adminSession.admin && adminSession.admin.nombre ? adminSession.admin.nombre : "Administrador";
+    badge.textContent = name;
+  }
+  return true;
+}
+
+function bloquearAdmin() {
+  adminSession = null;
+  ADMIN_TOKEN = "";
+  sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  document.body.classList.add("admin-locked");
+}
+
+function cerrarSesionAdmin() {
+  bloquearAdmin();
+  const form = document.getElementById("adminLoginForm");
+  if (form) form.reset();
+}
+
+async function iniciarSesionAdmin(event) {
+  if (event) event.preventDefault();
+  const alertBox = document.getElementById("adminLoginAlert");
+  const button = document.getElementById("btnAdminLogin");
+  const usuario = document.getElementById("adminUsuario").value.trim();
+  const pin = document.getElementById("adminPin").value.trim();
+  if (alertBox) alertBox.style.display = "none";
+  if (!usuario || !pin) {
+    if (alertBox) {
+      alertBox.textContent = "Ingresa usuario y PIN.";
+      alertBox.style.display = "block";
+    }
+    return;
+  }
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Validando...";
+  }
+  try {
+    const data = await postAPI({ action: "adminLogin", usuario, pin });
+    if (!data.ok || !data.token) throw new Error(data.error || "Acceso no autorizado");
+    const session = { token: data.token, admin: data.admin || {}, createdAt: Date.now() };
+    sessionStorage.setItem(ADMIN_SESSION_KEY, JSON.stringify(session));
+    aplicarSesionAdmin(session);
+    await cargarConfiguracion();
+    await cargarModuloUnaVez("inicio");
+  } catch (error) {
+    bloquearAdmin();
+    if (alertBox) {
+      alertBox.textContent = error.message || "No se pudo iniciar sesion.";
+      alertBox.style.display = "block";
+    }
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Entrar";
+    }
+  }
+}
+
+function restaurarSesionAdmin() {
+  try {
+    const raw = sessionStorage.getItem(ADMIN_SESSION_KEY);
+    if (!raw) return false;
+    return aplicarSesionAdmin(JSON.parse(raw));
+  } catch (error) {
+    bloquearAdmin();
+    return false;
+  }
+}
+
 function showFinanceTab(id,btn){document.querySelectorAll(".finance-tab").forEach(t=>t.style.display="none");document.getElementById("fin-"+id).style.display="block";document.querySelectorAll(".subtabs button").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}
 async function postAPI(payload){
+  const action = String(payload && payload.action || "").replace(/\s+/g, "").toLowerCase();
+  const publicActions = new Set(["adminlogin", "configuracionpublica"]);
+  const finalPayload = { ...(payload || {}) };
+  if (!publicActions.has(action)) {
+    if (!ADMIN_TOKEN) {
+      bloquearAdmin();
+      throw new Error("Debes iniciar sesion como administrador.");
+    }
+    finalPayload.adminToken = ADMIN_TOKEN;
+    delete finalPayload.secretKey;
+  }
   const res = await fetch(API_URL, {
     method: "POST",
-    body: JSON.stringify(payload)
+    body: JSON.stringify(finalPayload)
   });
 
   const text = await res.text();
 
   try {
-    return JSON.parse(text);
+    const data = JSON.parse(text);
+    if (data && data.ok === false && /no autorizado|sesion|acceso/i.test(String(data.error || ""))) {
+      bloquearAdmin();
+    }
+    return data;
   } catch (error) {
     console.error("Respuesta no JSON del API:", text);
     throw new Error("El API no devolvió una respuesta JSON válida. Revisa el Apps Script o la URL publicada.");
@@ -1282,15 +1390,10 @@ let iptvAdminData = [];
 
 async function cargarIPTVAdmin() {
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "listarCuentasIPTV",
-        secretKey: SECRET
-      })
+    const data = await postAPI({
+      action: "listarCuentasIPTV",
+      secretKey: SECRET
     });
-
-    const data = await res.json();
 
     if (!data.ok) {
       console.warn("Error cargando IPTV:", data.error);
@@ -1456,25 +1559,19 @@ async function guardarActivacionIPTV() {
   }
 
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "activarCuentaIPTV",
-        secretKey: SECRET,
-
-        CuentaID: cuentaId,
-        UsuarioIPTV: usuario,
-        ClaveIPTV: clave,
-        FechaInicio: fechaInicio,
-        DuracionDias: duracion,
-        TipoPlan: "Mensual",
-        PrecioBase: Number(document.getElementById("cfgPrecioBaseIPTV")?.value || 5),
-        PrecioVenta: Number(document.getElementById("cfgPrecioBaseIPTV")?.value || 5),
-        Observacion: obs || "Cuenta activada desde admin BELOURA"
-      })
+    const data = await postAPI({
+      action: "activarCuentaIPTV",
+      secretKey: SECRET,
+      CuentaID: cuentaId,
+      UsuarioIPTV: usuario,
+      ClaveIPTV: clave,
+      FechaInicio: fechaInicio,
+      DuracionDias: duracion,
+      TipoPlan: "Mensual",
+      PrecioBase: Number(document.getElementById("cfgPrecioBaseIPTV")?.value || 5),
+      PrecioVenta: Number(document.getElementById("cfgPrecioBaseIPTV")?.value || 5),
+      Observacion: obs || "Cuenta activada desde admin BELOURA"
     });
-
-    const data = await res.json();
 
     if (!data.ok) {
       alert(data.error || "No se pudo activar la cuenta.");
@@ -1529,12 +1626,16 @@ function safe(value) {
 }
 document.addEventListener("DOMContentLoaded", () => {
   console.log("BELOURA Admin listo. Cargando módulo de inicio una sola vez.");
+  const loginForm = document.getElementById("adminLoginForm");
+  if (loginForm) loginForm.addEventListener("submit", iniciarSesionAdmin);
   const reprintPanel=document.getElementById("reprintCodigoGuia")?.closest(".panel");
   const trackingSection=document.getElementById("tracking");
   const trackingHistory=document.getElementById("tablaTrackingHistorial")?.closest(".panel");
   if(reprintPanel&&trackingSection&&trackingHistory)trackingSection.insertBefore(reprintPanel,trackingHistory);
-  cargarConfiguracion();
-  cargarModuloUnaVez("inicio");
+  if (restaurarSesionAdmin()) {
+    cargarConfiguracion();
+    cargarModuloUnaVez("inicio");
+  }
 });
 function abrirPagoIPTV(cuentaId) {
   document.getElementById("iptvPagoCuentaId").value = cuentaId;
@@ -1582,22 +1683,16 @@ async function guardarPagoIPTV() {
   }
 
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      body: JSON.stringify({
-        action: "registrarPagoIPTV",
-        secretKey: SECRET,
-
-        CuentaID: cuentaId,
-        MontoPago: monto,
-        MetodoPago: metodo,
-        Referencia: referencia,
-        Observacion: observacion,
-        RegistradoPor: "Leonardo"
-      })
+    const data = await postAPI({
+      action: "registrarPagoIPTV",
+      secretKey: SECRET,
+      CuentaID: cuentaId,
+      MontoPago: monto,
+      MetodoPago: metodo,
+      Referencia: referencia,
+      Observacion: observacion,
+      RegistradoPor: "Leonardo"
     });
-
-    const data = await res.json();
 
     if (!data.ok) {
       alert(data.error || "No se pudo registrar el pago IPTV.");

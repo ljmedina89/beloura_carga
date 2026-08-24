@@ -18,7 +18,20 @@
     .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.metric{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}.metric span{display:block;color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase}.metric strong{display:block;margin-top:8px;font-size:24px}.client-card{margin-top:18px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}.client-card strong{font-size:18px}.client-card span{display:block;margin-top:5px;color:var(--muted);font-size:13px}
     .shipments{display:grid;gap:12px}.shipment{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;grid-template-columns:1fr auto;gap:16px}.shipment h3{margin:0;font-size:18px}.meta{margin-top:8px;color:var(--muted);font-size:14px;line-height:1.55}.tag{display:inline-flex;align-items:center;min-height:28px;border-radius:999px;padding:0 10px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:900}.shipment-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-content:start}.link-btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;border-radius:7px;padding:0 10px;background:#eef2f7;color:#182230;font-size:12px;font-weight:900}.link-btn.primary{background:var(--blue);color:#fff}
     .tracking-detail{grid-column:1/-1;border-top:1px solid var(--line);padding-top:14px;margin-top:2px}.tracking-detail[hidden]{display:none}.tracking-title{font-size:13px;font-weight:900;text-transform:uppercase;color:var(--muted);margin-bottom:10px}.timeline{display:grid;gap:10px}.timeline-item{display:grid;grid-template-columns:14px 1fr;gap:10px;align-items:start}.dot{width:12px;height:12px;border-radius:50%;background:var(--blue);margin-top:4px;box-shadow:0 0 0 4px #dbeafe}.timeline-card{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px 12px}.timeline-card strong{display:block;font-size:14px}.timeline-card span{display:block;margin-top:4px;color:var(--muted);font-size:12px}.timeline-card p{margin:6px 0 0;color:#344054;font-size:13px;line-height:1.45}.empty{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px;color:var(--muted);line-height:1.55}.photo-modal{position:fixed;inset:0;background:rgba(2,6,23,.72);display:none;align-items:center;justify-content:center;padding:22px;z-index:40}.photo-modal.active{display:flex}.photo-box{width:min(980px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:14px;padding:18px}.photo-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.photo-head h2{margin:0;font-size:20px}.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.photo-card{border:1px solid var(--line);border-radius:10px;padding:12px;background:#f8fafc}.photo-card strong{display:block;margin-bottom:10px}.photo-card img{display:block;width:100%;max-height:520px;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:8px}
-    @media(max-width:760px){.grid,.shipment,.photo-grid{grid-template-columns:1fr}.top-inner{min-height:76px}.brand{font-size:30px}.summary{grid-template-columns:1fr 1fr}.shipment-actions{justify-content:flex-start}.main{align-content:start;padding-top:28px}.panel{padding:22px}}
+    #authPanel{width:min(420px,100%);padding:30px;border-radius:24px;border:1px solid rgba(15,23,42,.08);box-shadow:0 28px 80px rgba(15,23,42,.14)}
+    #authPanel::before{content:"Acceso privado";display:block;margin:0 0 18px;font-size:22px;font-weight:900;letter-spacing:-.035em;color:#07111f}
+    #authPanel .tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;background:#f1f5f9;border-radius:999px;padding:5px;margin-bottom:22px}
+    #authPanel .tabs button{min-height:34px;border-radius:999px;padding:0 10px;background:transparent;color:#475569;font-size:12px;white-space:nowrap}
+    #authPanel .tabs button.active{background:#07111f;color:#fff;box-shadow:0 8px 20px rgba(7,17,31,.18)}
+    #authPanel form .grid{grid-template-columns:1fr}
+    #loginForm .field{gap:7px}
+    #loginForm input{min-height:54px;border-radius:14px;border-color:#d5dfeb;background:#fbfdff;font-size:16px}
+    #loginForm .actions-row{margin-top:18px}
+    #loginForm .actions-row button{width:100%;min-height:52px;border-radius:14px;background:#07111f;box-shadow:0 16px 28px rgba(7,17,31,.18)}
+    #loginForm .hint{text-align:center;margin-top:14px}
+    #registroForm input,#recuperarForm input{border-radius:12px}
+    #registroForm .actions-row button,#recuperarForm .actions-row button{width:100%;border-radius:14px}
+    @media(max-width:760px){.grid,.shipment,.photo-grid{grid-template-columns:1fr}.top-inner{min-height:76px}.brand{font-size:30px}.summary{grid-template-columns:1fr 1fr}.shipment-actions{justify-content:flex-start}.main{align-content:start;padding-top:28px}.panel{padding:22px}#authPanel .tabs button{font-size:11px;padding:0 8px}}
   </style>
 </head>
 <body>
@@ -46,8 +59,8 @@
     <section class="panel" id="authPanel">
       <div class="tabs">
         <button id="tabLogin" class="active" onclick="setTab('login')">Entrar</button>
-        <button id="tabRegistro" onclick="setTab('registro')">Crear casillero</button>
-        <button id="tabRecuperar" onclick="setTab('recuperar')">Olvide mi PIN</button>
+        <button id="tabRegistro" onclick="setTab('registro')">Crear</button>
+        <button id="tabRecuperar" onclick="setTab('recuperar')">PIN</button>
       </div>
 
       <form id="loginForm">
@@ -62,7 +75,7 @@
           </div>
         </div>
         <div class="actions-row"><button id="btnLogin" type="submit">Entrar</button></div>
-        <div class="hint">Cliente o agente BELOURA.</div>
+        <div class="hint">Cliente o agente</div>
       </form>
 
       <form id="registroForm" hidden>

@@ -1,4 +1,4 @@
 window.BELOURA_PUBLIC_CONFIG = {
-  apiUrl: "https://script.google.com/macros/s/AKfycbzM_TYTuw_nCF-iT8CpwDJoUOEZUEQ4WphkzHj_Owc2g8aUn0hqORlgmq2MZjVZaksLIw/exec",
+  apiUrl: "https://script.google.com/macros/s/AKfycbyO0yayZZuC_3sMb2XyRGWWhHuOhoublaS-uEWYGZoDVbMfOWCkmCXTs1eXcCK2-SjKZQ/exec",
   trackingBaseUrl: "https://trk.belourastore.com/?codigo="
 };

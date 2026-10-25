@@ -1192,6 +1192,8 @@
     }
 
   </style>
+  <link rel="stylesheet" href="home-banner.css">
+  <script src="home-banner.js" defer></script>
 </head>
 <body>
   <div class="top-strip">📦 BELOURA NY — Envíos desde Estados Unidos a Ecuador · Personal Shopper · Compras por encargo</div>
@@ -1199,34 +1201,17 @@
   <header class="navbar">
     <div class="nav-inner">
       <a href="#" class="logo"><span>BE</span>LOURA</a>
-      <nav class="nav-links">
-        <a href="perfumes/">Perfumes</a>
-        <a href="#servicios">Servicios</a>
-        <a href="#precios">Precios</a>
-        <a href="#tracking">Tracking</a>
-        <a href="cliente.html">Mi casillero</a>
-        <a href="agente.html">Agentes</a>
-        <a href="ecuador.html">Ecuador</a>
-        <a href="#shopper">Personal Shopper</a>
-        <a href="#afiliados">Afiliados</a>
-        <a href="#contacto">Acceder</a>
+      <nav class="nav-links" aria-label="Navegación principal">
+        <a href="perfumes/">Perfumes</a><a href="#servicios">Servicios</a><a href="#precios">Precios</a><a class="access-link" href="cliente.html">Acceder</a>
       </nav>
-      <div class="menu-btn">☰</div>
+      
     </div>
   </header>
 
   <main>
-    <section class="hero">
-      <div class="hero-content">
-        <h1>BELOURA <span>Carga</span></h1>
-        <p>Servicio de paquetería, compras personalizadas y envíos desde Estados Unidos a Ecuador.</p>
-        <div class="actions">
-          <a class="btn red" href="#precios">Cotizar envío</a>
-          <a class="btn white" href="#tracking">Consultar envío</a>
-          <a class="btn black" href="cliente.html">Mi casillero</a>
-          <a class="btn green" href="https://wa.me/19726070561?text=Hola%20BELOURA%2C%20necesito%20informaci%C3%B3n%20sobre%20env%C3%ADos%20a%20Ecuador." target="_blank">WhatsApp</a>
-        </div>
-      </div>
+    <section class="hero service-banner" aria-roledescription="carrusel" aria-label="Servicios BELOURA">
+      <div class="hero-content"><p class="banner-label" id="banner-label">ESTADOS UNIDOS → ECUADOR</p><h1 id="banner-title">Tus compras.<br>Más cerca.</h1><p id="banner-description">Recibimos tus paquetes en Nueva York y coordinamos su envío a Ecuador.</p><a class="btn white" id="banner-link" href="cliente.html">Acceder a mi cuenta →</a></div>
+      <div class="banner-controls"><button type="button" id="banner-prev" aria-label="Servicio anterior">←</button><span id="banner-count">1 / 4</span><button type="button" id="banner-next" aria-label="Siguiente servicio">→</button><button type="button" id="banner-pause" aria-pressed="false">Pausar</button></div>
     </section>
 
     <section aria-labelledby="perfumes-feature" style="background:#f5f7fb;padding:42px 24px;border-bottom:1px solid #e5e7eb">
@@ -1239,7 +1224,7 @@
       </div>
     </section>
 
-    <section id="servicios" class="quick-services">
+    <details class="home-detail"><summary>Explora nuestros servicios</summary><section id="servicios" class="quick-services">
       <div class="container">
         <div class="section-title">
           <div class="mini">Qué hacemos</div>
@@ -1274,9 +1259,9 @@
           </article>
         </div>
       </div>
-    </section>
+    </section></details>
 
-    <section id="tracking" class="tracking-section">
+    <details class="home-detail"><summary>Consultar un envío</summary><section id="tracking" class="tracking-section">
       <div class="container">
         <div class="tracking-panel">
           <div class="section-title" style="margin-bottom: 18px;">
@@ -1299,9 +1284,9 @@
           </div>
         </div>
       </div>
-    </section>
+    </section></details>
 
-    <section id="precios" class="prices">
+    <details class="home-detail"><summary>Consulta nuestras tarifas</summary><section id="precios" class="prices">
       <div class="container">
         <div class="section-title">
           <div class="mini">Tarifas claras</div>
@@ -1359,9 +1344,9 @@
           </article>
         </div>
       </div>
-    </section>
+    </section></details>
 
-    <section id="shopper" class="shopper">
+    <details class="home-detail"><summary>Cómo funciona Personal Shopper</summary><section id="shopper" class="shopper">
       <div class="container">
         <div class="section-title">
           <div class="mini" style="color:white;">Diferencial BELOURA</div>
@@ -1376,9 +1361,9 @@
           <div class="flow-step"><strong>4</strong><h3>Enviamos</h3><p>Consolidamos, generamos guía y activamos tracking.</p></div>
         </div>
       </div>
-    </section>
+    </section></details>
 
-    <section id="afiliados">
+    <details class="home-detail"><summary>Programa de afiliados</summary><section id="afiliados">
       <div class="container">
         <div class="affiliate-box">
           <div class="section-title" style="text-align:left;margin:0;">
@@ -1400,9 +1385,9 @@
           </div>
         </div>
       </div>
-    </section>
+    </section></details>
 
-    <section class="offices">
+    <details class="home-detail"><summary>Oficinas y atención</summary><section class="offices">
       <div class="container">
         <div class="section-title">
           <div class="mini">Puntos de atención</div>
@@ -1423,9 +1408,9 @@
           </div>
         </div>
       </div>
-    </section>
+    </section></details>
 
-    <section>
+    <details class="home-detail"><summary>Guías para comprar y enviar</summary><section>
       <div class="container">
         <div class="section-title">
           <div class="mini">Contenido que vende</div>
@@ -1438,7 +1423,7 @@
           <article class="blog-card"><h3>Cómo ganar recomendando BELOURA</h3><p>Explicación del programa de afiliados y beneficios por referidos.</p><a class="read-more">Leer más</a></article>
         </div>
       </div>
-    </section>
+    </section></details>
 
     <section id="contacto" class="cta">
       <div class="container">
@@ -1457,13 +1442,13 @@
           <p>Envíos desde Estados Unidos a Ecuador, personal shopper y red de afiliados.</p>
         </div>
         <div>
-          <h3>Servicios</h3>
+          <h3>BELOURA</h3><a href="cliente.html">Acceder</a><a href="perfumes/">Perfumes</a>
           <a href="#precios">Envío por libra</a>
-          <a href="#shopper">Personal Shopper</a>
-          <a href="#tracking">Tracking</a>
-          <a href="#afiliados">Afiliados</a>
-          <a href="agente.html">Panel agentes</a>
-          <a href="ecuador.html">Recepcion Ecuador</a>
+          
+          
+          
+          
+          
         </div>
         <div>
           <h3>Información</h3>

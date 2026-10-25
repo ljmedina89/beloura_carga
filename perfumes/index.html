@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perfumes | BELOURA</title>
+  <meta name="description" content="Descubre la selección de 20 perfumes de diseñador y árabes de BELOURA. Precios en USD y pedidos por WhatsApp.">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#catalogo">Ir al catálogo</a>
+  <header><a class="logo" href="../" aria-label="BELOURA, inicio"><img class="brand-emblem" src="images/beloura-emblem.svg" alt=""><span class="brand-lockup"><span class="brand-name">BELOURA</span><span class="brand-signature">EL ARTE DE DEJAR HUELLA</span></span></a><a class="back" href="../">Volver a BELOURA</a><button id="open-cart" class="cart-button">Mi selección <span id="cart-count">0</span></button></header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy"><p class="eyebrow">BELOURA / PERFUMERÍA</p><h1>Tu próxima <br>esencia.</h1><p class="intro">Grandes clásicos y nuevos favoritos.<br>Una selección de perfumes de diseñador y árabes para descubrir el tuyo.</p><a class="primary" href="#catalogo">Explorar la colección <span>↘</span></a><p class="small">20 perfumes · Precios en USD</p></div>
+      <div class="hero-art" aria-hidden="true"><span class="art-caption">LA SELECCIÓN BELOURA</span><img class="hero-one" src="images/sauvage.jpg" alt=""><img class="hero-two" src="images/yara.jpg" alt=""><span class="art-bottom">DISEÑADOR & ÁRABES</span></div>
+    </section>
+    <aside class="notice"><strong>Una esencia para ti.</strong><span>Confirmamos disponibilidad y fecha de entrega antes del pago.</span></aside>
+    <section id="catalogo" class="catalogue" aria-labelledby="collection-title">
+      <div class="section-heading"><div><p class="eyebrow">ENCUENTRA TU FAVORITO</p><h2 id="collection-title">La colección</h2></div><p id="result-count" aria-live="polite"></p></div>
+      <div class="filters"><div class="categories" role="group" aria-label="Categoría"><button data-category="all" aria-pressed="true">Todos</button><button data-category="designer" aria-pressed="false">Diseñador</button><button data-category="arabic" aria-pressed="false">Árabes</button></div><div class="search-sort"><label class="search"><span class="sr-only">Buscar por perfume o marca</span><input id="search" type="search" placeholder="Buscar perfume o marca…"></label><label><span class="sr-only">Ordenar perfumes</span><select id="sort"><option value="default">Nuestra selección</option><option value="low">Menor precio</option><option value="high">Mayor precio</option></select></label></div></div>
+      <div id="products" class="grid"></div><p id="no-results" hidden>No encontramos ese perfume. Prueba con otra marca o nombre.</p>
+      <noscript>Activa JavaScript para ver los productos y armar tu selección. También puedes <a href="https://wa.me/19726070561">consultarnos por WhatsApp</a>.</noscript>
+    </section>
+    <section class="how"><h2>De tu selección a tu pedido.</h2><ol><li><strong>01 / Elige</strong><p>Agrega tus perfumes favoritos y ajusta las cantidades.</p></li><li><strong>02 / Consulta</strong><p>Comparte tu selección con BELOURA por WhatsApp.</p></li><li><strong>03 / Confirma</strong><p>Acordamos disponibilidad, entrega y pago contigo.</p></li></ol></section>
+  </main>
+  <footer><a class="logo" href="../" aria-label="BELOURA, inicio"><img class="brand-emblem" src="images/beloura-emblem.svg" alt=""><span class="brand-lockup"><span class="brand-name">BELOURA</span><span class="brand-signature">EL ARTE DE DEJAR HUELLA</span></span></a><p>Perfumería · Todos los precios en USD.</p><a href="https://wa.me/19726070561" target="_blank" rel="noopener noreferrer">Hablemos por WhatsApp ↗</a></footer>
+  <dialog id="cart" aria-labelledby="cart-title"><div class="cart-header"><div><p class="eyebrow">TUS FAVORITOS</p><h2 id="cart-title">Mi selección</h2></div><button id="close-cart" class="icon-button" aria-label="Cerrar selección">×</button></div><div id="cart-items"></div><div class="cart-bottom"><div class="total"><span>Total USD</span><strong id="cart-total">$0.00</strong></div><p class="small">Confirmaremos disponibilidad, presentación y fecha de entrega antes del pago.</p><a id="whatsapp" class="primary" target="_blank" rel="noopener noreferrer">Consultar pedido por WhatsApp ↗</a><button id="clear-cart" class="text-button">Vaciar selección</button></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body></html>

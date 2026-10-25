@@ -2,3 +2,14 @@
 @media(max-width:980px){.nav-links{display:flex;gap:16px;font-size:13px}.menu-btn{display:none}.nav-inner{flex-wrap:wrap;justify-content:center;gap:15px;padding:16px 0}.service-banner{min-height:490px}}
 @media(max-width:520px){.nav-links{width:100%;justify-content:center;gap:15px;font-size:12px}.nav-links .access-link{padding:9px 14px}.service-banner .hero-content{padding-top:40px}.service-banner h1{font-size:45px}.service-banner .hero-content>p{font-size:16px;min-height:78px}.banner-controls{gap:12px}.top-strip{line-height:1.6}.home-detail>summary{font-size:14px;padding:19px}.service-banner{min-height:500px}}
 @media(prefers-reduced-motion:reduce){.service-banner{transition:none}}
+
+/* Imágenes de cada servicio, con una zona de texto independiente. */
+.service-banner{padding:0;min-height:560px;display:block;background:#0b1d35!important}
+.banner-image{position:absolute;right:0;top:0;width:51%;height:100%;object-fit:cover;object-position:center}
+.service-banner::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#0b1d35 0%,#0b1d35 40%,#0b1d35bb 51%,transparent 72%);pointer-events:none}
+.service-banner .hero-content{margin:auto;padding:60px 0 100px;min-height:560px}
+.service-banner h1{font-size:clamp(40px,4.5vw,64px);max-width:54%;min-height:2.2em}
+.service-banner .hero-content>p{max-width:46%;font-size:17px;min-height:82px}
+.service-banner .hero-content .banner-label{max-width:54%;min-height:0}
+.service-banner[data-service="perfumes"] .banner-image{object-fit:contain;background:#f0ede7}
+@media(max-width:700px){.service-banner{min-height:690px}.banner-image{top:0;width:100%;height:260px}.service-banner::before{background:linear-gradient(0deg,#0b1d35 0%,#0b1d35 58%,transparent 82%)}.service-banner .hero-content{padding:260px 0 95px;min-height:690px}.service-banner h1{max-width:100%;font-size:40px;min-height:0}.service-banner .hero-content>p{max-width:100%;font-size:15px;min-height:0;margin:18px 0}.service-banner .hero-content .banner-label{max-width:100%;margin-bottom:16px}.banner-controls{bottom:22px}.service-banner[data-service="perfumes"] .banner-image{object-fit:contain}}
